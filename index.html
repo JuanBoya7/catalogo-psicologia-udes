@@ -715,7 +715,7 @@ const TOTAL_PASOS = IND_TARJETAS.length + 1;   // las tarjetas más el cuestiona
 let indPaso = 0;
 let indBarajado = null;                        // opciones ya desordenadas, para no rebarajar al repintar
 let indCalificado = false;
-let indElegidas = [];
+let indPorPregunta = [];   /* "1" o "0" por pregunta, no el texto elegido */
 let indAciertos = 0;
 
 function indLeer(){
@@ -801,11 +801,11 @@ const indElegida = n => $indCuerpo.querySelector('input[name="p' + n + '"]:check
    justamente si el procedimiento quedó claro. */
 function indCalificar(){
   let aciertos = 0;
-  const elegidas = [];
+  const porPregunta = [];
   IND_PREGUNTAS.forEach((p, n) => {
     const marcada = indElegida(n);
     const op = indBarajado[n][+marcada.value];
-    elegidas.push(op.texto);
+    porPregunta.push(op.correcta ? "1" : "0");
     if(op.correcta) aciertos++;
     const fs = document.getElementById("preg" + n);
     fs.dataset.cerrada = "1";
@@ -822,16 +822,32 @@ function indCalificar(){
     }
   });
   indCalificado = true;
-  return { aciertos, elegidas };
+  return { aciertos, porPregunta };
 }
 
 /* El prellenado exige encodeURIComponent: URLSearchParams codifica los
-   espacios como "+" y Forms no los convierte de vuelta. */
-function indEnlace(elegidas, aciertos){
+   espacios como "+" y Forms no los convierte de vuelta.
+
+   Y AUN ASÍ NO BASTA, por eso lo que viaja es "1" o "0" y no el texto de la
+   respuesta. Corregido el 11 de agosto de 2026: si el docente abre el enlace
+   sin sesión en el tenant, Forms lo manda al login y la cadena de consulta
+   vuelve re-codificada en formato de formulario, con los espacios hechos "+".
+   El docente ve «5+días+hábiles» escrito en el formulario y el indicador de
+   adherencia, que compara carácter por carácter, descarta esa respuesta.
+
+   Ocurre después de que este código construya la URL, así que no hay forma de
+   codificar bien que lo evite: la única defensa es que no viaje ningún espacio.
+   Se pierde saber QUÉ opción equivocada eligió; se conserva el porcentaje de
+   acierto por pregunta, que es el indicador que se reporta. */
+function indEnlace(porPregunta, aciertos){
   const pares = [[IND_FORM.periodo, PERIODO],
                  [IND_FORM.aciertos, String(aciertos)]]
-    .concat(elegidas.map((v, i) => [IND_FORM.p[i], v]));
+    .concat(porPregunta.map((v, i) => [IND_FORM.p[i], v]));
   return IND_FORM.base + pares
+    /* El "0" de una pregunta fallada SOBREVIVE a este filtro porque es la
+       cadena "0" y no el número 0, que sería falsy y se caería sin avisar:
+       la pregunta llegaría vacía a Forms y contaría como no respondida.
+       Si alguien cambia esto a números, hay que cambiar también el filtro. */
     .filter(([k, v]) => v && k && !k.includes("PENDIENTE"))
     .map(([k, v]) => "&" + k + "=" + encodeURIComponent(v)).join("");
 }
@@ -845,8 +861,8 @@ $indAdelante.addEventListener("click", () => {
   if(indPaso < IND_TARJETAS.length){ indPaso++; indPintar(); return; }
 
   if(!indCalificado){
-    const { aciertos, elegidas } = indCalificar();
-    indElegidas = elegidas;
+    const { aciertos, porPregunta } = indCalificar();
+    indPorPregunta = porPregunta;
     indAciertos = aciertos;
     /* Calificado, ya no se puede volver atrás: si no, se ven las
        respuestas correctas y se rehace el cuestionario con ellas a la
@@ -864,7 +880,7 @@ $indAdelante.addEventListener("click", () => {
     return;
   }
 
-  const enlace = indEnlace(indElegidas, indAciertos);
+  const enlace = indEnlace(indPorPregunta, indAciertos);
   const conFormulario = !enlace.includes("PENDIENTE");
   if(conFormulario) window.open(enlace, "_blank", "noopener");
 
