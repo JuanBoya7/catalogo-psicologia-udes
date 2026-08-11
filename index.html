@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- El catálogo se publica en una URL pública para poder repartirlo por enlace y QR,
+     pero NO debe aparecer en buscadores: lo que hay aquí es el inventario completo del
+     laboratorio, y se difunde a los docentes, no al mundo. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Catálogo de pruebas y recursos — Laboratorio de Psicología UDES</title>
+<style>
+  :root{
+    --azul:#004899; --aqua:#7CFED8; --morado:#6C3AA8;
+    --bg:#f4f7fb; --surface:#ffffff; --ink:#0e1b2c; --muted:#5a6b80;
+    --line:#dbe3ee; --soft:#e8f0fb; --chip:#eef2f8;
+    --shadow:0 1px 2px rgba(0,40,90,.06), 0 6px 20px rgba(0,40,90,.07);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --azul:#5c9ce6; --bg:#0c141f; --surface:#141f2e; --ink:#e6edf6;
+      --muted:#96a7bd; --line:#243549; --soft:#16283f; --chip:#1c2a3b;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+
+  .band{background:var(--azul);color:#fff;margin:0 -20px 26px;padding:30px 20px 26px;
+    background-image:linear-gradient(135deg,#004899 0%,#003370 100%)}
+  .band .inner{max-width:1140px;margin:0 auto}
+  .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+    color:var(--aqua);margin:0 0 8px}
+  h1{font-size:clamp(23px,3.6vw,33px);line-height:1.15;margin:0 0 10px;letter-spacing:-.02em}
+  .sub{margin:0;max-width:66ch;color:#d3e2f5}
+
+  .notice{background:var(--soft);border:1px solid var(--line);border-left:3px solid var(--azul);
+    border-radius:8px;padding:13px 16px;margin:0 0 20px;font-size:14px}
+  .notice b{color:var(--azul)}
+
+  .controls{position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:20;border-bottom:1px solid var(--line)}
+  .search{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:9px;outline:none}
+  .search:focus{border-color:var(--azul);box-shadow:0 0 0 3px var(--soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .chip{font:inherit;font-size:13px;padding:6px 13px;border-radius:999px;cursor:pointer;
+    background:var(--chip);color:var(--muted);border:1px solid transparent;transition:.12s}
+  .chip:hover{color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .count{margin:15px 0 0;font-size:13px;color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .thumb{aspect-ratio:4/3;background:var(--soft);display:block;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:contain;display:block;padding:10px}
+  /* Sin foto: el escudo de la UDES, tenue, para que se lea como marcador
+     y no como si el recurso fuera un logo. */
+  .thumb.ph{display:grid;place-items:center;align-content:center;gap:9px}
+  /* Ancho fijo, no porcentaje de altura: el alto de .thumb sale de aspect-ratio
+     y contra eso un height:% se resuelve a cero. */
+  .thumb.ph img{width:96px;height:auto;max-width:42%;padding:0;opacity:.3}
+  .thumb.ph span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    font-weight:600;color:var(--muted);opacity:.75}
+  @media (prefers-color-scheme: dark){ .thumb.ph img{opacity:.5} }
+  .body{padding:14px 15px 15px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .row1{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .code{font:600 11.5px/1 ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.04em;
+    color:#fff;background:var(--azul);padding:5px 8px;border-radius:5px;white-space:nowrap}
+  .code.pend{background:var(--morado)}
+  .units{font-size:12px;color:var(--muted);white-space:nowrap}
+  .name{font-weight:650;font-size:15px;line-height:1.35;margin:0}
+  .cat{font-size:12px;color:var(--muted);margin:0}
+  .facts{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0}
+  .fact{font-size:11.5px;background:var(--chip);color:var(--muted);padding:3px 8px;border-radius:5px}
+  .fact b{color:var(--ink);font-weight:600}
+  .obj{font-size:13px;color:var(--muted);margin:0;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+  .obj.open{-webkit-line-clamp:unset}
+  .ask{margin-top:auto;align-self:flex-start;font:inherit;font-size:13px;font-weight:600;
+    text-decoration:none;color:var(--azul);background:transparent;border:1px solid var(--line);
+    border-radius:7px;padding:8px 14px;transition:.12s}
+  .ask:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .empty{text-align:center;color:var(--muted);padding:56px 20px}
+
+  /* Aviso de arriba que lleva a la sección del campus. Va aparte del
+     .notice para que no se lea como más letra pequeña: es lo único de
+     la cabecera sobre lo que se puede hacer clic. */
+  .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+    background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--morado);
+    border-radius:8px;padding:13px 16px;margin:0 0 20px}
+  .cta .txt{flex:1;min-width:240px;font-size:14px}
+  .cta b{color:var(--morado)}
+  .cta button{font:inherit;font-size:14px;white-space:nowrap;cursor:pointer;
+    color:#fff;background:var(--morado);border:1px solid var(--morado);
+    border-radius:7px;padding:8px 15px;transition:.12s}
+  .cta button:hover{filter:brightness(1.1)}
+  @media (prefers-color-scheme: dark){ .cta b{color:#b79ae0} }
+
+  /* ── Laboratorios del campus ───────────────────────────────────
+     Servicio distinto y de otro dueño, así que se separa con una
+     franja en vez de continuar la retícula del inventario.          */
+  /* scroll-margin porque la barra de búsqueda es sticky y si no
+     tapa el título justo al llegar. */
+  .campus{margin-top:52px;padding-top:30px;border-top:2px solid var(--line);
+    scroll-margin-top:96px;border-radius:10px}
+  /* Un destello corto al llegar: sin él el salto deja al ojo buscando
+     dónde aterrizó. */
+  .campus.destacar{animation:aterriza 1.4s ease-out}
+  @keyframes aterriza{
+    0%,55%{background:var(--soft);box-shadow:0 0 0 10px var(--soft)}
+    100%{background:transparent;box-shadow:0 0 0 10px transparent}
+  }
+  @media (prefers-reduced-motion:reduce){ .campus.destacar{animation:none} }
+  .campus h2{font-size:22px;margin:0 0 6px;letter-spacing:-.01em}
+  .campus .lead{margin:0 0 16px;color:var(--muted);max-width:70ch}
+  .campus .aviso{background:#fff6e5;border:1px solid #f0d9a8;border-left:3px solid #c8890f;
+    border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 20px;font-size:14px;color:#6b4c07}
+  .campus .aviso b{color:#8a6410}
+  @media (prefers-color-scheme: dark){
+    .campus .aviso{background:#2d2410;border-color:#5d4a17;color:#f0d9a8}
+    .campus .aviso b{color:#f5e3b8}
+  }
+  .lab{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);padding:16px 17px;display:flex;flex-direction:column}
+  .lab h3{margin:0 0 3px;font-size:16px}
+  .lab .donde{font-size:12.5px;color:var(--muted);margin:0 0 9px}
+  .lab p{margin:0 0 14px;font-size:14px;color:var(--muted);flex:1}
+  .lab .yasirve{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
+    font-weight:700;color:var(--azul);background:var(--soft);border-radius:5px;padding:3px 8px;margin:0 0 9px}
+
+  footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  footer p{margin:0 0 7px}
+
+  /* ── Inducción ─────────────────────────────────────────────────
+     Capa que tapa el catálogo entero hasta que se completa. Va en
+     position:fixed y no dentro de .wrap, para que el contenido de
+     abajo no se pueda alcanzar ni con el teclado.                    */
+  .ind{position:fixed;inset:0;z-index:100;background:var(--bg);overflow-y:auto;
+    display:flex;flex-direction:column;align-items:center}
+  .ind[hidden]{display:none}
+  .ind-caja{width:100%;max-width:700px;padding:0 20px 60px}
+  .ind-band{background:linear-gradient(135deg,#004899 0%,#003370 100%);color:#fff;
+    width:100%;padding:26px 20px}
+  .ind-band .in{max-width:700px;margin:0 auto}
+  .ind-band h2{margin:0 0 6px;font-size:clamp(20px,3.2vw,27px);letter-spacing:-.02em}
+  .ind-band p{margin:0;color:#d3e2f5;font-size:14px}
+
+  .ind-pasos{display:flex;gap:6px;margin:22px 0 20px}
+  .ind-pasos i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+  .ind-pasos i.on{background:var(--azul)}
+
+  .ind h3{margin:0 0 4px;font-size:20px;letter-spacing:-.01em}
+  .ind .cod{display:inline-block;font-size:11px;letter-spacing:.06em;font-weight:700;
+    color:var(--azul);background:var(--soft);border-radius:5px;padding:3px 8px;margin:0 0 14px}
+  .ind ul{margin:0;padding-left:20px}
+  .ind li{margin:0 0 10px}
+  .ind li b{color:var(--azul)}
+  .ind .clave{background:var(--soft);border-left:3px solid var(--azul);border-radius:0 8px 8px 0;
+    padding:12px 15px;margin:16px 0 0;font-size:14px}
+
+  .ind-pie{display:flex;gap:10px;align-items:center;margin-top:26px;
+    padding-top:18px;border-top:1px solid var(--line)}
+  .ind-pie .sep{flex:1}
+  .ind button{font:inherit;font-size:15px;border-radius:8px;padding:10px 20px;cursor:pointer;
+    border:1px solid var(--azul);background:var(--azul);color:#fff;transition:.12s}
+  .ind button:hover{filter:brightness(1.08)}
+  .ind button.gris{background:transparent;color:var(--muted);border-color:var(--line)}
+  .ind button:disabled{opacity:.4;cursor:not-allowed}
+
+  .preg{margin:0 0 22px;padding:0;border:0}
+  .preg legend{font-weight:600;margin:0 0 10px;padding:0}
+  .preg label{display:block;border:1px solid var(--line);border-radius:8px;padding:10px 13px;
+    margin:0 0 7px;cursor:pointer;background:var(--surface);font-size:15px;transition:.12s}
+  .preg label:hover{border-color:var(--azul)}
+  .preg input{margin-right:9px}
+  .preg label.bien{border-color:#1e8e5a;background:rgba(30,142,90,.09)}
+  .preg label.mal{border-color:#c0392b;background:rgba(192,57,43,.09)}
+  .preg .tras{font-size:13.5px;color:var(--muted);margin:8px 0 0}
+  .preg[data-cerrada] label{cursor:default}
+
+  .ind-marcador{background:#fff6e5;border:1px solid #f0d9a8;border-left:3px solid #c8890f;
+    border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 20px;font-size:14px;color:#6b4c07}
+  @media (prefers-color-scheme: dark){
+    .ind-marcador{background:#2d2410;border-color:#5d4a17;color:#f0d9a8}
+  }
+
+  /* Ventanita para pedir un laboratorio del campus */
+  dialog.dlg{border:0;border-radius:14px;padding:0;width:min(520px,94vw);
+    background:var(--surface);color:var(--ink);box-shadow:0 18px 60px rgba(0,30,70,.3)}
+  dialog.dlg::backdrop{background:rgba(6,18,34,.55)}
+  .dlg-cab{background:linear-gradient(135deg,#004899 0%,#003370 100%);color:#fff;padding:17px 20px}
+  .dlg-cab h3{margin:0;font-size:17px}
+  .dlg-cab p{margin:3px 0 0;font-size:13px;color:#cfe0f5}
+  .dlg-cuerpo{padding:18px 20px}
+  .dlg-cuerpo label{display:block;font-size:13px;font-weight:600;margin:0 0 5px}
+  .dlg-cuerpo select,.dlg-cuerpo input{width:100%;font:inherit;font-size:15px;padding:9px 11px;
+    border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);margin:0 0 15px}
+  .dlg-cuerpo .nota{font-size:13px;color:var(--muted);margin:0}
+  .dlg-pie{display:flex;gap:9px;justify-content:flex-end;padding:0 20px 18px}
+  .dlg-pie button{font:inherit;font-size:15px;border-radius:8px;padding:9px 18px;cursor:pointer;
+    border:1px solid var(--azul);background:var(--azul);color:#fff}
+  .dlg-pie button.gris{background:transparent;color:var(--muted);border-color:var(--line)}
+
+  @media print{
+    .ind,.campus{display:none}
+    .controls,.ask,.notice{display:none}
+    .band{background:#fff!important;color:#000;padding:0 0 12px}
+    .eyebrow{color:#004899}.sub{color:#333}
+    body{background:#fff;font-size:10.5px}
+    .grid{grid-template-columns:repeat(3,1fr);gap:9px}
+    .card{box-shadow:none;break-inside:avoid}
+    .obj{-webkit-line-clamp:2}
+  }
+</style>
+</head>
+<body>
+
+<!-- Inducción. Empieza visible y el script la oculta si ya está hecha:
+     al revés se vería un parpadeo del catálogo antes de taparlo. -->
+<div class="ind" id="ind">
+  <div class="ind-band"><div class="in">
+    <h2 id="indTitulo">Inducción a los laboratorios</h2>
+    <p id="indSub">Programa de Psicología · UDES Campus Valledupar</p>
+  </div></div>
+  <div class="ind-caja">
+    <div class="ind-pasos" id="indPasos"></div>
+    <div id="indCuerpo"></div>
+    <div class="ind-pie">
+      <button type="button" class="gris" id="indAtras">Atrás</button>
+      <span class="sep"></span>
+      <button type="button" id="indAdelante">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="ind-marcador" id="avisoEnvio" hidden>
+  <b>Falta enviar el cuestionario de inducción.</b>
+  Se abrió en otra pestaña; sin ese envío la socialización no queda registrada.
+  <a href="#" id="reabrirInduccion">Abrirlo de nuevo</a> ·
+  <a href="#" id="yaEnviado">Ya lo envié</a>.
+</div>
+
+<div class="band"><div class="inner">
+  <p class="eyebrow">Programa de Psicología · UDES Campus Valledupar</p>
+  <h1>Catálogo de pruebas y recursos del Laboratorio de Psicología</h1>
+  <p class="sub">Busca el instrumento que necesitas y pídelo desde su ficha. La solicitud llega
+  con el recurso ya identificado, sin que tengas que escribir códigos.</p>
+</div></div>
+
+<div class="notice">
+  <b>Antes de solicitar:</b> pide el préstamo con mínimo <b>1 hora de antelación</b> (idealmente 24 horas).
+  La reserva de la Cámara de Gesell y del Laboratorio como espacios se hace con Secretaría del Programa,
+  no por este catálogo.
+</div>
+
+<div class="cta">
+  <span class="txt"><b>¿Lo que necesitas no es una prueba, sino un laboratorio?</b>
+  Morfofisiología, Ciencias Básicas, Ciberanatomy, Fisiología y Microscopía son del campus,
+  pero sirven para varias asignaturas del programa.</span>
+  <button type="button" id="irCampus">Ver los cinco</button>
+</div>
+
+<div class="controls">
+  <input id="q" class="search" type="search" autocomplete="off"
+    placeholder="Buscar por nombre, sigla, código o para qué sirve (ej. ansiedad, atención, WISC)…">
+  <div class="chips" id="chips"></div>
+</div>
+
+<p class="count" id="count"></p>
+<div class="grid" id="grid"></div>
+<div class="empty" id="empty" hidden>No hay recursos que coincidan con la búsqueda.</div>
+
+<section class="campus">
+  <h2>Otros laboratorios del campus</h2>
+  <p class="lead">Laboratorios que no son del programa pero que, por su contenido, le sirven a
+  algunas asignaturas de Psicología. Los dos primeros ya figuran como que prestan servicio al
+  programa en la inducción institucional.</p>
+  <div class="aviso">
+    <b>Esto radica una solicitud, no reserva el laboratorio.</b>
+    La aprobación depende de la coordinación de laboratorios del campus, no del Laboratorio de
+    Psicología. Recuerda que si necesitas materiales o reactivos aplican los plazos del
+    procedimiento LAB-PR-001: 5 días hábiles, 8 si hay que prepararlos y 12 si son cepas.
+  </div>
+  <div class="grid" id="gridCampus"></div>
+</section>
+
+<dialog class="dlg" id="dlgCampus">
+  <div class="dlg-cab">
+    <h3 id="dcTitulo">Laboratorio</h3>
+    <p id="dcSub"></p>
+  </div>
+  <div class="dlg-cuerpo">
+    <label for="dcAsignatura">Asignatura</label>
+    <select id="dcAsignatura"></select>
+    <div id="dcOtraCaja" hidden>
+      <label for="dcOtra">¿Cuál asignatura?</label>
+      <input type="text" id="dcOtra" placeholder="Escribe el nombre de la asignatura">
+    </div>
+    <label for="dcInsumos">¿Requiere materiales, reactivos o insumos?</label>
+    <select id="dcInsumos">
+      <option value="No">No</option>
+      <option value="Sí">Sí</option>
+    </select>
+    <p class="nota">Al continuar se abre el formulario oficial con estos datos ya escritos.
+    Allí completas la fecha, el horario, cuántos estudiantes y la justificación.</p>
+  </div>
+  <div class="dlg-pie">
+    <button type="button" class="gris" id="dcCancelar">Cancelar</button>
+    <button type="button" id="dcSeguir">Abrir formulario</button>
+  </div>
+</dialog>
+
+<footer>
+  <p><b>Imágenes y fichas técnicas:</b> tomadas del «Catálogo de pruebas psicológicas 2023-B» del Laboratorio de Psicología.</p>
+  <p><b>Existencias sin verificar:</b> el conteo de unidades proviene del inventario 2022–2023 y está pendiente de actualización para 2026-B.</p>
+  <p><b>Gestor de Laboratorios de Psicología:</b> Juan David Boya Guerra · juan.boya@mail.udes.edu.co</p>
+</footer>
+
+</div>
+
+<script>
+/* ────────────────────────────────────────────────────────────────
+   CONFIGURACIÓN
+   ────────────────────────────────────────────────────────────────
+   Vínculo de prellenado del Forms "Solicitud de préstamo de pruebas y
+   recursos". {recurso} se sustituye por "CÓDIGO: Nombre", que es lo que
+   llega escrito en la pregunta 1.
+
+   Si rehaces el formulario, el id de esa pregunta (r9819...) cambia.
+   Para regenerarlo: Forms ▸ menú ··· ▸ Obtener dirección URL rellenada
+   previamente ▸ escribe CODIGO_RECURSO en la pregunta 1 ▸ Obtener
+   vínculo ▸ Copiar vínculo, y aquí reemplazas CODIGO_RECURSO por {recurso}.
+
+   IMÁGENES: viven en la carpeta catalogo-img/ junto a este archivo.
+   Para añadir la foto de un recurso que no la tiene, guarda un JPG con
+   el nombre de su código (por ejemplo catalogo-img/PSI001.jpg) y cambia
+   "i":"" por "i":"PSI001.jpg" en su registro de DATOS.
+
+   Los cuatro cerebros comparten PSI001.jpg: son ejemplares del mismo
+   modelo. Si algún día se distinguen, cada uno lleva su propio archivo.
+
+   Lo que se deja con "i":"" cae al marcador: escudo de la UDES tenue y
+   el rótulo «Sin fotografía». El mismo marcador aparece si el archivo
+   existe en DATOS pero falta en disco (ver im.onerror más abajo).        */
+
+const FORM_URL = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx"
+  + "?id=iUnUEzAIZ0if1tp65QCkfzwyYZfmeBlGrj0242f7zClUMllRUTlHWE9JQVZKVTJCVjRRWE1VMDJFWi4u"
+  + "&r9819dcd56db847c89f8330448537e4e4={recurso}";
+
+const IMG_DIR = "catalogo-img/";
+
+/* Registros. c=código · n=nombre · u=unidades · g=categoría · i=imagen
+   e=rango de edad · a=aplicación · t=tiempo · o=objetivo                  */
+const DATOS = [{"c":"PSI001","n":"Cerebro 1 — modelo anatómico","u":2,"g":"Modelos anatómicos","i":"PSI001.jpg","e":"","a":"","t":"","o":""},{"c":"PSI002","n":"Cerebro 2 — modelo anatómico","u":2,"g":"Modelos anatómicos","i":"PSI001.jpg","e":"","a":"","t":"","o":""},{"c":"PSI003","n":"Cerebro 3 — modelo anatómico","u":2,"g":"Modelos anatómicos","i":"PSI001.jpg","e":"","a":"","t":"","o":""},{"c":"PSI004","n":"Cerebro 4 — modelo anatómico","u":2,"g":"Modelos anatómicos","i":"PSI001.jpg","e":"","a":"","t":"","o":""},{"c":"PSI005","n":"Oído derecho desmontable","u":2,"g":"Modelos anatómicos","i":"","e":"","a":"","t":"","o":""},{"c":"PSI006","n":"Neurona — modelo anatómico","u":2,"g":"Modelos anatómicos","i":"","e":"","a":"","t":"","o":""},{"c":"PSI007","n":"Cuerpo celular — modelo anatómico","u":1,"g":"Modelos anatómicos","i":"","e":"","a":"","t":"","o":""},{"c":"PSI008","n":"Rompecabezas del nivel de excitación","u":1,"g":"Equipo experimental","i":"","e":"","a":"","t":"","o":""},{"c":"PSI009","n":"Purdue Pegboard — destreza manual","u":1,"g":"Equipo experimental","i":"PSI009.jpg","e":"","a":"","t":"","o":""},{"c":"PSI041","n":"Materiales de estimulación cognitiva","u":4,"g":"Equipo experimental","i":"","e":"","a":"","t":"","o":""},{"c":"PSI044","n":"Hand Tool Dexterity Test","u":1,"g":"Equipo experimental","i":"PSI044.jpg","e":"","a":"","t":"","o":""},{"c":"PSI045","n":"Economy Clock / Counter","u":2,"g":"Equipo experimental","i":"PSI045.jpg","e":"","a":"","t":"","o":""},{"c":"PSI046","n":"Discrimination Weights","u":1,"g":"Equipo experimental","i":"PSI046.jpg","e":"","a":"","t":"","o":""},{"c":"PSI047","n":"Auto Tally Maze","u":1,"g":"Equipo experimental","i":"PSI047.jpg","e":"","a":"","t":"","o":""},{"c":"PSI048","n":"Groove Type Steadiness Tester","u":1,"g":"Equipo experimental","i":"PSI048.jpg","e":"","a":"","t":"","o":""},{"c":"PSI049","n":"Chronos — Psychology Software Tools","u":1,"g":"Equipo experimental","i":"PSI049.jpg","e":"","a":"","t":"","o":""},{"c":"PSI050","n":"Touch Test Sensory Evaluator","u":1,"g":"Equipo experimental","i":"PSI050.jpg","e":"","a":"","t":"","o":""},{"c":"PSI010","n":"Wartegg — test y guía de interpretación","u":1,"g":"Proyectivas","i":"PSI010.jpg","e":"15 años en adelante","a":"Individual","t":"","o":"El análisis se centra en la interpretación de los dibujos, prestando atención a los detalles, las formas, los símbolos y las historias que el evaluado crea en cada cuadro. Estos elementos se utilizan para inferir aspectos de la personalidad, como la percepción de sí mismo y de los demás, las relaciones interpersonales, la creatividad y la forma en que el individuo aborda los desafíos y las situaciones problemáticas."},{"c":"PSI011","n":"H-T-P — técnica de dibujo proyectivo (MDI)","u":1,"g":"Proyectivas","i":"PSI011.jpg","e":"5 a 75 años","a":"Individual","t":"","o":"Se utiliza para evaluar la personalidad, las emociones y los conflictos inconscientes de una persona. Los participantes se les pide que dibujen una casa (H), un árbol (T) y una persona (P), y luego se analizan los detalles y simbolismo de los dibujos para obtener información sobre la psicología del individuo."},{"c":"PSI012","n":"Dibujo de la Figura Humana — proyección de personalidad","u":1,"g":"Proyectivas","i":"PSI012.jpg","e":"3 a 18 años.","a":"Individual","t":"","o":"Esta prueba utiliza el dibujo como una herramienta proyectiva para obtener información sobre la personalidad, emociones y aspectos cognitivos de una persona. Los participantes se les pide que dibujen una figura humana, y luego se analizan aspectos como la calidad del dibujo, la presencia de detalles específicos y el contenido emocional de la figura."},{"c":"PSI013","n":"Rorschach + protocolo de registro individual","u":1,"g":"Proyectivas","i":"PSI013.jpg","e":"16 años en adelante.","a":"Individual","t":"","o":"Consiste en mostrar a la persona una serie de 10 láminas con manchas de tinta abstractas y pedirle que describa lo que ve en cada una. Las respuestas proporcionadas se consideran proyecciones de la personalidad del individuo, revelando aspectos de su percepción, pensamiento, emociones y funcionamiento psicológico."},{"c":"PSI014","n":"Test de Pata Negra + hoja de respuesta","u":1,"g":"Proyectivas","i":"PSI014.jpg","e":"4 a 15 años preferiblemente","a":"Individual","t":"","o":"Explorar la estructura dinámica de la personalidad. Identificar los mecanismos de defensa del yo. Reconocer las tendencias instintivas del sujeto. Definir la organización psíquica infantil a partir de sus conflictos, defensas y dimensiones psicosexuales significativas."},{"c":"PSI016","n":"Kit de familia — marionetas / muñecas de trapo","u":6,"g":"Proyectivas","i":"","e":"","a":"","t":"","o":""},{"c":"PSI021","n":"TAT–CAT — técnicas proyectivas + láminas","u":1,"g":"Proyectivas","i":"PSI021.jpg","e":"6 años en adelante","a":"Individual","t":"","o":"Conocer los impulsos, emociones, sentimientos, complejos y conflictos de la"},{"c":"PSI022","n":"TAT–CAT — técnicas proyectivas + láminas (2.º ejemplar)","u":1,"g":"Proyectivas","i":"PSI021.jpg","e":"6 años en adelante","a":"Individual","t":"","o":"Conocer los impulsos, emociones, sentimientos, complejos y conflictos de la"},{"c":"PSI019","n":"BANETA — trastornos del aprendizaje","u":1,"g":"Neuropsicología","i":"PSI019.jpg","e":"6 - 16 años.","a":"se administra de manera individual.","t":"3 Horas aproximadamente","o":"Es una batería de pruebas neuropsicológicas diseñada para evaluar diferentes áreas cognitivas y funciones neuropsicológicas en niños y adolescentes que presentan trastornos de aprendizaje. Estos trastornos pueden incluir dificultades en la lectura, la escritura y las matemáticas, como la dislexia, la discalculia y la disgrafía."},{"c":"PSI037","n":"NEUROPSI — evaluación neuropsicológica breve","u":1,"g":"Neuropsicología","i":"PSI037.jpg","e":"16 años en adelante","a":"Individual","t":"20 minutos aproximadamente","o":"Evalúa diversas funciones cognitivas y habilidades neuropsicológicas en personas de habla hispana. Está diseñada para detectar posibles deficiencias cognitivas asociadas con daño cerebral, deterioro cognitivo leve y otros trastornos neuropsicológicos."},{"c":"PSI038","n":"ENI-2 — evaluación neuropsicológica infantil","u":1,"g":"Neuropsicología","i":"PSI038.jpg","e":"6 - 16 años.","a":"Individual.","t":"45-60 minutos","o":"Evalúa el funcionamiento cognitivo y neuropsicológico de niños y adolescentes. Su objetivo principal es identificar y analizar posibles alteraciones en áreas como la atención, la memoria, las funciones ejecutivas y otros procesos cognitivos. Se utiliza para obtener información detallada sobre el rendimiento cognitivo de los niños y adolescentes, lo que puede ser útil en la detección temprana de posibles dificultades de aprendizaje, trastornos del desarrollo y problemas neuropsicológicos."},{"c":"PSI039","n":"BANFE-2 — funciones ejecutivas y lóbulos frontales","u":1,"g":"Neuropsicología","i":"PSI039.jpg","e":"18 - 70 años.","a":"Individual.","t":"50 minutos aproximadamente","o":"Evalúa las funciones ejecutivas y el rendimiento de los lóbulos frontales en adultos. Las funciones ejecutivas son habilidades cognitivas superiores que incluyen la planificación, la toma de decisiones, la inhibición de respuestas automáticas, la flexibilidad mental y la organización. Su objetivo es proporcionar una evaluación detallada y sistemática de estas habilidades, que son esenciales para la resolución de problemas y la adaptación en la vida cotidiana. La batería puede ser útil en la identificación de déficits en funciones ejecutivas, lo que puede ser relevante en contextos clínicos, neuropsicológicos y de investigación."},{"c":"PSI029","n":"WPPSI-III — Escala Wechsler preescolar y primaria","u":1,"g":"Inteligencia y aptitudes","i":"PSI029.jpg","e":"2 - 7 años","a":"Individual.","t":"30-50 minutos","o":"El objetivo principal de esta escala es evaluar las capacidades cognitivas y la aptitud intelectual del niño en áreas como el razonamiento verbal, la percepción visual, la memoria de trabajo y las habilidades de resolución de problemas. La WPPSI-III proporciona una medida integral de las habilidades cognitivas del niño y se utiliza para identificar patrones de fortalezas y debilidades cognitivas, así como para ayudar en la toma de decisiones educativas y en la planificación de intervenciones tempranas si es necesario."},{"c":"PSI042","n":"WPPSI-III (2.º ejemplar — verificar si es duplicado)","u":1,"g":"Inteligencia y aptitudes","i":"PSI029.jpg","e":"2 - 7 años","a":"Individual.","t":"30-50 minutos","o":"El objetivo principal de esta escala es evaluar las capacidades cognitivas y la aptitud intelectual del niño en áreas como el razonamiento verbal, la percepción visual, la memoria de trabajo y las habilidades de resolución de problemas. La WPPSI-III proporciona una medida integral de las habilidades cognitivas del niño y se utiliza para identificar patrones de fortalezas y debilidades cognitivas, así como para ayudar en la toma de decisiones educativas y en la planificación de intervenciones tempranas si es necesario."},{"c":"PSI043","n":"WISC-IV — Escala Wechsler para niños","u":1,"g":"Inteligencia y aptitudes","i":"PSI043.jpg","e":"6 años a 16 años","a":"Individual.","t":"110 minutos aproximadamente","o":"Mide la inteligencia en niños y adolescentes en edad escolar. Evalúa una amplia gama de capacidades cognitivas, incluyendo el razonamiento verbal, la memoria de trabajo, la velocidad de procesamiento, la percepción visual y la resolución de problemas. La WISC-IV proporciona puntuaciones en diversos índices y subpruebas que permiten comprender las fortalezas y debilidades cognitivas del niño."},{"c":"PSI034","n":"K-BIT — test breve de inteligencia de Kaufman","u":2,"g":"Inteligencia y aptitudes","i":"PSI034.jpg","e":"6 - 90 años.","a":"Individual o grupal.","t":"15-30 minutos","o":"Proporciona una estimación rápida y global de las capacidades cognitivas, enfocándose en las áreas de razonamiento verbal y no verbal. El K-BIT incluye subpruebas verbales y matrices no verbales que evalúan habilidades como el razonamiento verbal, la resolución de problemas y la capacidad de identificar patrones visuales. Dado su formato breve, el K-BIT es útil para obtener una rápida evaluación de la inteligencia en situaciones donde se necesita una estimación general de las capacidades cognitivas."},{"c":"PSI035","n":"TIG — inteligencia general, niveles 1 y 2","u":1,"g":"Inteligencia y aptitudes","i":"PSI035.jpg","e":"TIG-1, a partir de 10 años hasta adultos de niveles educativos bajo y medio; TIG-2, a partir de 14 años hasta adultos de nivel educativo elevado.Aplicación: Individual o colectiva.Tiempo: TIG-1, 15 minutos. TIG-2, 30 minutos.","a":"","t":"","o":"Está destinada a la evaluación de la capacidad para conceptualizar y aplicar el razonamiento sistemático a problemas, esto es, apreciar las funciones centrales de la inteligencia general. Consta de dos niveles de dificultad, TIG-1 (nivel 1) y TIG-2 (nivel 2), que permiten su uso con personas de diferente edad y nivel educativo."},{"c":"PSI026","n":"CARAS-R — percepción de diferencias","u":1,"g":"Atención","i":"PSI026.jpg","e":"6 – 18 años","a":"Puede ser administrado tanto de manera individual como grupal.","t":"3-5 minutos","o":"Se utiliza para evaluar la capacidad de una persona para detectar diferencias visuales sutiles entre imágenes o elementos gráficos similares. La prueba suele consistir en pares de imágenes o patrones visuales en los que el individuo debe identificar las discrepancias o cambios que existen entre ellos."},{"c":"PSI033","n":"D2 — test de atención","u":1,"g":"Atención","i":"PSI033.jpg","e":"8 – 88 años","a":"Individual o grupal.","t":"8-10 minutos","o":"Evalúa la precisión y velocidad de la respuesta, lo que proporciona una medida de la atención selectiva y sostenida, así como la resistencia a la fatiga mental. Puede ayudar a identificar patrones de dificultades en la atención y concentración, lo que puede ser relevante en contextos educativos, clínicos y laborales."},{"c":"PSI015","n":"GADS — escala de Gilliam para TDA y Asperger","u":1,"g":"Clínica y psicopatología","i":"PSI015.jpg","e":"De 3-22 años.","a":"Individual.","t":"10-15 minutos","o":"Ayudar en la identificación de personas que padecen trastorno de Asperger y diferenciar los rasgos con los de otros trastornos"},{"c":"PSI017","n":"SENA — evaluación de niños y adolescentes","u":1,"g":"Clínica y psicopatología","i":"PSI017.jpg","e":"6 a 16 años.","a":"individual.","t":"","o":"El propósito principal del SENA es evaluar diversas áreas del funcionamiento cognitivo y emocional de niños y adolescentes. Esto incluye la evaluación de habilidades cognitivas como la memoria, la atención, la percepción y la capacidad de resolución de problemas. También se utiliza para evaluar aspectos emocionales y sociales, como la autoestima y la adaptación emocional."},{"c":"PSI018","n":"ICOD — instrumento de codependencia","u":1,"g":"Clínica y psicopatología","i":"PSI018.jpg","e":"18 años en adelante.","a":"Individual","t":"","o":"El ICOD tiene como objetivos:1. Detectar la prevalencia de codependencia y sus factores asociados en mujeres.2. Describir los factores asociados con la presencia de este problema."},{"c":"PSI023","n":"BAI — inventario de ansiedad de Beck","u":1,"g":"Clínica y psicopatología","i":"PSI023.jpg","e":"13 años en adelante","a":"Individual","t":"","o":"El propósito principal del BAI es evaluar la gravedad de los síntomas de ansiedad en adultos y adolescentes. Esta prueba ayuda a medir y cuantificar los síntomas emocionales y fisiológicos comunes asociados con la ansiedad, como la tensión, la inquietud, la preocupación y la agitación."},{"c":"PSI025","n":"CAS — cuestionario de ansiedad infantil","u":1,"g":"Clínica y psicopatología","i":"PSI025.jpg","e":"6 a 8 años","a":"Individual o Grupal","t":"","o":"El propósito principal del CAS es evaluar los niveles de ansiedad en niños. La prueba busca identificar y medir los síntomas de ansiedad en diversas áreas, como la ansiedad de separación, la ansiedad social, la fobia escolar y otras manifestaciones de ansiedad en la población infantil."},{"c":"PSI028","n":"CHIPS — entrevista para síndromes psiquiátricos","u":1,"g":"Clínica y psicopatología","i":"PSI028.jpg","e":"","a":"","t":"","o":""},{"c":"PSI030","n":"CDI — inventario de depresión infantil","u":1,"g":"Clínica y psicopatología","i":"PSI030.jpg","e":"7 a 15 años","a":"Individual o colectiva","t":"","o":"El objetivo principal del CDI es evaluar los síntomas depresivos en niños y adolescentes. El CDI evalúa dos escalas: Disforia (humor depresivo, tristeza, preocupación, etc.) y Autoestima negativa (juicios de ineficacia, fealdad, maldad, etc.) y proporciona una puntuación total de Depresión."},{"c":"PSI051","n":"AMAS — ansiedad manifiesta en adultos","u":1,"g":"Clínica y psicopatología","i":"PSI051.jpg","e":"AMAS-A: 19-59 años AMAS-E: 60 años en adelante","a":"Individual y colectiva","t":"","o":"Evalúa el nivel de ansiedad experimentado por personas adultas. (Adultez temprana, media y tardía)"},{"c":"PSI052","n":"CMASR-2 — ansiedad manifiesta en niños","u":1,"g":"Clínica y psicopatología","i":"PSI052.jpg","e":"6 a 19 años.","a":"Se aplica de manera individual o en grupo","t":"","o":"El propósito principal del CMASR-2 es evaluar la ansiedad en niños y adolescentes a través de la identificación de síntomas y manifestaciones específicas de ansiedad, como preocupación excesiva, inquietud, miedo a la separación y otros síntomas relacionados."},{"c":"PSI053","n":"TED-R — test de desesperanza","u":1,"g":"Clínica y psicopatología","i":"PSI053.jpg","e":"12 años en adelante","a":"Individual o colectiva.","t":"","o":"La evaluación de la esperanza y de la desesperanza, como variables diagnósticas y pronósticas de la salud-enfermedad y de los componentes asociados a la calidad de vida personal, familiar y social."},{"c":"PSI020","n":"ESPA — estilos de socialización parental","u":1,"g":"Personalidad y contexto","i":"PSI020.jpg","e":"12 a 18 años.","a":"Se administra de forma individual","t":"","o":"La ESPA tiene como objetivo principal evaluar los estilos de socialización parental que los adolescentes experimentan en sus hogares. Estos estilos incluyen la autoridad, el apoyo emocional, la comunicación y la participación de los padres en la vida de sus hijos adolescentes. La prueba busca identificar y medir los diferentes estilos parentales, como el autoritario, el democrático, el permisivo, entre otros, para comprender cómo estos estilos pueden influir en el comportamiento y el bienestar emocional de los adolescentes."},{"c":"PSI024","n":"EEHSA — habilidades sociales para adolescentes","u":1,"g":"Personalidad y contexto","i":"PSI024.jpg","e":"12 a 18 años.","a":"Se aplica de manera individual o grupal","t":"","o":"Evalúa las habilidades sociales de los adolescentes. Las habilidades sociales incluyen la capacidad de interactuar de manera efectiva con otros, comunicarse de manera apropiada y resolver conflictos de manera constructiva. La prueba busca identificar y medir las habilidades sociales, como la empatía, asertividad, la toma de decisiones sociales y la resolución de problemas sociales, para evaluar el nivel de competencia social de los adolescentes."},{"c":"PSI027","n":"AF-5 — autoconcepto forma 5","u":1,"g":"Personalidad y contexto","i":"PSI027.jpg","e":"8 años en adelante.","a":"Individual o Grupal","t":"","o":"Evaluar cómo las personas perciben su propio autoconcepto en diversas áreas, como académica, social, emocional, familiar y física. Esta prueba ayuda a los profesionales a comprender la imagen que una persona tiene de sí misma y cómo esto puede afectar su bienestar psicológico y su comportamiento en diferentes contextos."},{"c":"PSI031","n":"APM — análisis del perfil motivacional","u":1,"g":"Personalidad y contexto","i":"PSI031.jpg","e":"16 años en adelante.","a":"Individual o Colectiva","t":"","o":"Evaluar el perfil motivacional del evaluado en relación con la selección, la gestión del talento, la orientación vocacional, el coaching o el desarrollo personal y profesional. La prueba busca evaluar cinco motivos y “contramotivos” según el modelo de Rueda de motivos: Afiliación-Autonomía, Cooperación-Poder, Hedonismo-Logro, Seguridad-Exploración y Conservación-Contribución"},{"c":"PSI032","n":"PROLEER — predictores de lectura","u":1,"g":"Aprendizaje y lectura","i":"PSI032.jpg","e":"6 a 16 años","a":"Individual o Grupal.","t":"","o":"Evaluar las habilidades de lectura en niños y adolescentes. La prueba busca identificar y medir las habilidades relacionadas con la lectura, como la decodificación, la comprensión lectora, la fluidez y la ortografía."},{"c":"PSI036","n":"KV — escala de preferencias vocacionales","u":1,"g":"Orientación vocacional","i":"PSI036.jpg","e":"15 años en adelante","a":"Individual o Grupal","t":"","o":"Ayudar a los individuos a explorar y comprender sus intereses y preferencias relacionados con el trabajo y la educación. El cuestionario presenta una serie de preguntas sobre actividades, tareas y áreas de estudio, y el evaluado debe indicar su nivel de interés en cada una. Luego, se generan perfiles de preferencias que sugieren posibles campos ocupacionales o áreas de estudio que podrían ser compatibles con los intereses del individuo."},{"c":"PSI040","n":"EXPLORA — orientación vocacional y profesional","u":1,"g":"Orientación vocacional","i":"PSI040.jpg","e":"15 años en adelante.","a":"Individual o Grupal","t":"","o":"Ayudar a las personas a identificar sus intereses y aptitudes laborales, así como proporcionar información sobre carreras que podrían ser adecuadas para ellas. El cuestionario suele constar de una serie de preguntas que evalúan los intereses y las preferencias en áreas como ciencias, humanidades, artes, tecnología, entre otras. A partir de las respuestas, se generan perfiles de orientación vocacional que sugieren posibles carreras o campos laborales que podrían ser adecuados para el evaluado."},{"c":"PSI054","n":"BDI-II — inventario de depresión de Beck II","u":null,"g":"Clínica y psicopatología","i":"PSI054.jpg","e":"13 años en adelante","a":"Se aplica de manera individual.","t":"","o":"El propósito principal del BDI-II es evaluar la gravedad de los síntomas de la depresión en adultos y adolescentes. Esta prueba ayuda a medir y cuantificar los síntomas depresivos, como la tristeza, la fatiga, la pérdida de interés en las actividades, la alteración del sueño y del apetito, la sensación de culpa, entre otros."},{"c":"PSI055","n":"ESFA — escala de satisfacción familiar por adjetivos","u":null,"g":"Personalidad y contexto","i":"PSI055.jpg","e":"12 años en adelante.","a":"Individual o grupal.","t":"","o":"El propósito principal de la ESFA es evaluar la satisfacción de los miembros de una familia con respecto a su vida familiar. Esta prueba utiliza adjetivos descriptivos que se aplican a la familia, y los participantes deben calificar cuán bien o cuán mal describen su propia experiencia familiar."},{"c":"PSI056","n":"16-PF — cuestionario factorial de personalidad","u":null,"g":"Personalidad y contexto","i":"PSI056.jpg","e":"16 años en adelante","a":"Individual o colectiva","t":"","o":"Evaluar la personalidad desde un enfoque factorial, es decir, busca identificar los rasgos de personalidad fundamentales que componen la personalidad de un individuo. La prueba se basa en la teoría de la personalidad propuesta por Raymond B. Cattell, y evalúa 16 factores de personalidad diferentes, como la extroversión, la ansiedad, la independencia, entre otros."}];
+
+const PLACEHOLDER = '<img src="' + IMG_DIR + 'LOGO-UDES.png" alt="">'
+  + '<span>Sin fotografía</span>';
+
+const CATEGORIAS = ["Todas", ...new Set(DATOS.map(d => d.g))];
+let filtro = "Todas";
+
+const $grid = document.getElementById("grid"),
+      $chips = document.getElementById("chips"),
+      $q = document.getElementById("q"),
+      $count = document.getElementById("count"),
+      $empty = document.getElementById("empty");
+
+CATEGORIAS.forEach(cat => {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = cat;
+  b.setAttribute("aria-pressed", cat === filtro);
+  b.onclick = () => {
+    filtro = cat;
+    [...$chips.children].forEach(c => c.setAttribute("aria-pressed", c.textContent === cat));
+    pintar();
+  };
+  $chips.appendChild(b);
+});
+
+// Normaliza para que "atencion" encuentre "atención".
+const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+function tarjeta(d){
+  const card = document.createElement("article");
+  card.className = "card";
+
+  const th = document.createElement("div");
+  th.className = "thumb" + (d.i ? "" : " ph");
+  if (d.i){
+    const im = document.createElement("img");
+    im.src = IMG_DIR + d.i; im.alt = d.n; im.loading = "lazy";
+    // Si el archivo falta, cae al marcador en vez de mostrar un icono roto.
+    im.onerror = () => { th.className = "thumb ph"; th.innerHTML = PLACEHOLDER; };
+    th.appendChild(im);
+  } else th.innerHTML = PLACEHOLDER;
+
+  const body = document.createElement("div"); body.className = "body";
+
+  const r1 = document.createElement("div"); r1.className = "row1";
+  const c = document.createElement("span");
+  c.className = "code" + (d.c ? "" : " pend");
+  c.textContent = d.c || "Código por asignar";
+  r1.appendChild(c);
+  if (d.u != null){
+    const u = document.createElement("span"); u.className = "units";
+    u.textContent = d.u === 1 ? "1 unidad" : d.u + " unidades";
+    r1.appendChild(u);
+  }
+
+  const h = document.createElement("h2"); h.className = "name"; h.textContent = d.n;
+  const g = document.createElement("p");  g.className = "cat";  g.textContent = d.g;
+  body.append(r1, h, g);
+
+  const facts = [["Edad", d.e], ["Aplicación", d.a], ["Duración", d.t]].filter(f => f[1]);
+  if (facts.length){
+    const fw = document.createElement("div"); fw.className = "facts";
+    facts.forEach(function(f){
+      const s = document.createElement("span"); s.className = "fact";
+      const b2 = document.createElement("b"); b2.textContent = f[0] + ":";
+      s.append(b2, document.createTextNode(" " + f[1]));
+      fw.appendChild(s);
+    });
+    body.appendChild(fw);
+  }
+
+  if (d.o){
+    const o = document.createElement("p"); o.className = "obj"; o.textContent = d.o;
+    o.title = "Clic para ver completo";
+    o.onclick = () => o.classList.toggle("open");
+    body.appendChild(o);
+  }
+
+  const a = document.createElement("a"); a.className = "ask";
+  a.href = FORM_URL.replace("{recurso}", encodeURIComponent((d.c ? d.c + ": " : "") + d.n));
+  a.target = "_blank"; a.rel = "noopener"; a.textContent = "Solicitar";
+  body.appendChild(a);
+
+  card.append(th, body);
+  return card;
+}
+
+function pintar(){
+  const q = norm($q.value.trim());
+  const items = DATOS.filter(d =>
+    (filtro === "Todas" || d.g === filtro) &&
+    (!q || norm(d.c).includes(q) || norm(d.n).includes(q) ||
+           norm(d.g).includes(q) || norm(d.o).includes(q))
+  );
+  $grid.replaceChildren(...items.map(tarjeta));
+  $count.textContent = items.length + (items.length === 1 ? " recurso" : " recursos");
+  $empty.hidden = items.length > 0;
+}
+
+$q.addEventListener("input", pintar);
+pintar();
+
+/* ══════════════════════════════════════════════════════════════════
+   LABORATORIOS DEL CAMPUS
+   ══════════════════════════════════════════════════════════════════
+   Cinco laboratorios que no son del programa pero le sirven a algunas
+   asignaturas. El botón NO reserva: radica una solicitud que aprueba la
+   coordinación de laboratorios. La redacción de toda esta sección
+   depende de eso y no conviene suavizarla.
+
+   Las tres preguntas de lista viven aquí y no en el formulario: el
+   diseñador de Forms no se deja automatizar las opciones, y además así
+   la lista de asignaturas se corrige editando este archivo. El
+   formulario solo recibe texto ya escrito.
+
+   PARA AÑADIR O QUITAR UN LABORATORIO: una línea en LABS_CAMPUS. Para
+   las asignaturas, una línea en ASIGNATURAS.                         */
+
+const LABS_CAMPUS = [
+  { n:"Morfofisiología", u:"Sede A · Bloque B", cupo:24, yaSirve:true,
+    d:"Modelos y piezas anatómicas para estudiar el sistema nervioso sobre material real." },
+  { n:"Ciencias Básicas", u:"Sede A · Bloque B", cupo:20, yaSirve:true,
+    d:"Laboratorio general de prácticas básicas, compartido con varios programas." },
+  { n:"Ciberanatomy", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+    d:"Anatomía digital: permite recorrer el sistema nervioso capa por capa, sin disección." },
+  { n:"Fisiología", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+    d:"Registro de variables fisiológicas — el puente natural con la psicofisiología." },
+  { n:"Microscopía", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+    d:"Observación de tejido, incluido el nervioso, al microscopio óptico." }
+];
+
+const ASIGNATURAS = [
+  "Procesos Básicos", "Memoria y Aprendizaje", "Biología Humana", "Neurociencias",
+  "Motivación y Emoción", "Neuropsicología", "Técnicas de Evaluación", "Entrevista",
+  "Psicología Clínica y de la Salud", "Investigación Experimental en Psicología",
+  "Otra asignatura"
+];
+
+/* Formulario «Solicitud de laboratorios del campus», restringido a la
+   organización para que capture el correo del docente solo. Sus siete
+   preguntas son de texto y fecha: ninguna de opción. Las tres listas
+   se resuelven arriba, en este archivo.
+
+   Si alguna vez se rehace, estos cuatro identificadores cambian.
+   Mientras alguno lleve PENDIENTE, el botón avisa en vez de abrir nada:
+   más vale eso que mandar al docente a un formulario que no existe. */
+const LAB_FORM = {
+  base: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx"
+      + "?id=iUnUEzAIZ0if1tp65QCkfzwyYZfmeBlGrj0242f7zClUQTNNSTBBS1c1QU9UUVJMVk9WTjU0STk3Sy4u",
+  lab:      "rf9435a20bda045aa9304b0018f2c498f",
+  asig:     "r58fb6ffcbc9f4dcea8560f1188f144d8",
+  insumos:  "rc26483498b5443a7bf96285d03c1b9ea"
+};
+
+const dlgC = document.getElementById("dlgCampus");
+let labElegido = null;
+
+ASIGNATURAS.forEach(a => {
+  const o = document.createElement("option");
+  o.value = a; o.textContent = a;
+  document.getElementById("dcAsignatura").appendChild(o);
+});
+
+document.getElementById("dcAsignatura").addEventListener("change", e => {
+  document.getElementById("dcOtraCaja").hidden = e.target.value !== "Otra asignatura";
+});
+
+document.getElementById("gridCampus").replaceChildren(...LABS_CAMPUS.map(lab => {
+  const card = document.createElement("article");
+  card.className = "lab";
+  card.innerHTML =
+    (lab.yaSirve ? '<span class="yasirve">Ya presta servicio a Psicología</span>' : '') +
+    '<h3>' + lab.n + '</h3>' +
+    '<p class="donde">' + lab.u + ' · hasta ' + lab.cupo + ' estudiantes</p>' +
+    '<p>' + lab.d + '</p>';
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "ask";
+  b.style.cssText = "align-self:flex-start;cursor:pointer";
+  b.textContent = "Radicar solicitud";
+  b.addEventListener("click", () => abrirCampus(lab));
+  card.appendChild(b);
+  return card;
+}));
+
+document.getElementById("irCampus").addEventListener("click", () => {
+  const s = document.querySelector(".campus");
+  s.scrollIntoView({ behavior: "smooth", block: "start" });
+  s.classList.remove("destacar");
+  void s.offsetWidth;               // reinicia la animación si se pulsa dos veces
+  s.classList.add("destacar");
+  setTimeout(() => s.classList.remove("destacar"), 1500);
+});
+
+function abrirCampus(lab){
+  labElegido = lab;
+  document.getElementById("dcTitulo").textContent = lab.n;
+  document.getElementById("dcSub").textContent = lab.u + " · hasta " + lab.cupo + " estudiantes";
+  document.getElementById("dcAsignatura").selectedIndex = 0;
+  document.getElementById("dcOtraCaja").hidden = true;
+  document.getElementById("dcOtra").value = "";
+  document.getElementById("dcInsumos").value = "No";
+  dlgC.showModal();
+}
+
+document.getElementById("dcCancelar").addEventListener("click", () => dlgC.close());
+
+document.getElementById("dcSeguir").addEventListener("click", () => {
+  const sel = document.getElementById("dcAsignatura").value;
+  const asig = sel === "Otra asignatura"
+    ? document.getElementById("dcOtra").value.trim()
+    : sel;
+  if(!asig){
+    alert("Escribe el nombre de la asignatura.");
+    return;
+  }
+  const pares = [[LAB_FORM.lab, labElegido.n], [LAB_FORM.asig, asig],
+                 [LAB_FORM.insumos, document.getElementById("dcInsumos").value]];
+  const url = LAB_FORM.base + pares
+    .filter(([k, v]) => v && k && !k.includes("PENDIENTE"))
+    .map(([k, v]) => "&" + k + "=" + encodeURIComponent(v)).join("");
+
+  if(url.includes("PENDIENTE")){
+    alert("El formulario de solicitud todavía no está enlazado.\n\n" +
+          "Avísale al encargado del laboratorio: juan.boya@mail.udes.edu.co");
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+  dlgC.close();
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   INDUCCIÓN Y REINDUCCIÓN
+   ══════════════════════════════════════════════════════════════════
+   Resume el documento institucional «Inducción y reinducción semestre
+   B 2026» en seis tarjetas y cuatro preguntas de adherencia.
+
+   Se muestra al abrir el catálogo y no deja pasar hasta completarla.
+   Vuelve a salir cuando cambia PERIODO o cuando pasan IND_DIAS días, lo
+   que ocurra primero: la del periodo es la regla que expresa la
+   intención —una inducción por semestre— y la de los días es la red de
+   seguridad para cuando nadie se acuerde de actualizar la constante.
+
+   POR QUÉ 150 Y NO 120: los periodos van de febrero a mayo y de agosto
+   a noviembre, cerrando a principios de junio y de diciembre. Con 120
+   días, una inducción hecha el 1 de agosto caducaba el 29 de noviembre
+   —en la última semana del MISMO semestre—, y le volvía a salir la
+   pantalla completa a un docente que ya la había hecho y que estaba
+   cerrando notas. Con 150 cae a finales de diciembre, en el hueco entre
+   periodos, y sigue caducando mucho antes de que empiece el siguiente.
+   La red se dispara en vacaciones, que es cuando no molesta a nadie.
+
+   AL CAMBIAR DE SEMESTRE: actualiza PERIODO aquí abajo. Es lo único.
+
+   OJO: esto es un control de cumplimiento, no de seguridad. Vive en el
+   navegador del docente y quien sepa abrir la consola se lo salta. Lo
+   que prueba que la inducción se hizo es la respuesta del Forms, no
+   este archivo.                                                       */
+
+const PERIODO = "2026-B";
+const IND_CLAVE = "induccion-labs-psicologia-udes";
+const IND_DIAS  = 150;   /* red de seguridad, no la regla — ver abajo */
+
+/* Formulario «Inducción a los laboratorios — Psicología», restringido a
+   la organización para que capture el correo del docente solo. Las seis
+   preguntas son de texto a propósito: así el prellenado no depende de que
+   el texto de una opción coincida carácter por carácter, y el cuestionario
+   se puede reescribir aquí sin tocar el formulario.
+
+   Si alguna vez se rehace el formulario, estos siete identificadores
+   cambian. Mientras alguno lleve PENDIENTE, el cuestionario se responde
+   igual y se registra en este equipo, pero no viaja: no hay indicador. */
+const IND_FORM = {
+  base: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx"
+      + "?id=iUnUEzAIZ0if1tp65QCkfzwyYZfmeBlGrj0242f7zClURFU3RTc3RlRZTlhGQ0E4TlRDWFoyV0tYTC4u",
+  periodo:  "r8de6aef297c946c995ce93c51a9a953b",
+  aciertos: "r0cb5a6c6d759471a8197e006463ca796",
+  p: ["r07cffa808b78419e99cefb5f8a681a9c",   // P1 antelación
+      "rb3617f76c99c426c9eed756d00037432",   // P2 qué incluye la solicitud
+      "r408f037cc8ec4e1ba5327132e3b176a2",   // P3 custodia
+      "r84d1d11f6bb64b0faa8d975fe67fa9c0"]   // P4 estudiantes
+};
+
+const IND_TARJETAS = [
+  { t:"Los laboratorios de la UDES", cod:"SGC-VAF · ISO 9001:2015", puntos:[
+      "El campus Valledupar tiene <b>26 laboratorios de docencia</b>, 2 de investigación, 5 áreas de suministros y 8 bodegas.",
+      "Los laboratorios hacen parte del <b>Sistema de Gestión de Calidad</b> y están certificados en <b>ISO 9001:2015</b>. Por eso todo se registra: lo que no queda escrito, para efectos de calidad, no ocurrió.",
+      "La coordinación de laboratorios del campus está a cargo de <b>Mabely Mosquera Heredia</b>, con nueve auxiliares de laboratorio."],
+    clave:"Los dos ambientes de Psicología —Cámara de Gesell (303) y Laboratorio Experimental (305)— son dos de esos 26, y se rigen por los mismos procedimientos." },
+
+  { t:"Reservar un laboratorio, área o equipo", cod:"LAB-PR-004-UDES", puntos:[
+      "Toda solicitud debe incluir <b>fecha, hora y justificación</b>. Las tres cosas, siempre.",
+      "Si la reserva <b>no requiere</b> materiales, reactivos ni insumos, puede aprobarse en el momento si hay disponibilidad.",
+      "El uso de los equipos se registra en el formato <b>LAB-FT-003-UDES</b>, y hay que informar cualquier novedad en su funcionamiento."],
+    clave:"El uso, la conservación y la custodia de todo lo que se entrega en préstamo son <b>responsabilidad del organizador de la actividad</b>. Es decir, del docente." },
+
+  { t:"Pedir materiales, reactivos o insumos", cod:"LAB-PR-001-UDES", puntos:[
+      "<b>5 días hábiles</b> de antelación para material y reactivos.",
+      "<b>8 días hábiles</b> para preparación de reactivos y medios de cultivo.",
+      "<b>12 días hábiles</b> para cepas de bacterias y hongos.",
+      "Se puede radicar por el aula extendida de Moodle, por correo a los auxiliares de laboratorio o en persona. En las tres vías hay que registrar la solicitud en el formato <b>LAB-FT-004-UDES</b>."],
+    clave:"Los plazos se cuentan en días <b>hábiles</b> y hacia atrás desde la práctica. Una práctica del lunes con reactivos preparados se pide el lunes anterior." },
+
+  { t:"Bioseguridad", cod:"LAB-MN-001-UDES", puntos:[
+      "Respetar el <b>aforo</b>: de 18 a 20 estudiantes por laboratorio.",
+      "Usar los <b>elementos de protección personal</b> según el riesgo: bata manga larga con puños, gorro, tapabocas, zapato cerrado, gafas y guantes.",
+      "<b>No se permiten alimentos</b>, sólidos ni líquidos, salvo los que haga falta para la experimentación.",
+      "Mantener el espacio libre de obstáculos y los objetos personales en el <i>locker</i>.",
+      "Lavarse las manos <b>antes, durante y después</b> de la jornada."],
+    clave:"Los estudiantes <b>siempre</b> deben estar acompañados o bajo supervisión del profesor mientras estén en el laboratorio. Sin excepción por semestre ni por experiencia." },
+
+  { t:"Mantenimiento de los equipos", cod:"LAB-PR-002-UDES", puntos:[
+      "El mantenimiento preventivo se hace <b>una vez al año</b> para equipos de rutina y especializados.",
+      "<b>Microscopios y micropipetas</b> se revisan <b>cada 6 meses</b>, por ser los más delicados y los que más se usan.",
+      "Lo hace un proveedor externo, según el manual de la casa comercial."],
+    clave:"Lo que se espera del docente son tres cosas: <b>registrar el uso</b> en LAB-FT-003-UDES, <b>reportar novedades</b>, y velar por el buen uso de los equipos por parte de los estudiantes." },
+
+  { t:"Y en Psicología, en concreto", cod:"Laboratorio de Psicología", puntos:[
+      "<b>Reservar la Cámara de Gesell (303) o el Laboratorio Experimental (305):</b> con Secretaría del Programa. No se piden por este catálogo.",
+      "<b>Pedir una prueba o material:</b> por este catálogo, con el botón «Solicitar» de cada ficha. Llega con el recurso ya identificado.",
+      "Un recurso queda <b>bloqueado para los demás</b> hasta que se registre su devolución. Devolverlo en la fecha pactada es lo que libera al siguiente docente.",
+      "Si la fecha se pasa, llega un recordatorio automático."],
+    clave:"Encargado del Laboratorio de Psicología: <b>Juan David Boya Guerra</b> · juan.boya@mail.udes.edu.co" }
+];
+
+/* Las cuatro respuestas correctas van primeras en el arreglo y se
+   barajan al pintar, para que la posición no delate nada. */
+const IND_PREGUNTAS = [
+  { q:"¿Con cuánta antelación debe solicitarse el material y los reactivos para una práctica?",
+    op:["5 días hábiles","2 días hábiles","El mismo día de la práctica","15 días hábiles"],
+    por:"Cinco días hábiles para material y reactivos. Ocho si hay que prepararlos, doce si son cepas." },
+  { q:"Una solicitud de reserva de laboratorio debe incluir siempre…",
+    op:["Fecha, hora y justificación","Solo la fecha","Solo el nombre del docente","Nada en particular"],
+    por:"Las tres: fecha, hora y justificación. Sin justificación la solicitud no se puede tramitar." },
+  { q:"¿Quién responde por el uso y la custodia de los equipos entregados en préstamo?",
+    op:["El organizador de la actividad","El auxiliar de laboratorio","La coordinación de laboratorios","Nadie en particular"],
+    por:"El organizador de la actividad, es decir el docente que la solicitó." },
+  { q:"Durante una práctica, los estudiantes…",
+    op:["Deben estar siempre acompañados o supervisados por el profesor",
+        "Pueden quedarse solos si son de últimos semestres",
+        "Pueden entrar sin protección si no hay reactivos",
+        "Pueden comer dentro si la práctica es larga"],
+    por:"Siempre acompañados o supervisados por el profesor. No hay excepciones." }
+];
+
+const $ind = document.getElementById("ind"),
+      $indCuerpo = document.getElementById("indCuerpo"),
+      $indPasos = document.getElementById("indPasos"),
+      $indAtras = document.getElementById("indAtras"),
+      $indAdelante = document.getElementById("indAdelante"),
+      $indTitulo = document.getElementById("indTitulo"),
+      $indSub = document.getElementById("indSub"),
+      $avisoEnvio = document.getElementById("avisoEnvio");
+
+const TOTAL_PASOS = IND_TARJETAS.length + 1;   // las tarjetas más el cuestionario
+let indPaso = 0;
+let indBarajado = null;                        // opciones ya desordenadas, para no rebarajar al repintar
+let indCalificado = false;
+let indElegidas = [];
+let indAciertos = 0;
+
+function indLeer(){
+  try { return JSON.parse(localStorage.getItem(IND_CLAVE) || "null"); }
+  catch(e){ return null; }
+}
+function indGuardar(datos){
+  try { localStorage.setItem(IND_CLAVE, JSON.stringify(datos)); } catch(e){}
+}
+
+/* Vigente si es de este periodo y no ha pasado el plazo. Cualquiera de
+   las dos que falle la vuelve a mostrar. */
+function indVigente(){
+  const g = indLeer();
+  if(!g || !g.fecha) return false;
+  if(g.periodo !== PERIODO) return false;
+  const dias = (Date.now() - new Date(g.fecha).getTime()) / 86400000;
+  return dias < IND_DIAS;
+}
+
+function indPintarPasos(){
+  $indPasos.replaceChildren(...Array.from({length: TOTAL_PASOS}, (_, i) => {
+    const b = document.createElement("i");
+    if(i <= indPaso) b.className = "on";
+    return b;
+  }));
+}
+
+function indPintar(){
+  indPintarPasos();
+  $indAtras.disabled = indPaso === 0;
+  const esCuestionario = indPaso === IND_TARJETAS.length;
+
+  if(!esCuestionario){
+    const t = IND_TARJETAS[indPaso];
+    $indTitulo.textContent = "Inducción a los laboratorios";
+    $indSub.textContent = "Paso " + (indPaso + 1) + " de " + TOTAL_PASOS + " · toma unos dos minutos";
+    $indCuerpo.innerHTML =
+      '<h3>' + t.t + '</h3><span class="cod">' + t.cod + '</span>' +
+      '<ul>' + t.puntos.map(p => '<li>' + p + '</li>').join('') + '</ul>' +
+      (t.clave ? '<p class="clave">' + t.clave + '</p>' : '');
+    $indAdelante.textContent = indPaso === IND_TARJETAS.length - 1 ? "Ir a las preguntas" : "Siguiente";
+    $indAdelante.disabled = false;
+    $ind.scrollTop = 0;
+    return;
+  }
+
+  $indTitulo.textContent = "Cuatro preguntas";
+  $indSub.textContent = "Todas se responden con lo que acabas de leer";
+
+  if(!indBarajado){
+    indBarajado = IND_PREGUNTAS.map(p => {
+      const ops = p.op.map((texto, i) => ({ texto, correcta: i === 0 }));
+      for(let i = ops.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [ops[i], ops[j]] = [ops[j], ops[i]];
+      }
+      return ops;
+    });
+  }
+
+  $indCuerpo.innerHTML = IND_PREGUNTAS.map((p, n) =>
+    '<fieldset class="preg" id="preg' + n + '"><legend>' + (n + 1) + '. ' + p.q + '</legend>' +
+    indBarajado[n].map((o, k) =>
+      '<label><input type="radio" name="p' + n + '" value="' + k + '">' + o.texto + '</label>'
+    ).join('') +
+    '</fieldset>'
+  ).join('');
+
+  $indAdelante.textContent = "Responder";
+  $indAdelante.disabled = true;
+  $indCuerpo.addEventListener("change", () => {
+    if(indCalificado) return;
+    $indAdelante.disabled = IND_PREGUNTAS.some((_, n) => !indElegida(n));
+  });
+  $ind.scrollTop = 0;
+}
+
+const indElegida = n => $indCuerpo.querySelector('input[name="p' + n + '"]:checked');
+
+/* Califica en pantalla y deja ver la respuesta correcta de lo que se
+   falló. Un puntaje mudo no enseña nada, y lo que se busca medir es
+   justamente si el procedimiento quedó claro. */
+function indCalificar(){
+  let aciertos = 0;
+  const elegidas = [];
+  IND_PREGUNTAS.forEach((p, n) => {
+    const marcada = indElegida(n);
+    const op = indBarajado[n][+marcada.value];
+    elegidas.push(op.texto);
+    if(op.correcta) aciertos++;
+    const fs = document.getElementById("preg" + n);
+    fs.dataset.cerrada = "1";
+    fs.querySelectorAll("label").forEach((lab, k) => {
+      lab.querySelector("input").disabled = true;
+      if(indBarajado[n][k].correcta) lab.classList.add("bien");
+      else if(k === +marcada.value) lab.classList.add("mal");
+    });
+    if(!op.correcta){
+      const nota = document.createElement("p");
+      nota.className = "tras";
+      nota.textContent = p.por;
+      fs.appendChild(nota);
+    }
+  });
+  indCalificado = true;
+  return { aciertos, elegidas };
+}
+
+/* El prellenado exige encodeURIComponent: URLSearchParams codifica los
+   espacios como "+" y Forms no los convierte de vuelta. */
+function indEnlace(elegidas, aciertos){
+  const pares = [[IND_FORM.periodo, PERIODO],
+                 [IND_FORM.aciertos, String(aciertos)]]
+    .concat(elegidas.map((v, i) => [IND_FORM.p[i], v]));
+  return IND_FORM.base + pares
+    .filter(([k, v]) => v && k && !k.includes("PENDIENTE"))
+    .map(([k, v]) => "&" + k + "=" + encodeURIComponent(v)).join("");
+}
+
+$indAtras.addEventListener("click", () => {
+  if(indPaso === 0) return;
+  indPaso--; indCalificado = false; indPintar();
+});
+
+$indAdelante.addEventListener("click", () => {
+  if(indPaso < IND_TARJETAS.length){ indPaso++; indPintar(); return; }
+
+  if(!indCalificado){
+    const { aciertos, elegidas } = indCalificar();
+    indElegidas = elegidas;
+    indAciertos = aciertos;
+    /* Calificado, ya no se puede volver atrás: si no, se ven las
+       respuestas correctas y se rehace el cuestionario con ellas a la
+       vista, que convierte el indicador de adherencia en un adorno. */
+    $indAtras.disabled = true;
+    const resumen = document.createElement("p");
+    resumen.className = "clave";
+    resumen.innerHTML = aciertos === 4
+      ? "<b>Cuatro de cuatro.</b> Ya puedes entrar al catálogo; solo falta registrar tu respuesta."
+      : "<b>Acertaste " + aciertos + " de 4.</b> Arriba quedó marcada la respuesta correcta de las que fallaste. "
+        + "No pasa nada: se registra tal como respondiste, que es lo que sirve para saber qué hay que explicar mejor.";
+    $indCuerpo.appendChild(resumen);
+    $indAdelante.textContent = "Registrar y entrar al catálogo";
+    $ind.scrollTop = $ind.scrollHeight;
+    return;
+  }
+
+  const enlace = indEnlace(indElegidas, indAciertos);
+  const conFormulario = !enlace.includes("PENDIENTE");
+  if(conFormulario) window.open(enlace, "_blank", "noopener");
+
+  /* Sin formulario configurado, `enviada` queda en null y no en false:
+     el aviso ámbar solo debe salir cuando había algo que enviar y no
+     se envió, no cuando no había nada que enviar. */
+  indGuardar({ periodo: PERIODO, fecha: new Date().toISOString(),
+               enviada: conFormulario ? false : null });
+  $ind.hidden = true;
+  document.body.style.overflow = "";
+
+  /* El aviso se muestra y se apaga con el botón «Ya lo envié» del propio
+     aviso. NO se pregunta con confirm(): `window.open` le da el foco a la
+     pestaña del formulario, y Chrome y Edge SUPRIMEN los diálogos de las
+     pestañas en segundo plano —no los muestran y devuelven false—, así
+     que la respuesta salía siempre «no» y el aviso no se apagaba nunca
+     por más veces que se enviara el cuestionario. */
+  $avisoEnvio.hidden = !conFormulario;
+});
+
+/* Lo marca el propio docente. Es lo mismo que hacía el confirm() que
+   había antes, pero en un sitio donde el navegador no lo puede suprimir.
+   No prueba nada —igual que no lo probaba el confirm—: lo que prueba que
+   la inducción se hizo es la fila en la lista de SharePoint. */
+document.getElementById("yaEnviado").addEventListener("click", e => {
+  e.preventDefault();
+  const g = indLeer() || {};
+  g.enviada = true; indGuardar(g);
+  $avisoEnvio.hidden = true;
+});
+
+document.getElementById("reabrirInduccion").addEventListener("click", e => {
+  e.preventDefault();
+  indPaso = IND_TARJETAS.length; indBarajado = null; indCalificado = false;
+  $ind.hidden = false; document.body.style.overflow = "hidden"; indPintar();
+});
+
+if(indVigente()){
+  $ind.hidden = true;
+  const g = indLeer();
+  $avisoEnvio.hidden = g.enviada !== false;
+}else{
+  document.body.style.overflow = "hidden";
+  indPintar();
+}
+</script>
+</body>
+</html>
