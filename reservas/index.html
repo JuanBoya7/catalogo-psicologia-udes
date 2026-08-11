@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Se publica en una URL para que Yira reciba las actualizaciones sin que nadie
+     le reenvíe nada, pero NO debe salir en buscadores: es una herramienta interna.
+     Sus reservas siguen siendo suyas y viven en su navegador, no aquí. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Ambientes de aprendizaje — Psicología UDES</title>
+<style>
+  :root{
+    --azul:#004899; --azul-claro:#dbe5f3; --morado:#6C3AA8; --morado-claro:#ebe2f7;
+    --ambar:#8a6100; --ambar-claro:#fdf0d5; --rojo:#c0392b; --rojo-claro:#fbe3e0;
+    --verde:#1e8449; --verde-claro:#e9f6ef;
+    --gris:#5b6470; --borde:#d7dce3; --fondo:#f4f6f9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;color:#1e2430;background:var(--fondo)}
+  header{background:var(--azul);color:#fff;padding:18px 26px}
+  header h1{margin:0 0 3px;font-size:19px;font-weight:600}
+  header p{margin:0;font-size:12.5px;opacity:.85}
+  main{max-width:1180px;margin:0 auto;padding:20px 18px 70px}
+
+  .barra{display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--borde);border-radius:10px;padding:14px 18px;margin-bottom:18px}
+  .barra .semana{font-size:15px;font-weight:600;color:var(--azul);min-width:230px}
+  button{font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:0;border-radius:7px;padding:8px 15px;background:var(--azul);color:#fff}
+  button.sec{background:#fff;color:var(--azul);border:1.5px solid var(--azul)}
+  button.gris{background:#fff;color:var(--gris);border:1.5px solid var(--borde)}
+  button.peligro{background:#fff;color:var(--rojo);border:1.5px solid var(--rojo)}
+  button:disabled{opacity:.45;cursor:default}
+  .crece{flex:1}
+
+  .aviso{padding:11px 15px;border-radius:8px;font-size:13.5px;line-height:1.55;margin-bottom:16px;border-left:4px solid}
+  .aviso.rojo{background:var(--rojo-claro);border-color:var(--rojo);color:#8e2b21}
+  .aviso.ambar{background:var(--ambar-claro);border-color:var(--ambar);color:#6d4c00}
+
+  .ambiente{background:#fff;border:1px solid var(--borde);border-radius:10px;margin-bottom:20px;overflow:hidden}
+  .ambiente h2{margin:0;background:var(--azul);color:#fff;font-size:15px;font-weight:600;padding:11px 16px;
+    display:flex;justify-content:space-between;align-items:center}
+  .ambiente h2 span{font-weight:400;font-size:12.5px;opacity:.9}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid var(--borde);font-size:11.5px;text-align:center;padding:4px 3px;height:40px;vertical-align:middle}
+  th{background:#eef1f5;font-weight:600;font-size:11.5px;padding:7px 3px}
+  th small{display:block;font-weight:400;color:var(--gris);font-size:10px}
+  td.hora{background:#f7f9fb;color:var(--gris);font-size:10px;white-space:nowrap;width:60px}
+  td.clase{background:var(--azul);color:#fff}
+  td.evento{background:var(--azul-claro);color:var(--azul)}
+  td.reserva{background:var(--morado-claro);color:var(--morado);font-weight:600;cursor:pointer}
+  td.reserva.pend{background:var(--ambar-claro);color:var(--ambar)}
+  td small{display:block;font-weight:400;font-size:9.5px;line-height:1.25;margin-top:2px}
+  td.libre{background:#fff;cursor:pointer;color:#c3cad4}
+  td.libre:hover{background:var(--verde-claro);color:var(--verde)}
+  td.cruce{background:var(--rojo-claro);color:var(--rojo);font-weight:600;cursor:pointer}
+  /* Franjas que se están arrastrando para reservar de una sola vez */
+  td.sel,td.libre.sel:hover{background:var(--verde);color:#fff;font-weight:600}
+  body.arrastrando{user-select:none;-webkit-user-select:none}
+
+  .lista{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px 20px}
+  .lista h2{margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--gris)}
+  .item{display:flex;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--borde);font-size:13.5px;flex-wrap:wrap}
+  .item:first-of-type{border-top:0}
+  .item .cuando{min-width:210px;font-weight:600}
+  .item .qué{flex:1;min-width:190px}
+  .item .qué em{display:block;font-style:normal;color:var(--gris);font-size:12px}
+  .chip{font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+  .chip.env{background:var(--verde-claro);color:var(--verde)}
+  .chip.pend{background:var(--ambar-claro);color:var(--ambar)}
+  .vacio{color:var(--gris);font-size:13.5px;padding:6px 0}
+
+  dialog{border:0;border-radius:12px;padding:0;max-width:520px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(0,0,0,.22)}
+  dialog::backdrop{background:rgba(20,28,40,.45)}
+  .dlg-cab{background:var(--azul);color:#fff;padding:15px 22px}
+  .dlg-cab h3{margin:0 0 2px;font-size:16px;font-weight:600}
+  .dlg-cab p{margin:0;font-size:12.5px;opacity:.9}
+  .dlg-cuerpo{padding:18px 22px}
+  .dlg-pie{padding:0 22px 20px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+  label{display:block;font-size:12.5px;font-weight:600;margin:0 0 4px}
+  .campo{margin-bottom:13px}
+  input[type=text],select{width:100%;font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--borde);border-radius:6px;background:#fff}
+  .dos{display:flex;gap:12px}
+  .dos>*{flex:1}
+  .nota{font-size:12px;color:var(--gris);line-height:1.5;margin:10px 0 0}
+  .recordatorio{background:var(--ambar-claro);border-left:4px solid var(--ambar);color:#6d4c00;
+    padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.55;margin:14px 0 0}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ambientes de aprendizaje</h1>
+  <p>Cámara de Gesell (303) y Laboratorio Experimental (305) · Programa de Psicología · UDES Campus Valledupar</p>
+</header>
+
+<main>
+  <div id="alerta"></div>
+
+  <div class="barra">
+    <button class="sec" id="anterior">← Semana anterior</button>
+    <div class="semana" id="semana"></div>
+    <button class="sec" id="siguiente">Semana siguiente →</button>
+    <button class="gris" id="hoy">Ir a hoy</button>
+    <div class="crece"></div>
+    <button class="gris" id="exportar">Guardar copia</button>
+    <button class="gris" id="importar">Restaurar copia</button>
+    <input type="file" id="archivo" accept=".json" hidden>
+  </div>
+
+  <div id="rejillas"></div>
+
+  <div class="lista">
+    <h2>Reservas de esta semana</h2>
+    <div id="listado"></div>
+  </div>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog">
+    <div class="dlg-cab">
+      <h3 id="dlgTitulo">Nueva reserva</h3>
+      <p id="dlgSub"></p>
+    </div>
+    <div class="dlg-cuerpo">
+      <div class="campo">
+        <label for="fHasta">Franjas que ocupa</label>
+        <select id="fHasta"></select>
+      </div>
+      <div class="campo">
+        <label for="fEvento">Evento a realizar</label>
+        <input type="text" id="fEvento" required placeholder="Por ejemplo: Práctica de entrevista">
+      </div>
+      <div class="dos">
+        <div class="campo">
+          <label for="fPrograma">Programa</label>
+          <select id="fPrograma">
+            <option>Psicología</option>
+            <option>Otro programa</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="fSemestre">Semestre</label>
+          <select id="fSemestre">
+            <option value="">Sin especificar</option>
+          </select>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="fAsignatura">Asignatura</label>
+        <input type="text" id="fAsignatura" required>
+      </div>
+      <div class="dos">
+        <div class="campo">
+          <label for="fDocente">Docente a cargo</label>
+          <input type="text" id="fDocente" required list="listaDocentes" autocomplete="off">
+          <datalist id="listaDocentes"></datalist>
+        </div>
+        <div class="campo">
+          <label for="fCorreo">Correo del docente</label>
+          <input type="email" id="fCorreo" autocomplete="off"
+                 placeholder="nombre.apellido@mail.udes.edu.co">
+        </div>
+      </div>
+      <div class="campo">
+        <label for="fVisitante">Docente visitante</label>
+        <input type="text" id="fVisitante" placeholder="Opcional">
+      </div>
+      <div class="campo">
+        <label for="fContacto">Número de contacto</label>
+        <input type="text" id="fContacto" required>
+      </div>
+      <div class="recordatorio" id="recordatorio"></div>
+    </div>
+    <div class="dlg-pie">
+      <button type="button" class="peligro" id="dlgBorrar" hidden>Eliminar</button>
+      <button type="button" class="gris" id="dlgCerrar">Cancelar</button>
+      <button type="button" class="sec" id="dlgSoloLocal">Guardar sin enviar</button>
+      <button type="button" id="dlgEnviar">Guardar y abrir formulario</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* ================================================================== *
+ *  Formulario de reservas — identificadores de las once preguntas
+ * ================================================================== */
+
+const FORM_BASE = "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=" +
+  "iUnUEzAIZ0if1tp65QCkfzwyYZfmeBlGrj0242f7zClUMVFMV0VERFJKUTRTR1lZUTkzQ0JKNVBZVy4u";
+
+const Q = {
+  ambiente        : "r59d1212026654b869fbe2a76e72138cc",
+  fecha           : "rc37ad148af124e5c828f12cba515de2e",
+  horaIni         : "rfabea94181774b1b8cbbdb9e582639d4",
+  horaFin         : "r0556a8a2b003462fb8361dcd04835592",
+  evento          : "rc792e82d39b640b98666e651ab0734a8",
+  programa        : "rb81c8e4d7edb41538c9c563bb2a5eac0",
+  asignatura      : "rfe246d6eb92b4ff9a15c61d213f59aa0",
+  semestre        : "r9dbb59e8191c40b39e986b0aa7041821",
+  docenteACargo   : "r4fa6c22cbf0749af83f68e8cb675abc7",
+  docenteVisitante: "rc9ac88c3672e4267aae3d7f26c93c0a4",
+  contacto        : "r04917c510c9747bd8c6342e100209d13",
+  /* Pregunta 12, añadida el 10 de agosto de 2026 para poder enviar la encuesta
+     de satisfacción. */
+  correoDocente   : "rb34e829a2e8d4ff5ada8f59b730afa4e"
+};
+
+/* ================================================================== *
+ *  Agenda de docentes — nombre visible → correo institucional
+ * ------------------------------------------------------------------ *
+ *  Cuando Yira escoge un nombre de la lista, el correo se rellena solo.
+ *  Es lo que evita que la encuesta de satisfacción dependa de que alguien
+ *  teclee bien una dirección tres veces por semana.
+ *
+ *  Para añadir docentes basta con agregar líneas aquí. Es el único sitio
+ *  que hay que tocar, y se puede hacer con el Bloc de notas.
+ * ================================================================== */
+
+const DOCENTES = {
+  // "Nombre Apellido": "nombre.apellido@mail.udes.edu.co",
+};
+
+/*  La agenda además APRENDE. Cada vez que se guarda una reserva con nombre y
+    correo, la pareja queda anotada en este equipo, así que la próxima vez que
+    se escriba ese nombre el correo se rellena solo. Con eso la agenda se llena
+    sola con el uso, sin esperar a que nadie entregue una lista.
+
+    DOCENTES manda sobre lo aprendido: cuando llegue la lista oficial se pega
+    ahí arriba y corrige de una vez cualquier correo mal tecleado.
+
+    LÍMITE, dicho claro: si un correo se escribe mal, se recuerda mal. Se
+    arregla escribiéndolo bien en la siguiente reserva de ese docente, que
+    sustituye al anterior. Por eso el aprendido nunca pisa a DOCENTES.        */
+
+const AGENDA_CLAVE = "docentes-labs-psicologia-udes";
+
+function agendaAprendida(){
+  try{ return JSON.parse(localStorage.getItem(AGENDA_CLAVE)) || {}; }
+  catch(e){ return {}; }
+}
+
+function agendaCompleta(){
+  return Object.assign({}, agendaAprendida(), DOCENTES);
+}
+
+function aprenderDocente(nombre, correo){
+  nombre = (nombre||"").trim();
+  correo = (correo||"").trim();
+  if(!nombre || !correo) return;
+  const aprendida = agendaAprendida();
+  if(aprendida[nombre] === correo) return;
+  aprendida[nombre] = correo;
+  try{ localStorage.setItem(AGENDA_CLAVE, JSON.stringify(aprendida)); }catch(e){}
+  pintarListaDocentes();
+}
+
+function pintarListaDocentes(){
+  const lista = document.getElementById("listaDocentes");
+  if(!lista) return;
+  lista.replaceChildren(...Object.keys(agendaCompleta()).sort().map(nombre => {
+    const o = document.createElement("option");
+    o.value = nombre;
+    return o;
+  }));
+}
+
+/* ================================================================== *
+ *  Horario fijo del periodo — se repite igual todas las semanas
+ * ================================================================== */
+
+const FRANJAS = [
+  ["06:00","06:50"],["06:50","07:40"],["07:40","08:30"],["08:30","09:20"],
+  ["09:20","10:10"],["10:10","11:00"],["11:00","11:50"],["11:50","12:40"],
+  ["12:40","13:30"],["13:30","14:20"],["14:20","15:10"],["15:10","16:00"],
+  ["16:00","16:50"],["16:50","17:40"],["17:40","18:20"],["18:20","19:05"]
+];
+
+const DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+
+const AMBIENTES = [
+  { clave:"303", nombre:"Cámara de Gesell (303)" },
+  { clave:"305", nombre:"Laboratorio Experimental (305)" }
+];
+
+/* [franja inicial, franja final, asignatura, esEvento] — franjas base 1, inclusivas */
+const HORARIO = {
+  "303":{
+    "Lunes":[[3,4,"Historia genética y cultura"],[6,7,"Psicoanálisis"],[9,10,"Neuropsicología"],[13,15,"Entrevista"]],
+    "Martes":[[3,4,"Campo aplicado I"],[5,5,"II semestre Saber",true]],
+    "Miércoles":[[5,7,"Técnica de evaluación"],[11,13,"Procesos básicos"]],
+    "Jueves":[[1,2,"Teoría de la personalidad"],[5,7,"Familia y grupo"],[9,10,"Ciclo II",true],[14,15,"Fundamento de la psicología"]],
+    "Viernes":[[3,5,"Dinámica"],[11,12,"Psicopatología"],[14,15,"Electiva de campo aplicado II"]],
+    "Sábado":[[1,3,"Prácticas II-A"]]
+  },
+  "305":{
+    "Lunes":[[6,7,"Memoria y aprendizaje"]],
+    "Martes":[[1,3,"Teoría de la personalidad"],[5,7,"Investigación experimental"],[9,10,"Neurociencias"],[11,12,"Ciclo I",true]],
+    "Miércoles":[[2,3,"Cognitiva"],[6,6,"I semestre Saber",true],[9,11,"Motivación y emoción"],[13,14,"Adultez y vejez"]],
+    "Jueves":[[2,3,"Cualitativa"],[4,6,"Neuropsicología"],[11,13,"Clínica de la salud"]],
+    "Viernes":[[1,3,"Memoria y aprendizaje"],[5,6,"Técnica de evaluación"],[9,10,"Trabajo de grado II"],[13,14,"Ele. competencias socioemocionales"]],
+    "Sábado":[]
+  }
+};
+
+/* ================================================================== *
+ *  Almacenamiento en el equipo
+ * ================================================================== */
+
+const CLAVE = "reservas-labs-psicologia-udes";
+let reservas = [];
+let almacenOK = true;
+
+function cargar(){
+  try{
+    reservas = JSON.parse(localStorage.getItem(CLAVE) || "[]");
+  }catch(e){
+    reservas = [];
+    almacenOK = false;
+  }
+}
+
+function guardar(){
+  try{
+    localStorage.setItem(CLAVE, JSON.stringify(reservas));
+  }catch(e){
+    almacenOK = false;
+    pintarAlerta();
+  }
+}
+
+/* ================================================================== *
+ *  Utilidades de fecha — ojo: new Date("2026-08-03") se lee como UTC
+ *  y en Colombia retrocede un día. Hay que construir por componentes.
+ * ================================================================== */
+
+const aFechaLocal = v => {
+  if (v instanceof Date) return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  const [a,m,d] = String(v).split("-").map(Number);
+  return new Date(a, m-1, d);
+};
+const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const sumarDias = (d,n) => { const x = aFechaLocal(d); x.setDate(x.getDate()+n); return x; };
+const lunesDe = f => { const d = aFechaLocal(f); return sumarDias(d, -((d.getDay()+6)%7)); };
+const largo = d => aFechaLocal(d).toLocaleDateString("es-CO",{day:"numeric",month:"long"});
+const solapa = (a1,a2,b1,b2) => a1 < b2 && a2 > b1;
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* El prellenado exige encodeURIComponent: URLSearchParams codifica los
+   espacios como "+" y Forms no los convierte de vuelta. */
+function enlaceFormulario(r){
+  const amb = AMBIENTES.find(a=>a.clave===r.ambiente).nombre;
+  const p = [
+    [Q.ambiente, amb], [Q.fecha, r.fecha], [Q.horaIni, r.ini], [Q.horaFin, r.fin],
+    [Q.evento, r.evento], [Q.programa, r.programa], [Q.asignatura, r.asignatura],
+    [Q.semestre, r.semestre], [Q.docenteACargo, r.docente],
+    [Q.docenteVisitante, r.visitante], [Q.contacto, r.contacto],
+    [Q.correoDocente, r.correo]
+  ];
+  /* Se descartan también las claves sin resolver, para que una pregunta cuyo
+     identificador aún no se conoce no ensucie el enlace. */
+  return FORM_BASE + p.filter(([k,v])=>v && k && !k.includes("PENDIENTE"))
+    .map(([k,v])=>"&"+k+"="+encodeURIComponent(v)).join("");
+}
+
+/* ================================================================== *
+ *  Estado de la semana
+ * ================================================================== */
+
+let lunes = lunesDe(new Date());
+
+function celdasDe(clave, dia, fecha){
+  const celdas = FRANJAS.map(([ini,fin])=>({
+    ini, fin, fecha, estado:"libre", titulo:"", detalle:"", res:null, chocaCon:""
+  }));
+
+  (HORARIO[clave][dia]||[]).forEach(([desde,hasta,asig,ev])=>{
+    for(let f=desde; f<=hasta; f++){
+      celdas[f-1].estado = ev ? "evento" : "clase";
+      celdas[f-1].titulo = asig;
+    }
+  });
+
+  reservas.filter(r=>r.ambiente===clave && r.fecha===fecha).forEach(r=>{
+    celdas.forEach(c=>{
+      if(!solapa(r.ini,r.fin,c.ini,c.fin)) return;
+      if(c.estado==="clase"||c.estado==="evento"){ c.chocaCon = c.chocaCon||c.titulo; c.estado="cruce"; }
+      else { c.estado = "reserva"; }
+      c.titulo = r.evento;
+      c.detalle = r.docente;
+      c.res = r;
+    });
+  });
+
+  return celdas;
+}
+
+/* Una reserva puede abarcar varias franjas seguidas. Estas dos utilidades
+   dicen hasta dónde se puede estirar sin pisar una clase u otra reserva.
+   `propia` es la reserva que se está editando: sus propias franjas cuentan
+   como libres, porque si no, no se podría ni acortar ni alargar. */
+const diaDe   = fecha => DIAS[(aFechaLocal(fecha).getDay()+6)%7];
+const idxIni  = h => FRANJAS.findIndex(f=>f[0]===h);
+const idxFin  = h => FRANJAS.findIndex(f=>f[1]===h);
+
+function rangoLibre(clave, fecha, desde, propia){
+  const celdas = celdasDe(clave, diaDe(fecha), fecha);
+  const libre = j => {
+    const c = celdas[j];
+    return !!c && (c.estado==="libre" || (propia && c.res && c.res.id===propia.id));
+  };
+  let lo = desde, hi = desde;
+  while(libre(lo-1)) lo--;
+  while(libre(hi+1)) hi++;
+  return { lo, hi };
+}
+
+function pintarRejillas(){
+  const cont = document.getElementById("rejillas");
+  cont.innerHTML = "";
+
+  AMBIENTES.forEach(({clave,nombre})=>{
+    const dias = DIAS.map((dia,i)=>{
+      const fecha = iso(sumarDias(lunes,i));
+      return { dia, fecha, celdas: celdasDe(clave,dia,fecha) };
+    });
+    const libres = dias.reduce((n,d)=>n+d.celdas.filter(c=>c.estado==="libre").length,0);
+
+    let h = '<div class="ambiente"><h2>'+esc(nombre)+'<span>'+libres+' franjas libres de 96</span></h2>';
+    h += '<table><thead><tr><th class="hora">Hora</th>';
+    dias.forEach(d=>{
+      const [,m,dd] = d.fecha.split("-");
+      h += '<th>'+d.dia+'<small>'+dd+'/'+m+'</small></th>';
+    });
+    h += '</tr></thead><tbody>';
+
+    FRANJAS.forEach((fr,i)=>{
+      h += '<tr><td class="hora">'+fr[0]+'<br>'+fr[1]+'</td>';
+      dias.forEach(d=>{
+        const c = d.celdas[i];
+        /* Todas las celdas llevan amb/fecha/i para que el arrastre sepa dónde
+           está el puntero aunque pase por encima de una clase. */
+        const señas = ' data-amb="'+clave+'" data-fecha="'+c.fecha+'" data-i="'+i+'"';
+        if(c.estado==="libre"){
+          h += '<td class="libre"'+señas+'>+</td>';
+        } else if(c.estado==="reserva"||c.estado==="cruce"){
+          const pend = c.res && !c.res.enviada ? " pend" : "";
+          const cls = c.estado==="cruce" ? "cruce" : "reserva"+pend;
+          const marca = c.estado==="cruce" ? "⚠ " : (c.res && !c.res.enviada ? "● " : "");
+          const pie = c.estado==="cruce" ? "choca con "+esc(c.chocaCon) : esc(c.detalle);
+          h += '<td class="'+cls+'"'+señas+' data-id="'+c.res.id+'">'+marca+esc(c.titulo)+
+               (pie?'<small>'+pie+'</small>':'')+'</td>';
+        } else {
+          h += '<td class="'+c.estado+'"'+señas+'>'+esc(c.titulo)+'</td>';
+        }
+      });
+      h += '</tr>';
+    });
+
+    cont.insertAdjacentHTML("beforeend", h+'</tbody></table></div>');
+  });
+}
+
+function pintarListado(){
+  const desde = iso(lunes), hasta = iso(sumarDias(lunes,5));
+  const dela = reservas.filter(r=>r.fecha>=desde && r.fecha<=hasta)
+                       .sort((a,b)=> (a.fecha+a.ini).localeCompare(b.fecha+b.ini));
+  const cont = document.getElementById("listado");
+
+  if(!dela.length){
+    cont.innerHTML = '<p class="vacio">Todavía no hay reservas esta semana. Haz clic en cualquier franja libre para crear una.</p>';
+    return;
+  }
+
+  cont.innerHTML = dela.map(r=>{
+    const amb = AMBIENTES.find(a=>a.clave===r.ambiente).nombre;
+    const dia = diaDe(r.fecha);
+    const n = Math.max(1, idxFin(r.fin) - idxIni(r.ini) + 1);
+    return '<div class="item">'+
+      '<div class="cuando">'+dia+' '+largo(r.fecha)+'<br><span style="font-weight:400;color:var(--gris)">'+
+      r.ini+' a '+r.fin+(n>1 ? ' · '+n+' bloques' : '')+'</span></div>'+
+      '<div class="qué">'+esc(r.evento)+'<em>'+esc(amb)+' · '+esc(r.docente)+'</em></div>'+
+      '<span class="chip '+(r.enviada?"env":"pend")+'">'+(r.enviada?"Enviada":"Sin enviar")+'</span>'+
+      (r.enviada ? '' : '<button class="gris" data-enviada="'+r.id+'">Ya la envié</button>')+
+      '<button class="gris" data-editar="'+r.id+'">Abrir</button>'+
+      '</div>';
+  }).join("");
+}
+
+function pintarAlerta(){
+  const cont = document.getElementById("alerta");
+  let h = "";
+  if(!almacenOK){
+    h += '<div class="aviso rojo"><b>Este navegador no está guardando los datos.</b> '+
+         'Las reservas que crees se perderán al cerrar. Usa «Guardar copia» antes de salir, '+
+         'o abre el archivo en Microsoft Edge o Chrome.</div>';
+  }
+  const pendientes = reservas.filter(r=>!r.enviada).length;
+  if(pendientes){
+    h += '<div class="aviso ambar"><b>'+pendientes+' reserva(s) sin enviar.</b> '+
+         'Están anotadas aquí pero todavía no le han llegado a nadie. '+
+         'Ábrelas desde la lista de abajo y envía el formulario; si ya lo enviaste, '+
+         'pulsa <b>«Ya la envié»</b> para quitarlas de este aviso.</div>';
+  }
+  cont.innerHTML = h;
+}
+
+function pintar(){
+  const sab = sumarDias(lunes,5);
+  document.getElementById("semana").textContent =
+    largo(lunes)+" al "+largo(sab)+" de "+aFechaLocal(sab).getFullYear();
+  pintarAlerta();
+  pintarRejillas();
+  pintarListado();
+}
+
+/* ================================================================== *
+ *  Diálogo
+ * ================================================================== */
+
+const dlg = document.getElementById("dlg");
+let enEdicion = null;   // reserva existente, o null si es nueva
+
+/* Los valores van en numerales romanos porque Forms no prellena opciones
+   puramente numéricas: pasa `5` por número y no lo casa con la opción "5".
+   Con romanos sí funciona, y así el semestre también viaja en el enlace. */
+const ROMANOS = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
+ROMANOS.forEach((rom,i)=>{
+  const o = document.createElement("option");
+  o.value = rom;
+  o.textContent = (i+1) + "  (" + rom + ")";
+  document.getElementById("fSemestre").appendChild(o);
+});
+
+/* La agenda de docentes alimenta el autocompletado del nombre; al escoger uno
+   conocido, el correo se escribe solo. Si Yira lo cambia a mano, manda lo suyo:
+   solo se rellena cuando el campo está vacío o traía el correo de otro docente. */
+pintarListaDocentes();
+
+document.getElementById("fDocente").addEventListener("input", e => {
+  const agenda = agendaCompleta();
+  const correo = agenda[e.target.value.trim()];
+  if(!correo) return;
+  const campo = document.getElementById("fCorreo");
+  const actual = campo.value.trim();
+  if(!actual || Object.values(agenda).includes(actual)) campo.value = correo;
+});
+
+function abrirDialogo(datos, existente){
+  enEdicion = existente || null;
+
+  document.getElementById("dlgTitulo").textContent = existente ? "Reserva" : "Nueva reserva";
+
+  document.getElementById("fEvento").value     = existente?.evento     || "";
+  document.getElementById("fPrograma").value   = existente?.programa   || "Psicología";
+  document.getElementById("fSemestre").value   = existente?.semestre   || "";
+  document.getElementById("fAsignatura").value = existente?.asignatura || "";
+  document.getElementById("fDocente").value    = existente?.docente    || "";
+  document.getElementById("fCorreo").value     = existente?.correo     || "";
+  document.getElementById("fVisitante").value  = existente?.visitante  || "";
+  document.getElementById("fContacto").value   = existente?.contacto   || "";
+
+  document.getElementById("dlgBorrar").hidden = !existente;
+  document.getElementById("dlgEnviar").textContent =
+    existente && existente.enviada ? "Volver a abrir formulario" : "Guardar y abrir formulario";
+
+  dlg.dataset.ambiente = datos.ambiente;
+  dlg.dataset.fecha    = datos.fecha;
+
+  /* El desplegable «Franjas que ocupa» ofrece todos los finales alcanzables
+     desde la franja inicial sin tropezar con nada. Es la vía de teclado y de
+     tableta para reservar varios bloques; con ratón se arrastra en la rejilla. */
+  const desde = datos.desde ?? Math.max(0, idxIni(datos.ini));
+  const tope  = rangoLibre(datos.ambiente, datos.fecha, desde, existente).hi;
+  const sel   = document.getElementById("fHasta");
+  sel.innerHTML = "";
+  for(let j = desde; j <= tope; j++){
+    const n = j - desde + 1;
+    const o = document.createElement("option");
+    o.value = j;
+    o.textContent = FRANJAS[desde][0]+" a "+FRANJAS[j][1]+"  ·  "+n+(n===1?" bloque":" bloques");
+    sel.appendChild(o);
+  }
+  const pedido = datos.hasta ?? idxFin(datos.fin);
+  dlg.dataset.desde = desde;
+  sel.value = (pedido >= desde && pedido <= tope) ? pedido : desde;
+  aplicarHasta();
+
+  actualizarRecordatorio();
+  dlg.showModal();
+  document.getElementById("fEvento").focus();
+}
+
+/* Traduce la franja final elegida a las horas reales y refresca el subtítulo. */
+function aplicarHasta(){
+  const desde = +dlg.dataset.desde;
+  const hasta = +document.getElementById("fHasta").value;
+  dlg.dataset.ini = FRANJAS[desde][0];
+  dlg.dataset.fin = FRANJAS[hasta][1];
+  const n = hasta - desde + 1;
+  const amb = AMBIENTES.find(a=>a.clave===dlg.dataset.ambiente).nombre;
+  document.getElementById("dlgSub").textContent =
+    amb+" · "+diaDe(dlg.dataset.fecha)+" "+largo(dlg.dataset.fecha)+" · "+
+    dlg.dataset.ini+" a "+dlg.dataset.fin+" · "+n+(n===1?" bloque":" bloques");
+}
+document.getElementById("fHasta").addEventListener("change", aplicarHasta);
+
+function actualizarRecordatorio(){
+  document.getElementById("recordatorio").innerHTML =
+    "El formulario se abrirá con <b>todos los campos ya rellenados</b>. " +
+    "Solo tienes que revisarlos y pulsar Enviar.";
+}
+document.getElementById("fSemestre").addEventListener("change", actualizarRecordatorio);
+
+function leerDialogo(){
+  return {
+    ambiente  : dlg.dataset.ambiente,
+    fecha     : dlg.dataset.fecha,
+    ini       : dlg.dataset.ini,
+    fin       : dlg.dataset.fin,
+    evento    : document.getElementById("fEvento").value.trim(),
+    programa  : document.getElementById("fPrograma").value,
+    semestre  : document.getElementById("fSemestre").value,
+    asignatura: document.getElementById("fAsignatura").value.trim(),
+    docente   : document.getElementById("fDocente").value.trim(),
+    correo    : document.getElementById("fCorreo").value.trim(),
+    visitante : document.getElementById("fVisitante").value.trim(),
+    contacto  : document.getElementById("fContacto").value.trim()
+  };
+}
+
+function validar(d){
+  const faltan = [];
+  if(!d.evento)     faltan.push("Evento a realizar");
+  if(!d.asignatura) faltan.push("Asignatura");
+  if(!d.docente)    faltan.push("Docente a cargo");
+  if(!d.contacto)   faltan.push("Número de contacto");
+  if(faltan.length){
+    alert("Falta por llenar:\n\n· "+faltan.join("\n· "));
+    return false;
+  }
+  /* El correo no bloquea la reserva —el servicio se presta igual—, pero sin él
+     no hay a quién enviarle la encuesta de satisfacción, así que se pregunta. */
+  if(d.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.correo)){
+    alert("El correo del docente no parece válido:\n\n"+d.correo);
+    return false;
+  }
+  if(!d.correo){
+    return confirm(
+      "No pusiste el correo del docente.\n\n" +
+      "Sin él no se le podrá enviar la encuesta de satisfacción al terminar.\n\n" +
+      "¿Guardar de todos modos?");
+  }
+  return true;
+}
+
+function persistir(d, enviada){
+  /* Único punto por el que pasa toda reserva, se envíe o no: es el sitio
+     correcto para que la agenda aprenda. */
+  aprenderDocente(d.docente, d.correo);
+  if(enEdicion){
+    Object.assign(enEdicion, d, { enviada: enviada ?? enEdicion.enviada });
+  }else{
+    reservas.push(Object.assign({ id: "r"+Date.now(), enviada: !!enviada }, d));
+  }
+  guardar();
+  pintar();
+}
+
+document.getElementById("dlgSoloLocal").addEventListener("click", ()=>{
+  const d = leerDialogo();
+  if(!validar(d)) return;
+  persistir(d, enEdicion ? undefined : false);
+  dlg.close();
+});
+
+document.getElementById("dlgEnviar").addEventListener("click", ()=>{
+  const d = leerDialogo();
+  if(!validar(d)) return;
+  persistir(d, undefined);
+  const ref = enEdicion || reservas[reservas.length-1];
+  window.open(enlaceFormulario(ref), "_blank");
+  dlg.close();
+  /* La reserva queda «Sin enviar» y Yira la marca con el botón «Ya la envié»
+     del listado.
+
+     NO se pregunta con confirm() después de abrir el formulario, aunque sea
+     lo natural: window.open le da el foco a la pestaña nueva, y Chrome y Edge
+     SUPRIMEN los diálogos de las pestañas en segundo plano —no los muestran y
+     devuelven false—. El resultado era que TODA reserva quedaba «sin enviar»
+     aunque se hubiera enviado, con el aviso ámbar encendido para siempre. Un
+     aviso que está siempre encendido no avisa de nada.                       */
+});
+
+document.getElementById("dlgBorrar").addEventListener("click", ()=>{
+  if(!enEdicion) return;
+  if(!confirm("¿Eliminar esta reserva de tu rejilla?\n\nSi ya la enviaste por el formulario, esto no la cancela: hay que avisar al encargado.")) return;
+  reservas = reservas.filter(r=>r.id!==enEdicion.id);
+  guardar(); pintar(); dlg.close();
+});
+
+document.getElementById("dlgCerrar").addEventListener("click", ()=>dlg.close());
+
+/* ================================================================== *
+ *  Interacción con la rejilla y la barra
+ * ================================================================== */
+
+/* Reservar varias franjas de una vez: se arrastra de la primera a la última.
+   Un clic simple es un arrastre de una sola celda, así que el caso corriente
+   —un bloque— sigue costando exactamente un clic. La creación se resuelve en
+   `mouseup` y no en `click` para que no se abra el diálogo dos veces. */
+let arrastre = null;
+
+function pintarSeleccion(){
+  document.querySelectorAll("td.sel").forEach(t=>t.classList.remove("sel"));
+  if(!arrastre) return;
+  const lo = Math.min(arrastre.desde, arrastre.hasta);
+  const hi = Math.max(arrastre.desde, arrastre.hasta);
+  for(let i=lo; i<=hi; i++){
+    const td = document.querySelector('td[data-amb="'+arrastre.amb+'"][data-fecha="'+
+                 arrastre.fecha+'"][data-i="'+i+'"]');
+    if(td) td.classList.add("sel");
+  }
+}
+
+document.getElementById("rejillas").addEventListener("mousedown", e=>{
+  if(e.button !== 0) return;
+  const libre = e.target.closest("td.libre");
+  if(!libre) return;
+  e.preventDefault();                       // si no, el arrastre selecciona texto
+  const desde = +libre.dataset.i;
+  const { lo, hi } = rangoLibre(libre.dataset.amb, libre.dataset.fecha, desde, null);
+  arrastre = { amb:libre.dataset.amb, fecha:libre.dataset.fecha, desde, hasta:desde, lo, hi };
+  document.body.classList.add("arrastrando");
+  pintarSeleccion();
+});
+
+document.getElementById("rejillas").addEventListener("mouseover", e=>{
+  if(!arrastre) return;
+  const td = e.target.closest("td[data-i]");
+  if(!td || td.dataset.amb !== arrastre.amb || td.dataset.fecha !== arrastre.fecha) return;
+  // Se recorta a las franjas seguidas que están libres: no se puede saltar una clase.
+  arrastre.hasta = Math.min(arrastre.hi, Math.max(arrastre.lo, +td.dataset.i));
+  pintarSeleccion();
+});
+
+document.addEventListener("mouseup", ()=>{
+  if(!arrastre) return;
+  const a = arrastre;
+  arrastre = null;
+  document.body.classList.remove("arrastrando");
+  pintarSeleccion();
+  const desde = Math.min(a.desde, a.hasta), hasta = Math.max(a.desde, a.hasta);
+  abrirDialogo({ ambiente:a.amb, fecha:a.fecha, desde, hasta,
+                 ini:FRANJAS[desde][0], fin:FRANJAS[hasta][1] }, null);
+});
+
+document.getElementById("rejillas").addEventListener("click", e=>{
+  const ocupada = e.target.closest("td[data-id]");
+  if(ocupada){
+    const r = reservas.find(x=>x.id===ocupada.dataset.id);
+    if(r) abrirDialogo(r, r);
+  }
+});
+
+document.getElementById("listado").addEventListener("click", e=>{
+  /* Marcar como enviada. Lo hace Yira desde aquí y no un confirm() automático:
+     ver la nota del botón «Guardar y abrir formulario». */
+  const m = e.target.closest("[data-enviada]");
+  if(m){
+    const r = reservas.find(x=>x.id===m.dataset.enviada);
+    if(r){ r.enviada = true; guardar(); pintar(); }
+    return;
+  }
+  const b = e.target.closest("[data-editar]");
+  if(!b) return;
+  const r = reservas.find(x=>x.id===b.dataset.editar);
+  if(r) abrirDialogo(r, r);
+});
+
+document.getElementById("anterior").addEventListener("click", ()=>{ lunes = sumarDias(lunes,-7); pintar(); });
+document.getElementById("siguiente").addEventListener("click", ()=>{ lunes = sumarDias(lunes, 7); pintar(); });
+document.getElementById("hoy").addEventListener("click", ()=>{ lunes = lunesDe(new Date()); pintar(); });
+
+document.getElementById("exportar").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(reservas,null,1)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "reservas-labs-"+iso(new Date())+".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("importar").addEventListener("click", ()=>document.getElementById("archivo").click());
+
+document.getElementById("archivo").addEventListener("change", e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const lector = new FileReader();
+  lector.onload = () => {
+    try{
+      const datos = JSON.parse(lector.result);
+      if(!Array.isArray(datos)) throw new Error("formato");
+      if(!confirm("Esto reemplazará las "+reservas.length+" reserva(s) que tienes ahora por las "+datos.length+" del archivo.\n\n¿Continuar?")) return;
+      reservas = datos;
+      guardar(); pintar();
+    }catch(err){
+      alert("No pude leer ese archivo. Debe ser uno generado con «Guardar copia».");
+    }
+  };
+  lector.readAsText(f);
+  e.target.value = "";
+});
+
+/* ================================================================== */
+
+cargar();
+pintar();
+</script>
+
+</body>
+</html>
