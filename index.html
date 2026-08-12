@@ -124,6 +124,9 @@
   }
   .lab{background:var(--surface);border:1px solid var(--line);border-radius:12px;
     box-shadow:var(--shadow);padding:16px 17px;display:flex;flex-direction:column}
+  /* La foto sangra hasta los bordes: los márgenes negativos cancelan el padding
+     de .lab. Relación 16/9 y no 4/3 como las fichas — son salas, no objetos. */
+  .lab .thumb{margin:-16px -17px 12px;border-radius:11px 11px 0 0;aspect-ratio:16/9}
   .lab h3{margin:0 0 3px;font-size:16px}
   .lab .donde{font-size:12.5px;color:var(--muted);margin:0 0 9px}
   .lab p{margin:0 0 14px;font-size:14px;color:var(--muted);flex:1}
@@ -493,21 +496,39 @@ pintar();
    la lista de asignaturas se corrige editando este archivo. El
    formulario solo recibe texto ya escrito.
 
-   PARA AÑADIR O QUITAR UN LABORATORIO: una línea en LABS_CAMPUS. Para
-   las asignaturas, una línea en ASIGNATURAS.                         */
+   PARA AÑADIR O QUITAR UN LABORATORIO: una línea en LABS_CAMPUS, con su
+   campo "i" para la foto. Para las asignaturas, una línea en ASIGNATURAS.                         */
 
 const LABS_CAMPUS = [
-  { n:"Morfofisiología", u:"Sede A · Bloque B", cupo:24, yaSirve:true,
+  { n:"Morfofisiología", u:"Sede A · Bloque B", cupo:24, yaSirve:true, i:"",
     d:"Modelos y piezas anatómicas para estudiar el sistema nervioso sobre material real." },
-  { n:"Ciencias Básicas", u:"Sede A · Bloque B", cupo:20, yaSirve:true,
+  { n:"Ciencias Básicas", u:"Sede A · Bloque B", cupo:20, yaSirve:true, i:"",
     d:"Laboratorio general de prácticas básicas, compartido con varios programas." },
-  { n:"Ciberanatomy", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+  { n:"Ciberanatomy", u:"Sede A · Bloque C", cupo:20, yaSirve:false, i:"",
     d:"Anatomía digital: permite recorrer el sistema nervioso capa por capa, sin disección." },
-  { n:"Fisiología", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+  { n:"Fisiología", u:"Sede A · Bloque C", cupo:20, yaSirve:false, i:"",
     d:"Registro de variables fisiológicas — el puente natural con la psicofisiología." },
-  { n:"Microscopía", u:"Sede A · Bloque C", cupo:20, yaSirve:false,
+  { n:"Microscopía", u:"Sede A · Bloque C", cupo:20, yaSirve:false, i:"",
     d:"Observación de tejido, incluido el nervioso, al microscopio óptico." }
 ];
+
+/* LA FOTO DE CADA LABORATORIO va en "i", igual que en las fichas del catálogo:
+   se guarda el JPG en catalogo-img/ y se escribe aquí su nombre. Sugerencia de
+   nombres, para que no se mezclen con los códigos PSI:
+
+     LAB-morfofisiologia.jpg · LAB-ciencias-basicas.jpg · LAB-ciberanatomy.jpg
+     LAB-fisiologia.jpg      · LAB-microscopia.jpg
+
+   Mientras "i" esté vacío sale el escudo de la UDES atenuado, el mismo marcador
+   que las fichas sin fotografía.
+
+   DELIBERADAMENTE VACÍOS, no pendientes de encontrar en internet: se buscaron
+   el 11 de agosto de 2026 en la web de UDES Valledupar, en las otras sedes y
+   fuera, y solo existe una foto real —una noticia de prácticas de
+   morfofisiología—. Poner imágenes genéricas de banco sería peor que no poner
+   ninguna: en un catálogo institucional la foto informa, y un docente que ve un
+   laboratorio de microscopía de archivo espera encontrarse eso. Las cinco se
+   toman en el campus, como se hizo con los encéfalos.                       */
 
 const ASIGNATURAS = [
   "Procesos Básicos", "Memoria y Aprendizaje", "Biología Humana", "Neurociencias",
@@ -548,11 +569,24 @@ document.getElementById("dcAsignatura").addEventListener("change", e => {
 document.getElementById("gridCampus").replaceChildren(...LABS_CAMPUS.map(lab => {
   const card = document.createElement("article");
   card.className = "lab";
-  card.innerHTML =
+
+  /* Mismo marcador y mismo comportamiento que las fichas del catálogo: si el
+     archivo falta en disco, cae al escudo en vez de dejar una imagen rota. */
+  const th = document.createElement("div");
+  th.className = "thumb" + (lab.i ? "" : " ph");
+  if (lab.i){
+    const im = document.createElement("img");
+    im.src = IMG_DIR + lab.i; im.alt = "Laboratorio de " + lab.n; im.loading = "lazy";
+    im.onerror = () => { th.className = "thumb ph"; th.innerHTML = PLACEHOLDER; };
+    th.appendChild(im);
+  } else th.innerHTML = PLACEHOLDER;
+  card.appendChild(th);
+
+  card.insertAdjacentHTML("beforeend",
     (lab.yaSirve ? '<span class="yasirve">Ya presta servicio a Psicología</span>' : '') +
     '<h3>' + lab.n + '</h3>' +
     '<p class="donde">' + lab.u + ' · hasta ' + lab.cupo + ' estudiantes</p>' +
-    '<p>' + lab.d + '</p>';
+    '<p>' + lab.d + '</p>');
   const b = document.createElement("button");
   b.type = "button"; b.className = "ask";
   b.style.cssText = "align-self:flex-start;cursor:pointer";
