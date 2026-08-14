@@ -247,18 +247,27 @@ const Q = {
   /* Pregunta 13, del 14 de agosto de 2026: las fechas de una reserva repetida,
      separadas por punto y coma. Permite mandar UN formulario por serie en vez de
      quince, y que el flujo A conteste con UN correo con las sesiones detalladas.
-     PEGA AQUÍ EL IDENTIFICADOR cuando la pregunta exista en el formulario. */
-  fechas          : "PENDIENTE-13-fechas-de-las-sesiones"
+     Creada por Juan el 14 de agosto de 2026; identificador leído del propio
+     formulario y comprobado contra el título de la pregunta. */
+  fechas          : "rd8343956c71342ae9e86edfc01acc988"
 };
 
-/*  Mientras la pregunta 13 no exista, una serie NO se puede consolidar: si se
-    mandara un solo formulario sin ese campo, el flujo registraría una única
-    sesión y las otras catorce se perderían **sin que nadie se enterara**. Así
-    que hasta que el identificador esté puesto, la rejilla sigue pidiendo un
+/*  Para consolidar una serie en un solo formulario hacen falta DOS cosas, y la
+    pregunta 13 es sólo una: el flujo A tiene que tener «Crear elemento» dentro
+    del bucle «Aplicar a cada uno». Si se manda un único formulario con las
+    quince fechas a un flujo que no las sabe recorrer, se registra UNA sesión y
+    las otras catorce se pierden **sin que nadie se entere**.
+
+    Por eso el interruptor es aparte del identificador. Está en falso a la
+    espera de que el flujo se arme; hasta entonces la rejilla sigue pidiendo un
     formulario por sesión, que es lento pero no pierde nada.
 
-    Al pegar el identificador arriba, esto se pone solo en verdadero.          */
-const CONSOLIDA_SERIES = !Q.fechas.includes("PENDIENTE");
+    PARA ENCENDERLO, una vez el flujo A esté armado y probado con tres fechas:
+    cambia el `false` de abajo por `true` y republica. Es lo único que hay que
+    tocar. Ver `guia-flujo-A-power-automate.md`, pasos 3 y 5a.                  */
+const FLUJO_A_RECORRE_SESIONES = false;
+
+const CONSOLIDA_SERIES = FLUJO_A_RECORRE_SESIONES && !Q.fechas.includes("PENDIENTE");
 
 /* ================================================================== *
  *  Agenda de docentes — nombre visible → correo institucional
