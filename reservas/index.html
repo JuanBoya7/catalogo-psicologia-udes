@@ -82,6 +82,27 @@
   .dos{display:flex;gap:12px}
   .dos>*{flex:1}
   .nota{font-size:12px;color:var(--gris);line-height:1.5;margin:10px 0 0}
+  .marca{display:flex;gap:8px;align-items:flex-start;font-weight:600;font-size:13px;cursor:pointer}
+  .marca input{margin:2px 0 0}
+  .cajaRep{border:1px solid var(--borde);border-radius:8px;padding:10px 12px;margin-top:10px;background:#fbfcfd}
+  .rodillo{max-height:232px;overflow:auto;border:1px solid var(--borde);border-radius:6px;background:#fff}
+  table.rep{border-collapse:collapse;width:100%}
+  table.rep th,table.rep td{border:1px solid var(--borde);font-size:11px;text-align:center;height:29px;padding:0}
+  table.rep thead th{position:sticky;top:0;background:#eef1f5;font-weight:600;cursor:pointer;padding:6px 2px;z-index:1}
+  table.rep thead th:first-child{cursor:default;color:var(--gris);font-weight:400}
+  table.rep td.sem{background:#f7f9fb;color:var(--gris);font-size:10.5px;text-align:left;
+    white-space:nowrap;padding:0 8px;cursor:pointer;width:104px}
+  table.rep td.sem:hover{background:var(--azul-claro);color:var(--azul)}
+  table.rep td.disp{background:#fff;color:#c3cad4;cursor:pointer}
+  table.rep td.disp:hover{background:var(--verde-claro);color:var(--verde)}
+  table.rep td.on{background:var(--verde);color:#fff;font-weight:600;cursor:pointer}
+  table.rep td.ocu{background:var(--rojo-claro);color:var(--rojo);font-weight:600}
+  table.rep td.orig{background:var(--morado);color:#fff;font-weight:600}
+  table.rep td.na{background:#f2f4f7;color:#ccd2da}
+  .leyenda{font-size:11.5px;color:var(--gris);margin:8px 0 0;display:flex;gap:14px;flex-wrap:wrap}
+  .leyenda i{font-style:normal;display:inline-block;width:11px;height:11px;border-radius:3px;
+    vertical-align:-1px;margin-right:5px;border:1px solid var(--borde)}
+  .cuenta{font-size:13px;font-weight:600;color:var(--azul);margin:9px 0 0}
   .recordatorio{background:var(--ambar-claro);border-left:4px solid var(--ambar);color:#6d4c00;
     padding:10px 14px;border-radius:7px;font-size:13px;line-height:1.55;margin:14px 0 0}
 </style>
@@ -125,6 +146,26 @@
       <div class="campo">
         <label for="fHasta">Franjas que ocupa</label>
         <select id="fHasta"></select>
+      </div>
+      <div class="campo" id="bloqueRepetir">
+        <label class="marca" for="fRepetir">
+          <input type="checkbox" id="fRepetir">
+          <span>Repetir esta reserva en otras semanas <small style="font-weight:400;color:var(--gris)">— misma hora, mismo ambiente</small></span>
+        </label>
+        <div class="cajaRep" id="cajaRep" hidden>
+          <p class="nota" style="margin:0 0 8px">
+            Pulsa el nombre de un día para tomarlo <b>en todas las semanas</b> (por ejemplo, todos los
+            viernes), la fecha de una semana para tomarla entera, o marca las casillas sueltas.
+          </p>
+          <div class="rodillo"><table class="rep" id="tablaRep"></table></div>
+          <p class="leyenda">
+            <span><i style="background:#fff"></i>Libre</span>
+            <span><i style="background:var(--verde);border-color:var(--verde)"></i>Se va a reservar</span>
+            <span><i style="background:var(--rojo-claro);border-color:var(--rojo)"></i>Ocupada, no se puede</span>
+            <span><i style="background:var(--morado);border-color:var(--morado)"></i>Esta reserva</span>
+          </p>
+          <p class="cuenta" id="cuentaRep"></p>
+        </div>
       </div>
       <div class="campo">
         <label for="fEvento">Evento a realizar</label>
@@ -301,6 +342,13 @@ const FRANJAS = [
 ];
 
 const DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const DIAS_CORTOS = ["Lun","Mar","Mié","Jue","Vie","Sáb"];
+
+/*  Último día de clases del periodo. Es el tope hasta donde llega la repetición:
+    «todos los viernes hasta que termine el semestre» necesita saber dónde termina
+    el semestre, y «todo el semestre» a secas es demasiado ambiguo para un botón.
+    Al rotar de periodo se cambia esta línea junto con HORARIO.                  */
+const PERIODO = { clave:"2026-B", fin:"2026-11-28" };
 
 const AMBIENTES = [
   { clave:"303", nombre:"Cámara de Gesell (303)" },
@@ -503,7 +551,8 @@ function pintarListado(){
     return '<div class="item">'+
       '<div class="cuando">'+dia+' '+largo(r.fecha)+'<br><span style="font-weight:400;color:var(--gris)">'+
       r.ini+' a '+r.fin+(n>1 ? ' · '+n+' bloques' : '')+'</span></div>'+
-      '<div class="qué">'+esc(r.evento)+'<em>'+esc(amb)+' · '+esc(r.docente)+'</em></div>'+
+      '<div class="qué">'+esc(r.evento)+'<em>'+esc(amb)+' · '+esc(r.docente)+
+      (r.serie ? ' · una de '+r.serieN+' sesiones repetidas' : '')+'</em></div>'+
       '<span class="chip '+(r.enviada?"env":"pend")+'">'+(r.enviada?"Enviada":"Sin enviar")+'</span>'+
       (r.enviada ? '' : '<button class="gris" data-enviada="'+r.id+'">Ya la envié</button>')+
       '<button class="gris" data-editar="'+r.id+'">Abrir</button>'+
@@ -524,10 +573,26 @@ function pintarAlerta(){
     h += '<div class="aviso ambar"><b>'+pendientes+' reserva(s) sin enviar.</b> '+
          'Están anotadas aquí pero todavía no le han llegado a nadie. '+
          'Ábrelas desde la lista de abajo y envía el formulario; si ya lo enviaste, '+
-         'pulsa <b>«Ya la envié»</b> para quitarlas de este aviso.</div>';
+         'pulsa <b>«Ya la envié»</b> para quitarlas de este aviso.'+
+         '<div style="margin-top:9px;display:flex;gap:9px;flex-wrap:wrap">'+
+         '<button class="gris" id="siguientePend">Abrir la siguiente sin enviar</button>'+
+         '</div></div>';
   }
   cont.innerHTML = h;
 }
+
+/* Sacar las pendientes en orden, que es como se envía una repetición larga.
+   Además salta a la semana de esa reserva, para que quede a la vista en el
+   listado de abajo con su botón «Ya la envié». */
+document.getElementById("alerta").addEventListener("click", e=>{
+  if(!e.target.closest("#siguientePend")) return;
+  const r = reservas.filter(x=>!x.enviada)
+                    .sort((a,b)=>(a.fecha+a.ini).localeCompare(b.fecha+b.ini))[0];
+  if(!r) return;
+  lunes = lunesDe(r.fecha);
+  pintar();
+  window.open(enlaceFormulario(r), "_blank");
+});
 
 function pintar(){
   const sab = sumarDias(lunes,5);
@@ -608,6 +673,14 @@ function abrirDialogo(datos, existente){
   const pedido = datos.hasta ?? idxFin(datos.fin);
   dlg.dataset.desde = desde;
   sel.value = (pedido >= desde && pedido <= tope) ? pedido : desde;
+
+  /* Repetir sólo se ofrece al crear. Al abrir una reserva ya hecha el bloque
+     desaparece: repetir desde ahí sería ambiguo —¿toda la serie o sólo esta?—
+     y para añadir más sesiones basta con crear otra desde una franja libre. */
+  seleccionRep = new Set();
+  document.getElementById("fRepetir").checked = false;
+  document.getElementById("bloqueRepetir").hidden = !!existente;
+
   aplicarHasta();
 
   actualizarRecordatorio();
@@ -626,8 +699,121 @@ function aplicarHasta(){
   document.getElementById("dlgSub").textContent =
     amb+" · "+diaDe(dlg.dataset.fecha)+" "+largo(dlg.dataset.fecha)+" · "+
     dlg.dataset.ini+" a "+dlg.dataset.fin+" · "+n+(n===1?" bloque":" bloques");
+  /* Cambiar las franjas cambia qué semanas están libres, así que la matriz de
+     repetición se recalcula con cada cambio del desplegable. */
+  pintarRepetidor();
 }
 document.getElementById("fHasta").addEventListener("change", aplicarHasta);
+
+/* ================================================================== *
+ *  Repetidor — la misma reserva en varias semanas
+ * ------------------------------------------------------------------ *
+ *  Nace de un caso real: una docente pidió «todos los viernes hasta que
+ *  termine el semestre». Como «todo el semestre» es ambiguo, aquí no se
+ *  pide un rango: se enseña una matriz de semanas × días de lo que queda
+ *  del periodo y se marca lo que se quiere. Pulsar el encabezado «Vie»
+ *  resuelve ese caso de un solo clic, pero se puede quitar una semana
+ *  suelta —la de la semana santa, un festivo, un puente— sin pelearse
+ *  con ninguna regla de recurrencia.
+ *
+ *  Las franjas ya ocupadas salen en rojo y NO se dejan marcar: el cruce
+ *  se ve antes de crear nada, en vez de aparecer luego repartido en
+ *  quince semanas distintas.
+ * ================================================================== */
+
+let seleccionRep = new Set();
+
+function semanasDelPeriodo(desdeFecha){
+  const fin = aFechaLocal(PERIODO.fin);
+  const out = [];
+  let l = lunesDe(desdeFecha);
+  while(l <= fin && out.length < 40){ out.push(iso(l)); l = sumarDias(l,7); }
+  return out;
+}
+
+/* «libre», «ocupada por X», «es la propia reserva» o «fuera del periodo». */
+function estadoRep(fecha){
+  if(fecha === dlg.dataset.fecha)            return { estado:"orig" };
+  if(fecha < dlg.dataset.fecha)              return { estado:"na" };
+  if(fecha > PERIODO.fin)                    return { estado:"na" };
+  const desde = +dlg.dataset.desde;
+  const hasta = +document.getElementById("fHasta").value;
+  const celdas = celdasDe(dlg.dataset.ambiente, diaDe(fecha), fecha);
+  for(let i = desde; i <= hasta; i++){
+    if(celdas[i].estado !== "libre") return { estado:"ocu", con: celdas[i].titulo || "ocupada" };
+  }
+  return { estado:"disp" };
+}
+
+function pintarRepetidor(){
+  const caja = document.getElementById("cajaRep");
+  caja.hidden = !document.getElementById("fRepetir").checked;
+  if(caja.hidden){ document.getElementById("tablaRep").innerHTML = ""; return; }
+
+  const semanas = semanasDelPeriodo(dlg.dataset.fecha);
+  const estados = {};                        // fecha → estado, se calcula una vez
+  semanas.forEach(lun=> DIAS.forEach((_,i)=>{
+    const f = iso(sumarDias(lun,i));
+    estados[f] = estadoRep(f);
+  }));
+
+  /* Lo marcado que dejó de estar libre —porque cambiaron las franjas, o porque
+     entró otra reserva encima— se descarta en silencio: la matriz manda. Se hace
+     ANTES de pintar, para que no se vea en verde algo que ya no se va a crear. */
+  [...seleccionRep].forEach(f=>{ if(!estados[f] || estados[f].estado!=="disp") seleccionRep.delete(f); });
+
+  let h = '<thead><tr><th>Semana</th>' +
+          DIAS_CORTOS.map((d,i)=>'<th data-dia="'+i+'" title="Marcar todos los '+DIAS[i].toLowerCase()+'">'+d+'</th>').join('') +
+          '</tr></thead><tbody>';
+
+  semanas.forEach(lun=>{
+    const fechas = DIAS.map((_,i)=>iso(sumarDias(lun,i)));
+    /* Si toda la semana quedó fuera del periodo o en el pasado, no se pinta. */
+    if(fechas.every(f=>estados[f].estado==="na")) return;
+    h += '<tr><td class="sem" data-lunes="'+lun+'" title="Marcar la semana entera">'+largo(lun)+'</td>';
+    fechas.forEach(f=>{
+      const e = estados[f];
+      const dd = f.split("-")[2];
+      if(e.estado==="orig") h += '<td class="orig" title="Es la reserva que estás creando">'+dd+'</td>';
+      else if(e.estado==="na")  h += '<td class="na">·</td>';
+      else if(e.estado==="ocu") h += '<td class="ocu" title="Choca con '+esc(e.con)+'">✕</td>';
+      else h += '<td class="'+(seleccionRep.has(f)?"on":"disp")+'" data-fecha="'+f+'">'+dd+'</td>';
+    });
+    h += '</tr>';
+  });
+
+  document.getElementById("tablaRep").innerHTML = h + '</tbody>';
+
+  const n = seleccionRep.size + 1;
+  document.getElementById("cuentaRep").textContent = seleccionRep.size
+    ? "Se crearán "+n+" reservas: esta y "+seleccionRep.size+" repetición(es)."
+    : "Todavía no has marcado ninguna repetición.";
+}
+
+document.getElementById("fRepetir").addEventListener("change", pintarRepetidor);
+
+document.getElementById("tablaRep").addEventListener("click", e=>{
+  const celda = e.target.closest("td[data-fecha]");
+  if(celda){
+    const f = celda.dataset.fecha;
+    seleccionRep.has(f) ? seleccionRep.delete(f) : seleccionRep.add(f);
+    pintarRepetidor();
+    return;
+  }
+  /* Encabezado de un día o etiqueta de una semana: si ya está todo marcado, se
+     desmarca; si no, se marca todo lo que esté libre. Un mismo gesto pone y quita. */
+  const cab = e.target.closest("th[data-dia]");
+  const sem = e.target.closest("td[data-lunes]");
+  if(!cab && !sem) return;
+  const sel = cab
+    ? '#tablaRep tbody tr td[data-fecha]:nth-child('+(+cab.dataset.dia+2)+')'
+    : '#tablaRep tbody tr td[data-fecha]';
+  let libres = [...document.querySelectorAll(sel)];
+  if(sem) libres = libres.filter(td=>td.parentElement.firstElementChild.dataset.lunes === sem.dataset.lunes);
+  const todas = libres.length && libres.every(td=>seleccionRep.has(td.dataset.fecha));
+  libres.forEach(td=> todas ? seleccionRep.delete(td.dataset.fecha) : seleccionRep.add(td.dataset.fecha));
+  pintarRepetidor();
+});
 
 function actualizarRecordatorio(){
   document.getElementById("recordatorio").innerHTML =
@@ -672,10 +858,19 @@ function validar(d){
   if(!d.correo){
     return confirm(
       "No pusiste el correo del docente.\n\n" +
-      "Sin él no se le podrá enviar la encuesta de satisfacción al terminar.\n\n" +
+      "Sin él, el docente NO recibirá copia de la reserva —su constancia— " +
+      "ni la encuesta de satisfacción al terminar.\n\n" +
       "¿Guardar de todos modos?");
   }
   return true;
+}
+
+/* Las fechas que se van a crear: la del diálogo más las marcadas en la matriz,
+   en orden. Cuando no se repite nada, es una sola. */
+function fechasAGuardar(){
+  const caja = document.getElementById("cajaRep");
+  const extras = (enEdicion || caja.hidden) ? [] : [...seleccionRep];
+  return [dlg.dataset.fecha, ...extras].sort();
 }
 
 function persistir(d, enviada){
@@ -684,11 +879,20 @@ function persistir(d, enviada){
   aprenderDocente(d.docente, d.correo);
   if(enEdicion){
     Object.assign(enEdicion, d, { enviada: enviada ?? enEdicion.enviada });
-  }else{
-    reservas.push(Object.assign({ id: "r"+Date.now(), enviada: !!enviada }, d));
+    guardar(); pintar();
+    return [enEdicion];
   }
+  /* Una reserva por sesión, aunque vengan de la misma repetición: cada una
+     ocupa su franja, se envía por su propio formulario y se cancela sola.
+     `serie` sólo sirve para poder contarlas y nombrarlas en el listado. */
+  const fechas = fechasAGuardar();
+  const serie  = fechas.length > 1 ? "s"+Date.now() : null;
+  const nuevas = fechas.map((f,k)=>Object.assign(
+    { id:"r"+Date.now()+"-"+k, enviada: !!enviada, serie, serieN: fechas.length }, d, { fecha:f }));
+  reservas.push(...nuevas);
   guardar();
   pintar();
+  return nuevas;
 }
 
 document.getElementById("dlgSoloLocal").addEventListener("click", ()=>{
@@ -701,10 +905,22 @@ document.getElementById("dlgSoloLocal").addEventListener("click", ()=>{
 document.getElementById("dlgEnviar").addEventListener("click", ()=>{
   const d = leerDialogo();
   if(!validar(d)) return;
-  persistir(d, undefined);
-  const ref = enEdicion || reservas[reservas.length-1];
+  const creadas = persistir(d, undefined);
+  const ref = creadas[0];
   window.open(enlaceFormulario(ref), "_blank");
   dlg.close();
+
+  /* Con repetición hay un formulario por sesión: el navegador bloquea abrir
+     quince pestañas de golpe, y aunque las abriera nadie revisa quince a la vez.
+     Se abre la primera y las demás quedan en el aviso ámbar, que trae un botón
+     para ir sacando la siguiente. */
+  if(creadas.length > 1){
+    alert("Se guardaron "+creadas.length+" reservas.\n\n"+
+          "Se abrió el formulario de la primera ("+largo(ref.fecha)+").\n\n"+
+          "Las otras "+(creadas.length-1)+" quedan pendientes: usa el botón "+
+          "«Abrir la siguiente sin enviar» del aviso de arriba para ir enviándolas "+
+          "una por una.");
+  }
   /* La reserva queda «Sin enviar» y Yira la marca con el botón «Ya la envié»
      del listado.
 
