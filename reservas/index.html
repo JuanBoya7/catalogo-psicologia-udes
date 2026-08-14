@@ -262,10 +262,11 @@ const Q = {
     espera de que el flujo se arme; hasta entonces la rejilla sigue pidiendo un
     formulario por sesión, que es lento pero no pierde nada.
 
-    PARA ENCENDERLO, una vez el flujo A esté armado y probado con tres fechas:
-    cambia el `false` de abajo por `true` y republica. Es lo único que hay que
-    tocar. Ver `guia-flujo-A-power-automate.md`, pasos 3 y 5a.                  */
-const FLUJO_A_RECORRE_SESIONES = false;
+    ENCENDIDO el 14 de agosto de 2026, tras armar el bucle en el flujo A y
+    probarlo con tres fechas: se crearon las tres filas con la hora local
+    correcta y llegó un único correo con las tres sesiones detalladas.
+    Ver `guia-flujo-A-power-automate.md`, pasos 3, 5a y 5a bis.                 */
+const FLUJO_A_RECORRE_SESIONES = true;
 
 const CONSOLIDA_SERIES = FLUJO_A_RECORRE_SESIONES && !Q.fechas.includes("PENDIENTE");
 
