@@ -243,8 +243,22 @@ const Q = {
   contacto        : "r04917c510c9747bd8c6342e100209d13",
   /* Pregunta 12, añadida el 10 de agosto de 2026 para poder enviar la encuesta
      de satisfacción. */
-  correoDocente   : "rb34e829a2e8d4ff5ada8f59b730afa4e"
+  correoDocente   : "rb34e829a2e8d4ff5ada8f59b730afa4e",
+  /* Pregunta 13, del 14 de agosto de 2026: las fechas de una reserva repetida,
+     separadas por punto y coma. Permite mandar UN formulario por serie en vez de
+     quince, y que el flujo A conteste con UN correo con las sesiones detalladas.
+     PEGA AQUÍ EL IDENTIFICADOR cuando la pregunta exista en el formulario. */
+  fechas          : "PENDIENTE-13-fechas-de-las-sesiones"
 };
+
+/*  Mientras la pregunta 13 no exista, una serie NO se puede consolidar: si se
+    mandara un solo formulario sin ese campo, el flujo registraría una única
+    sesión y las otras catorce se perderían **sin que nadie se enterara**. Así
+    que hasta que el identificador esté puesto, la rejilla sigue pidiendo un
+    formulario por sesión, que es lento pero no pierde nada.
+
+    Al pegar el identificador arriba, esto se pone solo en verdadero.          */
+const CONSOLIDA_SERIES = !Q.fechas.includes("PENDIENTE");
 
 /* ================================================================== *
  *  Agenda de docentes — nombre visible → correo institucional
@@ -420,10 +434,26 @@ const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">"
 
 /* El prellenado exige encodeURIComponent: URLSearchParams codifica los
    espacios como "+" y Forms no los convierte de vuelta. */
+/* Qué reservas se envían juntas. Con la pregunta 13 puesta, toda una serie es un
+   solo envío; sin ella, cada sesión va por su cuenta. Contar y marcar se hacen
+   siempre por este grupo, para que el aviso ámbar diga la verdad en los dos casos. */
+const grupoEnvio = r => (CONSOLIDA_SERIES && r.serie) ? r.serie : r.id;
+
+/* Las sesiones que viajan en un mismo formulario: la reserva sola, o todas las
+   de su serie cuando se pueden consolidar. Ordenadas, que es como se leen. */
+function sesionesDe(r){
+  if(!r.serie || !CONSOLIDA_SERIES) return [r.fecha];
+  return reservas.filter(x=>x.serie===r.serie).map(x=>x.fecha).sort();
+}
+
 function enlaceFormulario(r){
   const amb = AMBIENTES.find(a=>a.clave===r.ambiente).nombre;
+  const ses = sesionesDe(r);
   const p = [
-    [Q.ambiente, amb], [Q.fecha, r.fecha], [Q.horaIni, r.ini], [Q.horaFin, r.fin],
+    [Q.ambiente, amb], [Q.fecha, ses[0]], [Q.horaIni, r.ini], [Q.horaFin, r.fin],
+    /* Sólo se manda cuando hay más de una: con una sola sesión el flujo ya
+       sabe qué hacer con «Fecha», y un campo de más sólo estorba. */
+    [Q.fechas, ses.length > 1 ? ses.join(";") : ""],
     [Q.evento, r.evento], [Q.programa, r.programa], [Q.asignatura, r.asignatura],
     [Q.semestre, r.semestre], [Q.docenteACargo, r.docente],
     [Q.docenteVisitante, r.visitante], [Q.contacto, r.contacto],
@@ -554,7 +584,8 @@ function pintarListado(){
       '<div class="qué">'+esc(r.evento)+'<em>'+esc(amb)+' · '+esc(r.docente)+
       (r.serie ? ' · una de '+r.serieN+' sesiones repetidas' : '')+'</em></div>'+
       '<span class="chip '+(r.enviada?"env":"pend")+'">'+(r.enviada?"Enviada":"Sin enviar")+'</span>'+
-      (r.enviada ? '' : '<button class="gris" data-enviada="'+r.id+'">Ya la envié</button>')+
+      (r.enviada ? '' : '<button class="gris" data-enviada="'+r.id+'">'+
+        (CONSOLIDA_SERIES && r.serie ? 'Ya envié las '+r.serieN : 'Ya la envié')+'</button>')+
       '<button class="gris" data-editar="'+r.id+'">Abrir</button>'+
       '</div>';
   }).join("");
@@ -568,9 +599,11 @@ function pintarAlerta(){
          'Las reservas que crees se perderán al cerrar. Usa «Guardar copia» antes de salir, '+
          'o abre el archivo en Microsoft Edge o Chrome.</div>';
   }
-  const pendientes = reservas.filter(r=>!r.enviada).length;
+  /* Una serie consolidada se envía con UN formulario, así que cuenta como un
+     pendiente y no como quince: si no, el aviso exageraría el trabajo que falta. */
+  const pendientes = new Set(reservas.filter(r=>!r.enviada).map(grupoEnvio)).size;
   if(pendientes){
-    h += '<div class="aviso ambar"><b>'+pendientes+' reserva(s) sin enviar.</b> '+
+    h += '<div class="aviso ambar"><b>'+pendientes+' envío(s) pendiente(s).</b> '+
          'Están anotadas aquí pero todavía no le han llegado a nadie. '+
          'Ábrelas desde la lista de abajo y envía el formulario; si ya lo enviaste, '+
          'pulsa <b>«Ya la envié»</b> para quitarlas de este aviso.'+
@@ -915,11 +948,16 @@ document.getElementById("dlgEnviar").addEventListener("click", ()=>{
      Se abre la primera y las demás quedan en el aviso ámbar, que trae un botón
      para ir sacando la siguiente. */
   if(creadas.length > 1){
-    alert("Se guardaron "+creadas.length+" reservas.\n\n"+
-          "Se abrió el formulario de la primera ("+largo(ref.fecha)+").\n\n"+
-          "Las otras "+(creadas.length-1)+" quedan pendientes: usa el botón "+
-          "«Abrir la siguiente sin enviar» del aviso de arriba para ir enviándolas "+
-          "una por una.");
+    alert(CONSOLIDA_SERIES
+      ? "Se guardaron "+creadas.length+" reservas y el formulario que se abrió las lleva "+
+        "TODAS.\n\nCon un solo envío quedan registradas las "+creadas.length+" sesiones, "+
+        "y sale un único correo con las fechas detalladas.\n\n"+
+        "Al enviarlo, pulsa «Ya la envié» en cualquiera de ellas: se marcan todas juntas."
+      : "Se guardaron "+creadas.length+" reservas.\n\n"+
+        "Se abrió el formulario de la primera ("+largo(ref.fecha)+").\n\n"+
+        "Las otras "+(creadas.length-1)+" quedan pendientes: usa el botón "+
+        "«Abrir la siguiente sin enviar» del aviso de arriba para ir enviándolas "+
+        "una por una.");
   }
   /* La reserva queda «Sin enviar» y Yira la marca con el botón «Ya la envié»
      del listado.
@@ -1009,7 +1047,13 @@ document.getElementById("listado").addEventListener("click", e=>{
   const m = e.target.closest("[data-enviada]");
   if(m){
     const r = reservas.find(x=>x.id===m.dataset.enviada);
-    if(r){ r.enviada = true; guardar(); pintar(); }
+    /* Si la serie viajó en un solo formulario, marcarla es marcarla entera:
+       obligar a pulsar quince veces por un envío sería un castigo sin motivo. */
+    if(r){
+      const g = grupoEnvio(r);
+      reservas.forEach(x=>{ if(grupoEnvio(x)===g) x.enviada = true; });
+      guardar(); pintar();
+    }
     return;
   }
   const b = e.target.closest("[data-editar]");
