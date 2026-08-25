@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Recurso de divulgación del eje 4 del plan de trabajo 2026-B: los usos
+     específicos de cada prueba según la asignatura. Lo imparten los auxiliares
+     en el aula; la responsabilidad del contenido técnico es del encargado.
+     Se publica por enlace, pero no debe salir en buscadores. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Usos del laboratorio por asignatura — Psicología UDES</title>
+<style>
+  :root{
+    --azul:#004899; --aqua:#7CFED8; --morado:#6C3AA8;
+    --bg:#f4f7fb; --surface:#ffffff; --ink:#0e1b2c; --muted:#5a6b80;
+    --line:#dbe3ee; --soft:#e8f0fb; --chip:#eef2f8;
+    --shadow:0 1px 2px rgba(0,40,90,.06), 0 6px 20px rgba(0,40,90,.07);
+    --esc:1;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --azul:#5c9ce6; --bg:#0c141f; --surface:#141f2e; --ink:#e6edf6;
+      --muted:#96a7bd; --line:#243549; --soft:#16283f; --chip:#1c2a3b;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);
+    font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 70px}
+
+  /* ── Cabecera ─────────────────────────────────────────────── */
+  .band{background:var(--azul);color:#fff;padding:26px 20px 22px;
+    background-image:linear-gradient(135deg,#004899 0%,#003370 100%)}
+  .band .inner{max-width:1080px;margin:0 auto;display:flex;gap:18px;
+    align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+  .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
+    color:var(--aqua);margin:0 0 7px}
+  h1{font-size:clamp(21px,3.4vw,31px);line-height:1.15;margin:0 0 8px;letter-spacing:-.02em}
+  .band .sub{margin:0;max-width:60ch;color:#d3e2f5;font-size:15px}
+  .modo{display:flex;gap:8px;flex-wrap:wrap}
+  .modo button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:#fff;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.34);
+    border-radius:7px;padding:8px 14px;transition:.12s;white-space:nowrap}
+  .modo button:hover{background:rgba(255,255,255,.24)}
+
+  /* ── Apertura ─────────────────────────────────────────────── */
+  .apertura{margin:26px 0 0}
+  .apertura h2{font-size:clamp(19px,2.6vw,24px);margin:0 0 4px;letter-spacing:-.01em}
+  .apertura .lead{margin:0 0 20px;color:var(--muted);max-width:74ch}
+  .tres{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .pilar{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:18px 19px;box-shadow:var(--shadow)}
+  .pilar .num{font:700 12px/1 ui-monospace,Consolas,monospace;letter-spacing:.08em;
+    color:#fff;background:var(--azul);padding:6px 9px;border-radius:5px;display:inline-block;margin-bottom:11px}
+  .pilar h3{font-size:16.5px;margin:0 0 7px;line-height:1.3}
+  .pilar p{margin:0;font-size:14.5px;color:var(--muted)}
+  .pilar b{color:var(--ink);font-weight:650}
+
+  .cifras{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 0}
+  .cifra{background:var(--soft);border:1px solid var(--line);border-radius:10px;
+    padding:12px 16px;flex:1;min-width:150px}
+  .cifra .n{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--azul);line-height:1.1}
+  .cifra .q{font-size:13px;color:var(--muted);margin-top:3px}
+
+  /* ── Selector ─────────────────────────────────────────────── */
+  .selector{margin-top:38px;padding-top:28px;border-top:2px solid var(--line)}
+  .selector h2{font-size:clamp(19px,2.6vw,24px);margin:0 0 5px;letter-spacing:-.01em}
+  .selector .lead{margin:0 0 16px;color:var(--muted);max-width:74ch}
+  .controls{position:sticky;top:0;background:var(--bg);padding:11px 0;z-index:20;
+    border-bottom:1px solid var(--line)}
+  .search{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:9px;outline:none}
+  .search:focus{border-color:var(--azul);box-shadow:0 0 0 3px var(--soft)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .chip{font:inherit;font-size:13px;padding:6px 13px;border-radius:999px;cursor:pointer;
+    background:var(--chip);color:var(--muted);border:1px solid transparent;transition:.12s}
+  .chip:hover{color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--azul);color:#fff;border-color:var(--azul)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;margin-top:18px}
+  .tarj{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);padding:15px 16px;cursor:pointer;text-align:left;font:inherit;
+    color:var(--ink);display:flex;flex-direction:column;gap:7px;transition:.12s}
+  .tarj:hover{border-color:var(--azul);transform:translateY(-2px)}
+  .tarj .sem{font:600 11.5px/1 ui-monospace,Consolas,monospace;letter-spacing:.04em;
+    color:#fff;background:var(--azul);padding:5px 8px;border-radius:5px;align-self:flex-start}
+  .tarj .nom{font-weight:650;font-size:15.5px;line-height:1.3}
+  .tarj .gan{font-size:13px;color:var(--muted);line-height:1.45}
+  .tarj .cuenta{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:6px}
+  .empty{text-align:center;color:var(--muted);padding:48px 20px}
+
+  /* ── Ficha de asignatura ──────────────────────────────────── */
+  .ficha{display:none}
+  body.ver-ficha .ficha{display:block}
+  body.ver-ficha .apertura,body.ver-ficha .selector{display:none}
+  .volver{font:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--azul);
+    background:transparent;border:1px solid var(--line);border-radius:7px;padding:8px 14px;
+    margin:22px 0 18px;transition:.12s}
+  .volver:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .fcab{margin:0 0 22px}
+  .fcab .sem{font:600 12px/1 ui-monospace,Consolas,monospace;letter-spacing:.05em;
+    color:#fff;background:var(--azul);padding:6px 9px;border-radius:5px;display:inline-block;margin-bottom:11px}
+  .fcab h2{font-size:clamp(23px,4vw,34px);margin:0 0 9px;letter-spacing:-.02em;line-height:1.13}
+  .fcab .gancho{margin:0;font-size:clamp(16px,2vw,18.5px);color:var(--muted);max-width:70ch;line-height:1.5}
+
+  .caso{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);padding:22px 24px;margin:0 0 18px}
+  .caso .tag{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+    color:var(--azul);margin:0 0 8px}
+  .caso h3{font-size:clamp(18px,2.5vw,23px);margin:0 0 12px;line-height:1.25;letter-spacing:-.01em}
+  .meta{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+  .meta span{font-size:12.5px;background:var(--chip);color:var(--muted);padding:4px 10px;border-radius:6px}
+  .meta span b{color:var(--ink);font-weight:600}
+  .caso h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+    margin:18px 0 9px;font-weight:700}
+  .recs{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+  .rec{display:inline-flex;align-items:center;gap:8px;background:var(--soft);
+    border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:13.5px}
+  .rec code{font:600 11.5px/1 ui-monospace,Consolas,monospace;color:#fff;background:var(--azul);
+    padding:4px 6px;border-radius:4px}
+  ol.pasos{margin:0;padding-left:22px}
+  ol.pasos li{margin:0 0 9px;font-size:15.5px;line-height:1.5}
+  ol.pasos li:last-child{margin-bottom:0}
+  .llev{background:var(--soft);border-left:3px solid var(--azul);border-radius:0 9px 9px 0;
+    padding:13px 16px;margin:18px 0 0;font-size:15px}
+  .llev b{color:var(--azul)}
+
+  .mas{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin:0 0 18px}
+  .mas > h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+    margin:0 0 13px;font-weight:700}
+  .mas .it{padding:0 0 13px;margin:0 0 13px;border-bottom:1px solid var(--line)}
+  .mas .it:last-child{padding-bottom:0;margin-bottom:0;border-bottom:0}
+  .mas .it b{display:block;font-size:15px;margin-bottom:3px}
+  .mas .it p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
+
+  .pedir{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--morado);
+    border-radius:0 12px 12px 0;padding:18px 20px}
+  .pedir h4{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--morado);
+    margin:0 0 10px;font-weight:700}
+  .pedir p{margin:0 0 12px;font-size:14.5px;color:var(--muted);max-width:72ch}
+  .pedir a{display:inline-block;font-weight:600;font-size:14.5px;text-decoration:none;color:#fff;
+    background:var(--morado);border-radius:8px;padding:10px 18px;transition:.12s}
+  .pedir a:hover{filter:brightness(1.12)}
+
+  /* ── Guion del auxiliar ───────────────────────────────────── */
+  .guion{margin:18px 0 0;border:1px dashed var(--line);border-radius:12px;background:transparent}
+  .guion summary{cursor:pointer;padding:13px 18px;font-size:13.5px;font-weight:600;color:var(--muted)}
+  .guion summary::marker{color:var(--azul)}
+  .guion .cuerpo{padding:0 18px 16px;font-size:14.5px;color:var(--muted);line-height:1.6}
+  .guion .cuerpo p{margin:0 0 10px}
+  .guion .cuerpo p:last-child{margin-bottom:0}
+  .guion .cuerpo em{color:var(--ink);font-style:normal;font-weight:600}
+
+  /* ── Modo proyección ──────────────────────────────────────── */
+  body.proy{font-size:calc(16px * var(--esc))}
+  body.proy .wrap{max-width:1320px}
+  body.proy .guion{display:none}
+  body.proy .band .sub{display:none}
+  body.proy .caso{padding:30px 34px}
+  body.proy ol.pasos li{margin-bottom:14px}
+  body.proy .cifra .n{font-size:34px}
+
+  @media (max-width:640px){
+    .band .inner{align-items:flex-start}
+    .caso{padding:18px 17px}
+  }
+  @media print{ .modo,.controls,.volver,.guion{display:none} }
+</style>
+</head>
+<body>
+
+<div class="band"><div class="inner">
+  <div>
+    <p class="eyebrow">Laboratorio de Psicología · UDES Campus Valledupar · <span id="periodo"></span></p>
+    <h1>Lo que el laboratorio le puede hacer a tu clase</h1>
+    <p class="sub">Casos de uso concretos, asignatura por asignatura, con los instrumentos
+      que ya están en el laboratorio y cómo se piden.</p>
+  </div>
+  <div class="modo">
+    <button type="button" id="btnProy">Modo proyección</button>
+    <button type="button" id="btnMas" title="Agrandar letra">A+</button>
+    <button type="button" id="btnMenos" title="Reducir letra">A−</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+  <!-- ── Apertura común ─────────────────────────────────────── -->
+  <section class="apertura" id="apertura">
+    <h2>Tres minutos antes de entrar en materia</h2>
+    <p class="lead">El laboratorio no es una bodega de cajas: es el sitio donde lo que se
+      define en el tablero se vuelve un dato que se puede mirar. Esto es lo que hay y para
+      qué sirve.</p>
+
+    <div class="tres">
+      <div class="pilar">
+        <span class="num">01</span>
+        <h3>Lo que se dice en clase, medido</h3>
+        <p>Atención, memoria, personalidad, ansiedad, funciones ejecutivas: todo eso tiene
+          <b>un instrumento con manual, baremos y tiempo de aplicación</b> aquí al lado. Una
+          definición que se aplica y produce un puntaje se recuerda distinto a una que solo
+          se copia.</p>
+      </div>
+      <div class="pilar">
+        <span class="num">02</span>
+        <h3>La primera vez no debería ser con un paciente</h3>
+        <p>El estudiante que llega a práctica sin haber <b>abierto una caja, cronometrado una
+          aplicación ni corregido una hoja de respuestas</b> aprende con una persona real
+          delante. Aquí puede equivocarse sin que le cueste a nadie.</p>
+      </div>
+      <div class="pilar">
+        <span class="num">03</span>
+        <h3>Está disponible y se pide por un enlace</h3>
+        <p>Sesenta recursos inventariados, dos ambientes —<b>Cámara de Gesell (303)</b> y
+          <b>Laboratorio Experimental (305)</b>— y un catálogo web donde cada ficha tiene su
+          botón de solicitud. No hay que buscar a nadie en un pasillo.</p>
+      </div>
+    </div>
+
+    <div class="cifras">
+      <div class="cifra"><div class="n">60</div><div class="q">recursos inventariados y disponibles</div></div>
+      <div class="cifra"><div class="n">2</div><div class="q">ambientes de aprendizaje propios</div></div>
+      <div class="cifra"><div class="n" id="nAsig">—</div><div class="q">asignaturas con caso de uso diseñado</div></div>
+      <div class="cifra"><div class="n">10</div><div class="q">minutos: lo que dura una demostración</div></div>
+    </div>
+
+    <details class="guion">
+      <summary>Guion del auxiliar · apertura</summary>
+      <div class="cuerpo">
+        <p><em>Preséntate y di a qué vienes.</em> «Buenos días, soy [nombre], auxiliar del
+          Laboratorio de Psicología. El profesor me dio diez minutos para mostrarles algo que
+          tienen disponible y que casi nadie pide.»</p>
+        <p><em>No leas los tres bloques.</em> Di uno solo —el 02 funciona con cualquier
+          curso— y pasa de una vez a la asignatura. La apertura es para situar, no para
+          llenar el tiempo.</p>
+        <p><em>Si el docente te da menos tiempo del acordado</em>, salta directo al caso de
+          uso y cierra con el enlace del catálogo. Es preferible una idea completa a tres a
+          medias.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ── Selector de asignatura ─────────────────────────────── -->
+  <section class="selector" id="selector">
+    <h2>Busca tu asignatura</h2>
+    <p class="lead">Solo están las asignaturas que tienen un encaje real con lo que hay en el
+      laboratorio. Si la tuya no aparece, no es un olvido: es que hoy no tenemos un
+      instrumento que le sirva de verdad.</p>
+    <div class="controls">
+      <input id="q" class="search" type="search" autocomplete="off"
+             placeholder="Escribe la asignatura: psicometría, entrevista, neuro…">
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>No hay asignaturas que coincidan con la búsqueda.</div>
+  </section>
+
+  <!-- ── Ficha ──────────────────────────────────────────────── -->
+  <section class="ficha" id="ficha">
+    <button type="button" class="volver" id="volver">← Todas las asignaturas</button>
+    <div id="fichaCuerpo"></div>
+  </section>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTES QUE CAMBIAN POR PERIODO
+   ═══════════════════════════════════════════════════════════════ */
+var PERIODO  = '2026-B';
+var CATALOGO = 'https://juanboya7.github.io/catalogo-psicologia-udes/';
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTENIDO · una entrada por asignatura con encaje real.
+   Los códigos PSI son los del inventario del laboratorio.
+   ═══════════════════════════════════════════════════════════════ */
+var ASIGNATURAS = [
+
+/* ── Primer semestre ─────────────────────────────────────────── */
+{id:'procesos-basicos', n:'Procesos Básicos', sem:1, cod:'21211-A',
+ gancho:'Los procesos que esta asignatura define —atención, sensación, percepción— son justo los que el laboratorio sabe medir en menos de diez minutos y con el curso completo.',
+ caso:{
+  t:'Medir la atención que acabamos de definir',
+  min:'10 min', amb:'En el aula, no hace falta trasladarse',
+  rec:[['PSI031','D2 · test de atención'],['PSI030','CARAS-R · percepción de diferencias']],
+  pasos:[
+   'El auxiliar reparte el D2 al curso completo: es de aplicación grupal y toma entre 8 y 10 minutos de trabajo efectivo.',
+   'Cada estudiante trabaja contra el reloj, línea por línea, con el tiempo cantado en voz alta.',
+   'Al terminar, cada uno cuenta sus aciertos por línea y dibuja su propia curva en el cuaderno: las primeras líneas frente a las últimas.',
+   'El docente lee la curva del grupo: dónde aparece la fatiga, quién sostiene y quién se dispara al principio y se cae.'],
+  llev:'La diferencia entre <b>atención selectiva</b> y <b>atención sostenida</b> deja de ser una distinción de examen: cada estudiante la ve en su propia hoja.'},
+ mas:[
+  {t:'La ley de Weber con pesas en la mano', d:'Con las Discrimination Weights (PSI010) el estudiante descubre por sí mismo que la diferencia mínima perceptible no es constante: depende del peso de partida. Es el umbral diferencial, tocado con los dedos.'},
+  {t:'Umbrales táctiles', d:'El Touch Test Sensory Evaluator (PSI014) mide la sensibilidad táctil con monofilamentos calibrados. Sirve para mostrar que «sensación» es una variable con unidades, no una metáfora.'}]},
+
+{id:'fundamentos-psicologia', n:'Fundamentos de la Psicología', sem:1, cod:'21201-A',
+ gancho:'En primer semestre se decide algo que dura la carrera entera: si el estudiante cree que la psicología se mide o que se opina.',
+ caso:{
+  t:'Tres tradiciones de la disciplina, sobre la misma mesa',
+  min:'12 min', amb:'Laboratorio Experimental (305) o en el aula con el material llevado',
+  rec:[['PSI001','Encéfalo humano desmontable'],['PSI018','Rorschach · protocolo'],['PSI013','Chronos · software experimental']],
+  pasos:[
+   'El auxiliar pone tres objetos juntos: un encéfalo desmontable, una caja de láminas de Rorschach cerrada y el equipo de tiempos de reacción.',
+   'Pregunta al curso qué tienen en común. La respuesta es que las tres son formas de responder a «¿cómo se estudia la mente?».',
+   'Cada objeto se asocia a su tradición: la biológica, la proyectiva y la experimental, con una frase de cada una.',
+   'Se cierra diciendo en qué semestre van a usar cada uno, para que el recorrido tenga mapa.'],
+  llev:'El estudiante entiende que las corrientes que va a estudiar <b>no son opiniones enfrentadas sino métodos distintos</b>, y que los tres están en el edificio donde estudia.'},
+ mas:[
+  {t:'Wundt tenía un cronoscopio; nosotros tenemos Chronos', d:'El primer laboratorio de psicología medía tiempos de reacción con un aparato mecánico. PSI013 hace hoy lo mismo con milisegundos de precisión: la continuidad con el origen de la disciplina es literal.'},
+  {t:'Visita guiada de curso completo', d:'Diez minutos en el Laboratorio Experimental (305) al inicio del semestre bastan para que el grupo sepa que el sitio existe y qué se puede pedir ahí. Se reserva como cualquier otra clase.'}]},
+
+{id:'competencias-socioemocionales', n:'Elec. Competencias Socioemocionales', sem:1, cod:'21411-A',
+ gancho:'Una electiva sobre habilidades socioemocionales puede trabajar con la percepción que cada estudiante tiene de sí mismo, o puede medirla.',
+ caso:{
+  t:'¿Qué tan asertivo creo que soy?',
+  min:'12 min', amb:'En el aula',
+  rec:[['PSI056','EMA · escala multidimensional de asertividad'],['PSI050','AF-5 · autoconcepto forma 5']],
+  pasos:[
+   'Antes de repartir nada, cada estudiante escribe en un papel si se considera asertivo, del 1 al 10.',
+   'Se aplica el EMA, que toma unos 20 minutos completo; para la demostración basta con la dimensión de no asertividad.',
+   'Se explican las tres dimensiones: asertividad directa, asertividad indirecta —decirlo, pero por un medio que evita la cara— y no asertividad.',
+   'Cada uno compara su número inicial con lo que la escala describe.'],
+  llev:'La distancia entre <b>lo que creo de mí y lo que una escala mide</b> es, en sí misma, el contenido de la asignatura.'},
+ mas:[
+  {t:'Habilidades sociales en adolescentes', d:'El EEHSA (PSI049) mide empatía, asertividad y resolución de conflictos en población de 12 a 18 años. Útil si la electiva trabaja con proyectos en colegios.'}]},
+
+/* ── Segundo semestre ────────────────────────────────────────── */
+{id:'memoria-aprendizaje', n:'Memoria y Aprendizaje', sem:2, cod:'21242-A',
+ gancho:'La curva de aprendizaje es de las pocas cosas de la psicología que se pueden dibujar en vivo, delante del curso, en diez minutos.',
+ caso:{
+  t:'La curva de aprendizaje, dibujada en el tablero',
+  min:'10 min', amb:'En el aula con el material llevado',
+  rec:[['PSI011','Auto Tally Maze · laberinto de estilete'],['PSI009','Economy Clock / Counter']],
+  pasos:[
+   'Un voluntario recorre el laberinto de estilete con los ojos vendados. El aparato cuenta solo los errores.',
+   'Se repite el recorrido seis u ocho veces seguidas, cantando el número de errores de cada ensayo.',
+   'Alguien del curso va anotando los pares ensayo–errores en el tablero.',
+   'Se unen los puntos: aparece la curva, con su caída rápida al principio y su meseta.'],
+  llev:'El estudiante ve que <b>aprender tiene forma</b>, y que esa forma se repite en el laberinto, en un idioma nuevo y en una habilidad motriz.'},
+ mas:[
+  {t:'Memoria de trabajo con tiempos reales', d:'Chronos (PSI013) permite montar tareas de memoria de trabajo y registrar tiempos de respuesta al milisegundo, en vez de discutir sobre ejemplos hipotéticos.'},
+  {t:'Cuando la memoria falla', d:'Las subpruebas de memoria del NEUROPSI (PSI023, 20 minutos) muestran cómo se evalúa la memoria cuando hay sospecha de deterioro. Es el mismo constructo, en contexto clínico.'}]},
+
+{id:'biologia-humana', n:'Biología Humana', sem:2, cod:'16201-A',
+ gancho:'Es difícil sostener una lámina impresa cuando al lado hay un encéfalo que se abre por el plano sagital y muestra el cuerpo calloso por dentro.',
+ caso:{
+  t:'Abrir el encéfalo por la mitad',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI001','Encéfalo desmontable, color natural'],['PSI002','Encéfalo con lóbulos por color'],['PSI005','Neurona · modelo anatómico']],
+  pasos:[
+   'Se pasa por las filas el modelo en color natural, cerrado: el estudiante identifica lóbulos, surcos y cerebelo con la mano encima.',
+   'Se separa por el plano sagital medio y aparecen cuerpo calloso, tálamo, hipotálamo, fórnix y ventrículos.',
+   'Se pone al lado el modelo con lóbulos diferenciados por color y se pide relacionar cada zona con su función: motora, somatosensorial, Broca, Wernicke, corteza visual.',
+   'Se cierra con el modelo de neurona para bajar de la estructura macro a la célula.'],
+  llev:'La topografía cerebral se aprende <b>con las manos y no con la memoria visual de una lámina</b>, y con eso el vocabulario anatómico deja de ser una lista.'},
+ mas:[
+  {t:'Por qué un ACV deja los déficits que deja', d:'El modelo con irrigación arterial (PSI003) trae el árbol arterial y el polígono de Willis. Permite predecir qué se pierde según qué arteria se ocluye — y engancha con Neuropsicología dos semestres después.'},
+  {t:'Oído desmontable', d:'PSI004 abre el oído derecho por partes: útil para la unidad de sentidos y para la audición como sistema de transducción.'}]},
+
+{id:'evolutiva-ninez', n:'Ps. Evolutiva Niñez y Adolescencia', sem:2, cod:'21212-A',
+ gancho:'El laboratorio tiene el mismo constructo medido a tres edades distintas, y comparar los tres cuadernillos explica el desarrollo mejor que un cuadro comparativo.',
+ caso:{
+  t:'La misma inteligencia, tres edades, tres pruebas',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI026','WPPSI-III · Wechsler preescolar (2–7 años)'],['PSI027','WISC-IV · Wechsler para niños (6–16)'],['PSI028','K-BIT · test breve de Kaufman (6–90)']],
+  pasos:[
+   'Se abren los tres cuadernillos sobre la mesa del docente, cada uno en una tarea equivalente.',
+   'El curso observa cómo cambia la forma de preguntar: manipulativo en preescolar, verbal y de memoria de trabajo en escolar, matrices en la versión breve.',
+   'Se discute por qué no se puede aplicar una prueba fuera de su rango de edad, aunque «el niño parezca capaz».',
+   'Se cierra con los tiempos: 30–50 minutos la WPPSI-III, 110 la WISC-IV, 15–30 el K-BIT.'],
+  llev:'El desarrollo deja de ser una secuencia de etapas descritas y pasa a ser <b>algo que obliga a cambiar el instrumento</b>.'},
+ mas:[
+  {t:'Cómo se pregunta por el hogar', d:'La ESPA (PSI048) mide estilos de socialización parental entre los 12 y los 18 años: autoritario, democrático, permisivo. Convierte la tipología del texto en un perfil con puntajes.'},
+  {t:'El dibujo como dato', d:'El Dibujo de la Figura Humana (PSI017, de 3 a 18 años) y el Pata Negra (PSI019) muestran cómo se explora el desarrollo cuando el niño todavía no puede responder un cuestionario.'}]},
+
+{id:'estadistica-descriptiva', n:'Estadística Descriptiva', sem:2, cod:'16114-C',
+ gancho:'La estadística se enseña con datos de ejemplo que no le importan a nadie. El laboratorio puede producir, en cinco minutos, un conjunto de datos donde cada estudiante es una fila.',
+ caso:{
+  t:'La distribución del propio curso',
+  min:'12 min', amb:'En el aula',
+  rec:[['PSI030','CARAS-R · aplicación grupal, 3–5 min'],['PSI031','D2 · aplicación grupal, 8–10 min']],
+  pasos:[
+   'Se aplica el CARAS-R al curso completo: son tres a cinco minutos y se corrige en el momento.',
+   'Cada estudiante canta su puntaje directo y se escriben los 25 o 30 datos en el tablero.',
+   'Con esos datos se calculan media, mediana, moda y desviación en clase, sin ejercicio de libro.',
+   'Se ubica el puntaje de cada uno en percentiles dentro de su propio grupo.'],
+  llev:'La desviación estándar deja de ser una fórmula y pasa a responder una pregunta que al estudiante sí le interesa: <b>¿qué tan lejos estoy yo del promedio de mi salón?</b>'},
+ mas:[
+  {t:'Baremos: la tabla que convierte un dato en un juicio', d:'Cualquier manual del laboratorio —el TIG (PSI029), el D2— trae sus baremos. Enseñar percentiles con un baremo real muestra para qué existe la tabla que el estudiante está aprendiendo a construir.'}]},
+
+/* ── Tercer semestre ─────────────────────────────────────────── */
+{id:'neurociencias', n:'Neurociencias', sem:3, cod:'21232-A',
+ gancho:'Seis modelos anatómicos, uno de ellos con el árbol arterial completo, y una batería que mide lo que esas estructuras hacen.',
+ caso:{
+  t:'De la arteria ocluida al déficit esperado',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI003','Encéfalo con irrigación arterial'],['PSI002','Encéfalo con lóbulos por color'],['PSI023','NEUROPSI · evaluación breve']],
+  pasos:[
+   'Se muestra el polígono de Willis en la base del modelo y se recorren las tres cerebrales: anterior, media y posterior.',
+   'El auxiliar tapa con el dedo un territorio y pregunta al curso qué funciones quedan comprometidas.',
+   'Con el modelo de lóbulos por color se confirma la respuesta: dónde está el área motora, dónde Broca, dónde Wernicke.',
+   'Se abre el NEUROPSI y se muestra qué subprueba habría detectado ese déficit en 20 minutos de aplicación.'],
+  llev:'La anatomía se conecta con la clínica en el mismo gesto: <b>la estructura, la función y el instrumento que la mide</b>, uno detrás de otro.'},
+ mas:[
+  {t:'La célula, aparte', d:'Los modelos de neurona (PSI005) y cuerpo celular (PSI006) sirven para la unidad de transmisión sináptica sin recurrir al esquema del tablero.'},
+  {t:'Funciones ejecutivas y lóbulo frontal', d:'El BANFE-2 (PSI025) evalúa específicamente el rendimiento de los lóbulos frontales en adultos: planificación, inhibición, flexibilidad. Es el puente natural hacia Neuropsicología en cuarto.'}]},
+
+{id:'motivacion-emocion', n:'Motivación y Emoción', sem:3, cod:'21233-A',
+ gancho:'Los modelos motivacionales del programa se pueden discutir en abstracto o se pueden aplicar al propio grupo y mirar el perfil que sale.',
+ caso:{
+  t:'La rueda de motivos, aplicada al curso',
+  min:'12 min', amb:'En el aula',
+  rec:[['PSI051','APM · análisis del perfil motivacional']],
+  pasos:[
+   'Se presenta el modelo de la rueda de motivos: cinco pares de motivo y contramotivo.',
+   'Se recorren los cinco: afiliación–autonomía, cooperación–poder, hedonismo–logro, seguridad–exploración, conservación–contribución.',
+   'Cada estudiante se ubica intuitivamente en cada par antes de ver nada.',
+   'Se muestra cómo el APM convierte esa intuición en un perfil con puntajes, y para qué se usa después: selección, orientación vocacional, desarrollo.'],
+  llev:'El estudiante ve que <b>una teoría de la motivación se vuelve operativa</b> cuando alguien construye la escala que la mide.'},
+ mas:[
+  {t:'La emoción también tiene escala', d:'El BAI (PSI035) para ansiedad y el AMAS (PSI039) para adultos muestran cómo se cuantifica un estado emocional con síntomas concretos: tensión, inquietud, agitación.'}]},
+
+{id:'evolutiva-adultez', n:'Ps. Evolutiva Adultez y Vejez', sem:3, cod:'21263-A',
+ gancho:'La pregunta que atraviesa la asignatura —qué es envejecimiento normal y qué es deterioro— tiene aquí un instrumento que la responde en veinte minutos.',
+ caso:{
+  t:'Dónde termina lo esperable y empieza el deterioro',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI023','NEUROPSI · evaluación neuropsicológica breve'],['PSI039','AMAS · versión E, 60 años en adelante']],
+  pasos:[
+   'Se abre el NEUROPSI y se recorren sus áreas: orientación, atención, memoria, lenguaje, funciones ejecutivas.',
+   'Se muestra que la puntuación se interpreta contra baremos por edad y escolaridad, no contra un valor único.',
+   'Se pregunta al curso qué pasaría si se usara el baremo de un joven universitario con un adulto de 70 años y escolaridad primaria.',
+   'Se cierra con el AMAS-E, que existe precisamente porque la ansiedad en la vejez no se pregunta igual que a los 25.'],
+  llev:'La idea de que <b>un puntaje no significa nada sin su grupo de referencia</b>, que es la lección que sostiene toda la evaluación psicológica.'},
+ mas:[
+  {t:'Desesperanza y calidad de vida', d:'El TED-R (PSI041) evalúa esperanza y desesperanza como variables pronósticas de salud, aplicable de los 12 años en adelante.'},
+  {t:'La familia en la vejez', d:'La ESFA (PSI052) mide satisfacción familiar con adjetivos descriptivos: sencilla de aplicar y directamente relacionada con las redes de apoyo del adulto mayor.'}]},
+
+{id:'historia-conductismo', n:'Historia de la Psicología (Conductismo)', sem:3, cod:'21223-A',
+ gancho:'El laboratorio conserva el instrumento con el que el conductismo construyó literalmente sus curvas: un laberinto que cuenta errores y no pregunta nada más.',
+ caso:{
+  t:'El aparato que solo mide lo observable',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI011','Auto Tally Maze · laberinto de estilete'],['PSI009','Economy Clock / Counter']],
+  pasos:[
+   'Se presenta el laberinto: registra errores y tiempo, y nada más. No hay casilla para lo que el sujeto pensó.',
+   'Un voluntario lo recorre vendado tres o cuatro veces mientras el curso anota.',
+   'Se pregunta qué se puede afirmar con esos datos y qué no. Ahí aparece sola la discusión sobre la caja negra.',
+   'Se contrasta con lo que un test proyectivo pretende ver, para marcar la distancia entre programas de investigación.'],
+  llev:'El conductismo deja de ser una posición filosófica que se memoriza y se vuelve <b>una decisión metodológica con un aparato detrás</b>.'},
+ mas:[
+  {t:'Contar respuestas', d:'El Economy Clock / Counter (PSI009) es el registro acumulativo llevado a su forma mínima: la respuesta cuenta, el resto no se anota. Sirve para explicar los programas de reforzamiento con un objeto en la mano.'}]},
+
+{id:'estadistica-inferencial', n:'Estadística Inferencial', sem:3, cod:'16115-B',
+ gancho:'Contrastar dos medias es mucho más convincente cuando los dos grupos son mitades del mismo salón y el dato lo produjeron ellos hace veinte minutos.',
+ caso:{
+  t:'Dos grupos, una hipótesis, un contraste',
+  min:'12 min', amb:'En el aula',
+  rec:[['PSI031','D2 · test de atención'],['PSI030','CARAS-R · percepción de diferencias']],
+  pasos:[
+   'Se divide el curso en dos mitades y se plantea la hipótesis: el ruido de fondo reduce el rendimiento atencional.',
+   'Una mitad aplica el D2 en silencio; la otra, con música o conversación de fondo.',
+   'Se recogen los dos conjuntos de puntajes y se calculan medias y desviaciones de cada grupo.',
+   'Se plantea el contraste: ¿la diferencia observada es atribuible al azar? Aquí entra el estadístico de la unidad que se esté viendo.'],
+  llev:'La hipótesis nula deja de ser un ritual de notación: <b>el estudiante tiene un dato propio del que sospecha</b> y necesita la prueba para decidir.'},
+ mas:[
+  {t:'Tamaño de muestra con las cajas al frente', d:'Discutir cuántos sujetos harían falta para detectar el efecto, con los tiempos reales de aplicación en la mano (3–5 minutos el CARAS-R, 8–10 el D2), convierte la potencia estadística en un problema logístico concreto.'}]},
+
+/* ── Cuarto semestre ─────────────────────────────────────────── */
+{id:'psicometria', n:'Psicometría', sem:4, cod:'21235-A',
+ gancho:'Esta es la asignatura del programa que más pierde si no pisa el laboratorio: aquí están los manuales, los baremos y las hojas de respuesta de los que habla todo el semestre.',
+ caso:{
+  t:'Abrir la caja: dónde vive la fiabilidad',
+  min:'12 min', amb:'En el aula con el material llevado, o visita al laboratorio',
+  rec:[['PSI029','TIG · inteligencia general, niveles 1 y 2'],['PSI053','16-PF · cuestionario factorial'],['PSI028','K-BIT · test breve de Kaufman']],
+  pasos:[
+   'Se abre un kit completo y se separan sus cuatro partes: manual, cuadernillo de estímulos, hoja de respuestas y plantilla de corrección.',
+   'Se busca en el manual el capítulo de propiedades psicométricas y se lee en voz alta el coeficiente de fiabilidad que reporta.',
+   'Se mira contra qué muestra se construyeron los baremos —país, año, tamaño— y se pregunta qué tan parecida es a la población de Valledupar.',
+   'Se compara el TIG-1 con el TIG-2: mismo constructo, dos niveles de dificultad, y por qué existen los dos.'],
+  llev:'Fiabilidad, validez y baremación dejan de ser tres definiciones de examen y pasan a ser <b>tres páginas concretas de un manual que el estudiante ya tuvo en las manos</b>.'},
+ mas:[
+  {t:'Una aplicación completa en media hora', d:'El K-BIT (PSI028) dura entre 15 y 30 minutos y admite aplicación individual o grupal. Es el candidato natural para que cada estudiante aplique una prueba entera a un compañero y viva el rol de evaluador.'},
+  {t:'Fiabilidad test-retest, comprobada', d:'Aplicar el D2 (PSI031) al curso en dos momentos separados y correlacionar los dos puntajes produce, con datos propios, exactamente el coeficiente que el manual reporta. Pocas cosas convencen más.'},
+  {t:'El problema de los baremos importados', d:'Varias pruebas del laboratorio están baremadas en España o México. Discutir qué implica eso para un informe firmado en Colombia es contenido de psicometría y de ética a la vez.'}]},
+
+{id:'neuropsicologia', n:'Neuropsicología', sem:4, cod:'21243-A',
+ gancho:'Es el área con más instrumentos del laboratorio: cuatro baterías para distintas edades y cinco equipos que miden función motora fina, que es la parte que casi nunca se practica.',
+ caso:{
+  t:'La asimetría entre las dos manos es un dato',
+  min:'10 min', amb:'En el aula con el material llevado',
+  rec:[['PSI007','Purdue Pegboard · destreza manual'],['PSI025','BANFE-2 · funciones ejecutivas'],['PSI002','Encéfalo con lóbulos por color']],
+  pasos:[
+   'Un voluntario coloca clavijas con la mano dominante durante 30 segundos y se cuenta cuántas puso.',
+   'Repite con la mano no dominante, y luego con las dos a la vez.',
+   'Se comparan los tres números: aparece la asimetría esperable y su magnitud.',
+   'Con el modelo de lóbulos por color se explica por qué esa asimetría es información sobre el hemisferio contralateral, y qué haría sospechar un patrón invertido.'],
+  llev:'La evaluación neuropsicológica deja de parecer solo una entrevista larga: <b>hay medidas motoras cronometradas</b> que aportan datos que ningún cuestionario da.'},
+ mas:[
+  {t:'Cuatro baterías, cuatro poblaciones', d:'BANETA (PSI022, trastornos del aprendizaje, 6–16), ENI-2 (PSI024, evaluación infantil completa, 45–60 min), NEUROPSI (PSI023, adultos, 20 min) y BANFE-2 (PSI025, funciones ejecutivas, 18–70). Elegir cuál va con qué caso es el ejercicio clínico central.'},
+  {t:'Precisión y sensibilidad', d:'El Groove Type Steadiness Tester (PSI012) mide temblor y control fino; el Touch Test (PSI014), sensibilidad táctil con monofilamentos calibrados; el Hand Tool Dexterity (PSI008), destreza con herramientas.'}]},
+
+{id:'teorias-personalidad', n:'Teorías de la Personalidad', sem:4, cod:'21264-A',
+ gancho:'El laboratorio permite hacer algo que un texto no puede: poner al lado dos instrumentos que preguntan por la misma persona desde teorías incompatibles.',
+ caso:{
+  t:'Dos maneras de preguntar por lo mismo',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI053','16-PF · cuestionario factorial de personalidad'],['PSI015','Wartegg · test de dibujo proyectivo'],['PSI044','TAMADUL · cuestionario clínico de personalidad']],
+  pasos:[
+   'Se muestra el 16-PF: 16 factores, ítems cerrados, un perfil numérico al final.',
+   'Se muestra el Wartegg: ocho cuadros con un trazo mínimo y la instrucción de completarlos.',
+   'Se pregunta al curso qué supone cada instrumento sobre lo que una persona sabe y puede decir de sí misma.',
+   'Se cierra con las escalas de sinceridad del TAMADUL: la respuesta factorial a la crítica proyectiva de que el cuestionario es falseable.'],
+  llev:'Rasgo y proyección dejan de ser dos capítulos consecutivos y se vuelven <b>dos apuestas metodológicas que se pueden comparar objeto contra objeto</b>.'},
+ mas:[
+  {t:'Autoconcepto en cinco dimensiones', d:'El AF-5 (PSI050) mide autoconcepto académico, social, emocional, familiar y físico desde los 8 años. Sirve para mostrar que un constructo global se descompone en facetas medibles por separado.'},
+  {t:'El apego, medido en adultos', d:'El VINCULATEST (PSI054) describe el estilo de apego predominante en pareja, familia, amistades y trabajo. Conecta la teoría del vínculo con un instrumento aplicable en 15 minutos.'}]},
+
+{id:'pensamiento-lenguaje', n:'Pensamiento y Lenguaje', sem:4, cod:'21234-A',
+ gancho:'Decodificar y comprender son dos procesos distintos, y hay una prueba en el laboratorio que los separa para que se vea.',
+ caso:{
+  t:'Leer no es una sola cosa',
+  min:'10 min', amb:'En el aula con el material llevado',
+  rec:[['PSI057','PROLEER · predictores de lectura'],['PSI022','BANETA · trastornos del aprendizaje']],
+  pasos:[
+   'Se abre el PROLEER y se separan sus componentes: decodificación, fluidez, comprensión, ortografía.',
+   'El auxiliar lee en voz alta, con velocidad y entonación perfectas, un párrafo de un texto que nadie entiende (técnico o en otro idioma).',
+   'Se pregunta al curso: ¿leyó bien? La respuesta obliga a distinguir la ejecución de la comprensión.',
+   'Se muestra cómo el BANETA evalúa por separado lectura, escritura y cálculo, y por qué dislexia, disgrafía y discalculia son diagnósticos distintos.'],
+  llev:'La comprensión lectora se vuelve <b>un proceso descomponible y evaluable</b>, no una habilidad global que se tiene o no se tiene.'},
+ mas:[
+  {t:'Razonamiento verbal frente a no verbal', d:'El K-BIT (PSI028) enfrenta una escala verbal con una de matrices. Comparar el rendimiento de una misma persona en las dos es la vía corta para discutir la relación entre pensamiento y lenguaje.'},
+  {t:'Decisión léxica con tiempos reales', d:'Chronos (PSI013) permite montar tareas de decisión léxica y medir la latencia de respuesta, que es la variable con la que la psicolingüística trabaja de verdad.'}]},
+
+{id:'historia-psicoanalisis', n:'Historia de la Psicología (Psicoanálisis)', sem:4, cod:'21221-A',
+ gancho:'Las diez láminas de Rorschach están en este edificio, bajo custodia, y esa custodia es en sí misma parte de la historia que la asignatura cuenta.',
+ caso:{
+  t:'Las diez láminas y por qué están bajo llave',
+  min:'12 min', amb:'En el aula con el material llevado, con el auxiliar presente',
+  rec:[['PSI018','Rorschach · láminas y protocolo'],['PSI020','TAT–CAT · técnicas proyectivas'],['PSI019','Pata Negra · hoja de respuesta']],
+  pasos:[
+   'El auxiliar muestra la caja cerrada del Rorschach y explica en qué año aparece y con qué pretensión.',
+   'Se muestra una lámina —solo una— y se pide al curso que diga qué ve. Se anotan tres respuestas distintas en el tablero.',
+   'Se explica que si el estudiante hubiera visto las diez en internet, ese material ya no serviría para evaluarlo nunca más.',
+   'Se contrasta con el TAT y el Pata Negra: misma lógica proyectiva, distinto estímulo y distinta población.'],
+  llev:'La técnica proyectiva se entiende desde adentro, y de paso queda claro <b>por qué el material de evaluación tiene reglas de custodia</b> y no es un recurso didáctico cualquiera.'},
+ mas:[
+  {t:'El dibujo como puerta', d:'H-T-P (PSI016), Test de la Casa (PSI021) y Dibujo de la Figura Humana (PSI017) muestran la familia de técnicas gráficas que salió de la misma tradición y que sigue viva en la práctica clínica infantil.'}]},
+
+/* ── Quinto semestre ─────────────────────────────────────────── */
+{id:'psicopatologia', n:'Psicopatología', sem:5, cod:'21245-A',
+ gancho:'Catorce instrumentos clínicos disponibles. La pregunta interesante no es cuáles hay, sino qué se pierde cuando un criterio diagnóstico se convierte en 21 ítems.',
+ caso:{
+  t:'Del criterio diagnóstico al punto de corte',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI042','BDI-II · inventario de depresión de Beck'],['PSI045','LSB-50 · listado de síntomas breve'],['PSI035','BAI · inventario de ansiedad de Beck']],
+  pasos:[
+   'Se escribe en el tablero un criterio del episodio depresivo tal como lo enuncia el manual diagnóstico.',
+   'Se abre el BDI-II y se busca qué ítems recogen ese criterio: cuántos son y cómo están redactados.',
+   'Se muestra el punto de corte y se pregunta qué significa que una persona quede un punto por debajo.',
+   'Se contrasta con el LSB-50, que no diagnostica: es cribado y da índices globales de riesgo y severidad.'],
+  llev:'El estudiante entiende que <b>un inventario no diagnostica</b>: cuantifica gravedad, y la distancia entre las dos cosas es donde vive el criterio profesional.'},
+ mas:[
+  {t:'La misma ansiedad, cuatro edades', d:'CAS (PSI036, 6–8 años), CMASR-2 (PSI040, 6–19), BAI (PSI035, 13 en adelante) y AMAS (PSI039, adultos y mayores de 60). Ver los cuatro juntos explica por qué no existe «la escala de ansiedad».'},
+  {t:'Entrevista estructurada para síndromes', d:'El CHIPS (PSI037) recorre los síndromes psiquiátricos con formato de entrevista. Es el complemento del inventario: lo que el papel no pregunta, lo pregunta el clínico.'},
+  {t:'Trauma, con y sin diagnóstico', d:'El CIT (PSI043) recoge reexperimentación, evitación, alteraciones cognitivas e hiperactivación, y añade depresión, ira, culpa y consumo. Muestra cómo se evalúa un cuadro que casi nunca viene solo.'},
+  {t:'Psicopatología del desarrollo', d:'El SENA (PSI033) evalúa funcionamiento cognitivo y emocional de 6 a 16 años, el CDI (PSI038) separa disforia de autoestima negativa en depresión infantil, y el GADS (PSI032) apoya la identificación de Asperger y TDA diferenciándolos de otros cuadros. Los tres muestran que el mismo trastorno no se pregunta igual a un niño que a un adulto.'}]},
+
+{id:'psicologia-educativa', n:'Psicología Educativa', sem:5, cod:'21253-A',
+ gancho:'El motivo de consulta más frecuente en un colegio —«no atiende, no rinde»— tiene aquí cuatro instrumentos posibles, y el orden en que se apliquen cambia el resultado.',
+ caso:{
+  t:'«El niño no atiende»: por dónde se empieza',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI030','CARAS-R · percepción de diferencias (6–18)'],['PSI022','BANETA · trastornos del aprendizaje'],['PSI057','PROLEER · predictores de lectura']],
+  pasos:[
+   'Se plantea el caso: niño de tercero, la profesora reporta que no atiende y va atrasado en lectura.',
+   'Se pregunta al curso con qué prueba empezaría. Suele salir primero la de atención.',
+   'Se muestra el CARAS-R (3–5 minutos) y se acepta como cribado inicial, no como conclusión.',
+   'Se abre el BANETA y el PROLEER: si el problema es de decodificación lectora, la conducta de «no atender» puede ser la consecuencia y no la causa.'],
+  llev:'El estudiante practica lo más difícil del área: <b>no confundir el motivo de consulta con la hipótesis</b>, y elegir el instrumento según la hipótesis y no según la queja.'},
+ mas:[
+  {t:'El contexto familiar del rendimiento', d:'ESPA (PSI048) para estilos de socialización parental y ESFA (PSI052) para satisfacción familiar permiten sostener con datos la parte del análisis que suele quedarse en supuestos.'},
+  {t:'Habilidades sociales en el aula', d:'El EEHSA (PSI049) mide empatía, asertividad y resolución de conflictos en adolescentes: base para programas de convivencia escolar que se puedan evaluar después.'}]},
+
+{id:'psicologia-social-fund', n:'Psicología Social (Fundamentos)', sem:5, cod:'21244-A',
+ gancho:'Buena parte de lo social se estudia con escalas de autoinforme, y el laboratorio tiene varias que miden exactamente los constructos del programa.',
+ caso:{
+  t:'Lo que creo que hago y lo que la escala mide',
+  min:'10 min', amb:'En el aula',
+  rec:[['PSI056','EMA · escala multidimensional de asertividad'],['PSI049','EEHSA · habilidades sociales'],['PSI050','AF-5 · autoconcepto']],
+  pasos:[
+   'Se plantea una situación social concreta: un compañero se cuela en la fila. Cada estudiante escribe qué haría.',
+   'Se clasifican las respuestas del salón en las tres categorías del EMA: directa, indirecta, no asertiva.',
+   'Se muestra que el instrumento hace exactamente eso, pero con 45 ítems y un baremo detrás.',
+   'Se discute el problema de fondo: el autoinforme mide lo que la persona dice que haría, no lo que hace.'],
+  llev:'La distancia entre <b>actitud declarada y conducta observada</b> —el problema clásico de la psicología social— queda planteada con un instrumento en la mano.'},
+ mas:[
+  {t:'El autoconcepto es social', d:'El AF-5 (PSI050) separa la dimensión social del autoconcepto de la académica y la física, y permite discutir cómo el grupo entra en la imagen de uno mismo.'}]},
+
+{id:'intro-investigacion', n:'Introducción a la Investigación en Psicología', sem:5, cod:'21513-A',
+ gancho:'La dificultad real de un anteproyecto no es la pregunta: es encontrar un instrumento que la mida y al que se tenga acceso. Aquí hay sesenta, y son gratis para el estudiante.',
+ caso:{
+  t:'De la pregunta al instrumento disponible',
+  min:'12 min', amb:'En el aula, con el catálogo proyectado',
+  rec:[['PSI031','D2'],['PSI050','AF-5'],['PSI049','EEHSA'],['PSI047','FRIDA']],
+  pasos:[
+   'Se pide al curso una pregunta de investigación cualquiera, dicha en voz alta.',
+   'Se abre el catálogo web proyectado y se busca en vivo un instrumento que mida esa variable.',
+   'Se revisa en la ficha lo que decide la viabilidad: rango de edad, tiempo de aplicación, individual o grupal.',
+   'Se calcula ahí mismo cuántas horas costaría aplicarlo a la muestra que el estudiante imagina.'],
+  llev:'La viabilidad deja de ser un párrafo de relleno del anteproyecto y se vuelve <b>una cuenta que el estudiante puede hacer</b> antes de comprometerse con un diseño.'},
+ mas:[
+  {t:'Variables que ya tienen escala', d:'Codependencia (ICOD, PSI034), dependencia emocional (IDE, PSI055), riesgo de consumo en adolescentes (FRIDA, PSI047), desesperanza (TED-R, PSI041). Son temas de trabajo de grado recurrentes que aquí ya tienen instrumento.'}]},
+
+/* ── Sexto semestre ──────────────────────────────────────────── */
+{id:'tecnicas-evaluacion', n:'Técnicas de Evaluación', sem:6, cod:'21236-A',
+ gancho:'Esta asignatura y el laboratorio son casi la misma cosa: sesenta recursos, dos ambientes y una Cámara de Gesell donde el grupo puede observar una aplicación real sin invadirla.',
+ caso:{
+  t:'Aplicar de verdad, con el grupo detrás del espejo',
+  min:'Sesión completa', amb:'Cámara de Gesell (303)',
+  rec:[['PSI028','K-BIT · 15–30 min, aplicación completa'],['PSI046','CTC-R · cuestionario clínico general'],['PSI042','BDI-II']],
+  pasos:[
+   'Dos estudiantes pasan a la sala de la Cámara: uno aplica, otro hace de evaluado.',
+   'El resto del curso observa desde el otro lado del espejo, con una pauta de registro repartida antes.',
+   'Se aplica una prueba breve completa —el K-BIT cabe en el tiempo— sin interrupciones.',
+   'Al terminar se devuelve en grupo: qué instrucción se dio mal, dónde se perdió el encuadre, qué se anotó de más o de menos.'],
+  llev:'El estudiante se ve aplicando <b>antes de que el error le cueste a un paciente</b>, y recibe una devolución de veinte personas que estaban mirando la misma escena.'},
+ mas:[
+  {t:'Armar la batería de un caso', d:'Con el catálogo proyectado, el curso selecciona qué instrumentos usaría para un motivo de consulta dado y justifica cada elección por edad, tiempo y constructo. Es la competencia central del área.'},
+  {t:'Corregir a mano antes de corregir con plantilla', d:'Las hojas de respuesta y plantillas de corrección del laboratorio permiten que el estudiante puntúe manualmente y entienda de dónde sale el número que después leerá en un informe.'}]},
+
+{id:'psicologia-organizacional', n:'Psicología Organizacional', sem:6, cod:'21265-A',
+ gancho:'Dos de los equipos del laboratorio no son material didáctico: son pruebas de selección de personal que la industria usa desde hace décadas para puestos con exigencia motriz.',
+ caso:{
+  t:'Seleccionar para un puesto que exige las manos',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI007','Purdue Pegboard · destreza manual'],['PSI008','Hand Tool Dexterity Test'],['PSI051','APM · perfil motivacional']],
+  pasos:[
+   'Se plantea la vacante: operario de ensamble fino, alta rotación, muchos candidatos.',
+   'Se pregunta al curso cómo seleccionaría. Casi siempre aparece la entrevista y quizá un test de personalidad.',
+   'Se saca el Purdue Pegboard y dos voluntarios compiten 30 segundos: la diferencia entre ellos es visible e inmediata.',
+   'Se discute validez predictiva: qué predice mejor el desempeño en ese puesto, la entrevista o la medida directa de la conducta requerida.'],
+  llev:'La selección de personal deja de ser sinónimo de entrevista y test de personalidad: <b>hay pruebas de muestra de trabajo</b>, y suelen predecir mejor.'},
+ mas:[
+  {t:'Perfil motivacional para gestión del talento', d:'El APM (PSI051) fue diseñado para selección, gestión del talento, orientación y coaching. Sus cinco pares de motivo y contramotivo se leen directamente como perfil de puesto.'},
+  {t:'Orientación vocacional y ocupacional', d:'EXPLORA (PSI059) y KV (PSI058) generan perfiles de intereses y sugieren campos ocupacionales. Aplicables desde los 15 años, individual o grupal: sirven para prácticas en colegios y para programas de plan de carrera.'},
+  {t:'Personalidad en contexto laboral', d:'El 16-PF (PSI053) es uno de los cuestionarios más usados en selección. Tenerlo permite discutir con el manual delante qué se puede y qué no se puede concluir de un perfil factorial.'}]},
+
+{id:'investigacion-cualitativa', n:'Investigación Cualitativa', sem:6, cod:'21254-A',
+ gancho:'La Cámara de Gesell es el ambiente que esta asignatura necesita y casi nunca usa: un grupo focal con observadores que no contaminan la escena.',
+ caso:{
+  t:'Grupo focal con observación no participante real',
+  min:'Sesión completa', amb:'Cámara de Gesell (303)',
+  rec:[['PSI046','CTC-R · guion de exploración, como modelo de guía']],
+  pasos:[
+   'Seis estudiantes hacen de participantes y uno modera, con una guía de preguntas preparada en la clase anterior.',
+   'El resto observa desde el otro lado del espejo con roles repartidos: quién registra turnos de habla, quién no verbal, quién contenido.',
+   'La sesión corre 25 o 30 minutos sin interrupción.',
+   'Se contrastan los registros: tres personas que miraron la misma escena escribieron cosas distintas.'],
+  llev:'La reflexividad y el sesgo del observador dejan de ser advertencias del texto: <b>el curso comprueba que el registro depende de quién registra</b>.'},
+ mas:[
+  {t:'Entrevista en profundidad grabada', d:'La Cámara permite grabar una entrevista y revisarla después línea por línea, que es la única forma seria de aprender a transcribir y codificar.'},
+  {t:'Saturación con datos propios', d:'Si la asignatura hace tres grupos focales en el semestre, el propio material sirve para discutir saturación teórica sobre datos que el curso produjo.'}]},
+
+{id:'psicologia-social-int', n:'Psicología Social (Intervención)', sem:6, cod:'21255-A',
+ gancho:'Una intervención sin línea base no se puede evaluar, y el laboratorio tiene los instrumentos con los que se levanta esa línea base.',
+ caso:{
+  t:'Diseñar una prevención que después se pueda evaluar',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI047','FRIDA · factores de riesgo interpersonales de consumo'],['PSI049','EEHSA · habilidades sociales'],['PSI056','EMA · asertividad']],
+  pasos:[
+   'Se plantea el encargo: un colegio pide un programa de prevención de consumo para grado noveno.',
+   'Se abre el FRIDA y se recorren sus dimensiones: grupo de iguales, supervisión familiar, vínculo con la escuela, accesibilidad percibida, actitudes.',
+   'Se señala que el instrumento mide riesgo, no consumo, y por qué eso es exactamente lo que necesita un programa preventivo.',
+   'Se plantea el diseño: aplicar antes, intervenir, aplicar después, y comparar.'],
+  llev:'La intervención social se vuelve <b>evaluable</b>, y el estudiante ve que la medición no es un requisito burocrático sino lo que separa un programa de una buena intención.'},
+ mas:[
+  {t:'Sobre qué se interviene', d:'El EEHSA (PSI049) y el EMA (PSI056) identifican qué habilidades concretas están bajas en el grupo, de modo que el programa se dirija a eso y no a un temario genérico.'}]},
+
+{id:'historia-cognitiva', n:'Historia de la Psicología (Cognitiva)', sem:6, cod:'21225-A',
+ gancho:'La revolución cognitiva se hizo con milisegundos: la idea de que el tiempo de respuesta revela procesos internos invisibles. El laboratorio tiene el equipo que los mide.',
+ caso:{
+  t:'El cronómetro mental',
+  min:'12 min', amb:'Laboratorio Experimental (305)',
+  rec:[['PSI013','Chronos · Psychology Software Tools'],['PSI009','Economy Clock / Counter']],
+  pasos:[
+   'Se monta una tarea de reacción simple: aparece un estímulo, se pulsa. Se toma el tiempo de dos o tres voluntarios.',
+   'Se monta una tarea de elección: si es rojo se pulsa izquierda, si es azul derecha. Se vuelve a medir.',
+   'Se comparan los dos tiempos: la diferencia es sistemática y visible.',
+   'Se nombra lo que acaba de ocurrir: esa diferencia se atribuye a una operación mental interpuesta. Eso es la sustracción de Donders, y es el argumento que devolvió lo mental a la psicología científica.'],
+  llev:'El estudiante entiende que el cognitivismo no ganó por argumentos filosóficos sino porque <b>encontró la forma de medir lo que el conductismo declaraba inaccesible</b>.'},
+ mas:[
+  {t:'El contraste, en la misma clase', d:'Poner el Auto Tally Maze (PSI011) al lado de Chronos hace visible el cambio de época: el mismo laboratorio, dos supuestos distintos sobre qué es un dato psicológico.'}]},
+
+/* ── Séptimo semestre ────────────────────────────────────────── */
+{id:'psicologia-clinica', n:'Psicología Clínica y de la Salud', sem:7, cod:'21246-A',
+ gancho:'El laboratorio tiene la secuencia completa de una primera consulta: el instrumento que documenta el motivo, el que criba y el que mide lo específico.',
+ caso:{
+  t:'Los tres pasos de una primera consulta',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI046','CTC-R · cuestionario clínico general'],['PSI045','LSB-50 · cribado, 10–15 min'],['PSI042','BDI-II · depresión']],
+  pasos:[
+   'Se abre el CTC-R: recoge motivo de consulta, antecedentes personales y familiares, sintomatología presente. Es la historia clínica hecha uniforme y comparable.',
+   'Se pasa al LSB-50: seis áreas de malestar en 10–15 minutos, con índices globales de riesgo y severidad. No diagnostica, orienta hacia dónde mirar.',
+   'Según lo que el cribado señale, se elige el instrumento específico: BDI-II, BAI, CIT, IDE.',
+   'Se insiste en el orden: primero documentar, después cribar, después medir. Al revés se mide lo que uno ya suponía.'],
+  llev:'El proceso de evaluación clínica deja de ser una lista de pruebas y se vuelve <b>una secuencia con lógica</b>, donde cada paso decide el siguiente.'},
+ mas:[
+  {t:'Seguimiento, no solo diagnóstico', d:'El LSB-50 está pensado para aplicarse varias veces y seguir la evolución de un caso a lo largo del tratamiento. Es la introducción natural a la medición de resultados.'},
+  {t:'La pareja como motivo de consulta', d:'VINCULATEST (PSI054), IDE (PSI055) e ICOD (PSI034) cubren apego adulto, dependencia emocional y codependencia: tres de los motivos de consulta más frecuentes en atención de adultos.'}]},
+
+{id:'entrevista', n:'Entrevista', sem:7, cod:'21730-A',
+ gancho:'Nadie aprende a entrevistar leyendo sobre entrevistas. La Cámara de Gesell existe justamente para que la primera vez sea observada y comentada.',
+ caso:{
+  t:'Entrevista inicial con el curso detrás del espejo',
+  min:'Sesión completa', amb:'Cámara de Gesell (303)',
+  rec:[['PSI037','CHIPS · entrevista para síndromes psiquiátricos'],['PSI046','CTC-R · exploración clínica general']],
+  pasos:[
+   'Dos estudiantes entran a la sala: uno entrevista, otro trae un caso preparado por el docente.',
+   'El resto observa con pauta: apertura, tipo de preguntas, manejo del silencio, cierre.',
+   'La entrevista corre 15 o 20 minutos sin que nadie interrumpa desde afuera.',
+   'Se devuelve en grupo, y luego se muestra el CHIPS: el mismo terreno, pero estructurado, para discutir qué gana y qué pierde una entrevista cuando se estandariza.'],
+  llev:'El estudiante recibe algo que no da ningún texto: <b>una devolución sobre su propia forma de preguntar</b>, hecha por quienes acaban de verlo.'},
+ mas:[
+  {t:'Verse a uno mismo', d:'Grabar la sesión y que el estudiante la revise después es el ejercicio más incómodo y más eficaz de la asignatura.'},
+  {t:'La entrevista que documenta', d:'El CTC-R (PSI046) muestra cómo se convierte una conversación en un registro comparable entre casos, que es lo que exige cualquier institución.'}]},
+
+{id:'psicologia-juridica', n:'Psicología Jurídica', sem:7, cod:'21731-A',
+ gancho:'El laboratorio tiene la guía práctica del perito en el sistema penal acusatorio colombiano y un ambiente donde se puede simular un contrainterrogatorio.',
+ caso:{
+  t:'Sostener un peritaje en contrainterrogatorio',
+  min:'Sesión completa', amb:'Cámara de Gesell (303)',
+  rec:[['PSI060','Psicología forense en el proceso penal acusatorio · guía'],['PSI044','TAMADUL · con escalas de sinceridad'],['PSI055','IDE · dependencia emocional']],
+  pasos:[
+   'Un estudiante prepara un informe pericial breve sobre un caso dado por el docente.',
+   'Pasa a la sala y lo sostiene en testimonio experto; otro estudiante hace de defensa y contrainterroga.',
+   'El curso observa desde el espejo con foco en una sola pregunta: ¿qué afirmaciones del informe resistieron y cuáles no?',
+   'Se revisa con la guía en la mano el capítulo de contrainterrogatorio y se comparan las respuestas dadas con las recomendadas.'],
+  llev:'El estudiante descubre que en lo forense <b>no basta con evaluar bien: hay que poder defender cada frase del informe</b> ante alguien cuyo trabajo es desmontarla.'},
+ mas:[
+  {t:'La simulación como problema técnico', d:'El TAMADUL (PSI044) incorpora escalas de control de sinceridad y de respuestas inconsistentes. En contexto forense esas escalas no son un detalle: son el centro del debate pericial.'},
+  {t:'Violencia de pareja', d:'IDE (PSI055) y VINCULATEST (PSI054) evalúan dependencia emocional y estilo de vínculo, frecuentes en la valoración de casos de violencia intrafamiliar.'}]},
+
+{id:'investigacion-experimental', n:'Investigación Experimental en Psicología', sem:7, cod:'21256-A',
+ gancho:'Esta es la asignatura para la que existe el Laboratorio Experimental (305). Siete equipos que producen datos numéricos en una sola sesión, sin depender de que nadie conteste un cuestionario.',
+ caso:{
+  t:'Un experimento completo en una sesión',
+  min:'Sesión completa', amb:'Laboratorio Experimental (305)',
+  rec:[['PSI010','Discrimination Weights · umbral diferencial'],['PSI013','Chronos'],['PSI014','Touch Test Sensory Evaluator']],
+  pasos:[
+   'Se plantea la hipótesis clásica: la diferencia mínima perceptible entre dos pesos no es constante, sino proporcional al peso base.',
+   'Cada estudiante actúa como sujeto y como experimentador, en pares, con el procedimiento escrito antes.',
+   'Se registra el umbral en dos o tres pesos base distintos. Con veinte sujetos hay datos suficientes.',
+   'Se calcula la fracción de Weber para cada peso base y se compara con lo que predice la ley.'],
+  llev:'El estudiante recorre el ciclo entero —hipótesis, operacionalización, registro, análisis, conclusión— <b>con datos que produjo él</b>, en una sola sesión y sin permisos éticos externos.'},
+ mas:[
+  {t:'Variable independiente con manipulación real', d:'El Purdue Pegboard (PSI007), el Steadiness Tester (PSI012) y el Hand Tool Dexterity (PSI008) permiten manipular fatiga, práctica, presión temporal o interferencia y medir el efecto en una variable dependiente continua.'},
+  {t:'Diseños de tiempo de reacción', d:'Chronos (PSI013) es software experimental: permite montar diseños con estímulos controlados y registro al milisegundo, que es donde vive la mayor parte de la psicología experimental publicada.'},
+  {t:'Aprendizaje motor con curva', d:'El Auto Tally Maze (PSI011) genera curvas de adquisición por ensayos, ideales para diseños intra-sujeto.'}]},
+
+{id:'etica-profesional', n:'Ética Profesional', sem:7, cod:'21276-A',
+ gancho:'El laboratorio es un caso de ética profesional en funcionamiento: material bajo custodia, restricciones de quién aplica qué, y consecuencias reales si un protocolo circula.',
+ caso:{
+  t:'Por qué el material está bajo llave',
+  min:'12 min', amb:'En el aula',
+  rec:[['PSI018','Rorschach · material de seguridad restringida'],['PSI029','TIG · manual con baremos'],['PSI060','Guía forense · uso pericial del instrumento']],
+  pasos:[
+   'Se plantea la pregunta directa: ¿por qué el catálogo del laboratorio publica el objetivo y el rango de edad de cada prueba, pero nunca los ítems ni los protocolos?',
+   'Se explica qué le pasa a la validez de una prueba cuyo contenido circula: no se degrada un poco, deja de medir.',
+   'Se recorre quién puede aplicar qué, y qué significa firmar un informe con un instrumento para el que no se tiene formación.',
+   'Se cierra con la custodia: el material prestado queda a cargo de quien organiza la actividad, por procedimiento y por escrito.'],
+  llev:'La ética deja de ser un capítulo de principios abstractos: <b>se convierte en decisiones concretas sobre objetos que el estudiante tiene delante</b>.'},
+ mas:[
+  {t:'Baremos importados y responsabilidad', d:'Varias pruebas están baremadas en otra población. Firmar un informe con un baremo que no corresponde es un problema técnico y ético a la vez, y sirve para discutir los límites del propio ejercicio.'},
+  {t:'Consentimiento y devolución', d:'Toda aplicación hecha en clase con compañeros como evaluados plantea, en pequeño, las mismas preguntas que una evaluación real: qué se le dice al evaluado, qué se hace con el resultado, quién lo puede ver.'}]},
+
+/* ── Octavo semestre ─────────────────────────────────────────── */
+{id:'intervencion-cc', n:'Intervención Cognitivo Conductual (Estudio de Caso)', sem:8, cod:'21811-A',
+ gancho:'El enfoque cognitivo conductual se define por medir antes, durante y después. El laboratorio tiene los instrumentos con los que se hace esa medición repetida.',
+ caso:{
+  t:'Línea base, tratamiento y resultado',
+  min:'12 min', amb:'En el aula con el material llevado',
+  rec:[['PSI042','BDI-II · depresión'],['PSI035','BAI · ansiedad'],['PSI045','LSB-50 · seguimiento de evolución']],
+  pasos:[
+   'Se toma el caso que la asignatura esté trabajando y se identifica la variable dependiente principal.',
+   'Se elige el instrumento que la mide y se define cada cuánto se aplicaría a lo largo del tratamiento.',
+   'Se dibuja en el tablero la gráfica que se esperaría si la intervención funciona, y la que aparecería si no.',
+   'Se discute qué cambio en el puntaje es clínicamente significativo, más allá de que baje.'],
+  llev:'El estudiante entiende que en este enfoque <b>la medición no evalúa al terapeuta: guía la sesión siguiente</b>.'},
+ mas:[
+  {t:'Grabar para supervisar', d:'La Cámara de Gesell (303) permite grabar sesiones simuladas y revisarlas en supervisión, que es la forma en que realmente se aprende a intervenir.'},
+  {t:'Cribado antes de enfocar', d:'El LSB-50 (PSI045) da índices globales de riesgo y severidad al inicio, y detecta lo que el motivo de consulta no mencionó.'}]},
+
+{id:'intervencion-dinamica', n:'Intervención Dinámica (Estudio de Caso)', sem:8, cod:'21810-A',
+ gancho:'Las seis técnicas proyectivas del laboratorio pertenecen a esta tradición, y trabajar con ellas obliga a enfrentar de frente el problema de la interpretación.',
+ caso:{
+  t:'Interpretar sin inventar',
+  min:'12 min', amb:'En el aula con el material llevado, con el auxiliar presente',
+  rec:[['PSI020','TAT–CAT · técnicas proyectivas y láminas'],['PSI016','H-T-P · dibujo proyectivo'],['PSI018','Rorschach']],
+  pasos:[
+   'Se muestra una lámina del TAT y se pide a tres estudiantes que escriban la historia que sugiere.',
+   'Se leen las tres en voz alta: son distintas, y esa diferencia es el dato.',
+   'Se pregunta cómo se justifica una interpretación: qué del material la sostiene y qué la proyecta el intérprete.',
+   'Se abre el manual y se muestra qué criterios propone para no confundir las dos cosas.'],
+  llev:'La técnica proyectiva se aborda con su problema central sobre la mesa: <b>cómo se distingue una interpretación fundamentada de una ocurrencia</b>.'},
+ mas:[
+  {t:'Población infantil', d:'Pata Negra (PSI019, de 4 a 15 años) y CAT están pensados para niños, cuando la palabra todavía no alcanza y el juego proyectivo sí.'},
+  {t:'La familia dibujada', d:'H-T-P (PSI016) y Test de la Casa (PSI021) exploran la vivencia del hogar y de las relaciones familiares a través de la estructura del dibujo.'}]},
+
+{id:'familia-grupos', n:'Psicología de la Familia y Grupos', sem:8, cod:'21812-A',
+ gancho:'La familia se puede describir por lo que cuenta un miembro, o se puede observar interactuando detrás de un espejo mientras el curso registra.',
+ caso:{
+  t:'La familia observada, no relatada',
+  min:'Sesión completa', amb:'Cámara de Gesell (303)',
+  rec:[['PSI052','ESFA · satisfacción familiar por adjetivos'],['PSI048','ESPA · estilos de socialización parental']],
+  pasos:[
+   'Cuatro estudiantes representan una familia con roles y un conflicto asignado por el docente; otro conduce la sesión.',
+   'El curso observa desde el espejo con foco en la interacción: quién habla por quién, quién interrumpe, quién queda fuera.',
+   'Se aplica la ESFA a los cuatro «miembros» según el personaje que representaron.',
+   'Se contrasta lo observado con lo declarado: la escala y el registro no siempre dicen lo mismo, y ahí está la lección.'],
+  llev:'El estudiante ve que <b>el sistema familiar se manifiesta en la interacción</b>, y que el autoinforme individual solo captura una parte.'},
+ mas:[
+  {t:'Estilos parentales con puntaje', d:'La ESPA (PSI048) evalúa el estilo de socialización que perciben los adolescentes: autoridad, apoyo emocional, comunicación, participación. Convierte la tipología clásica en un perfil.'},
+  {t:'Vínculo adulto y dependencia', d:'VINCULATEST (PSI054) e IDE (PSI055) permiten trabajar la pareja como subsistema, con instrumentos aplicables en 15 a 25 minutos.'}]},
+
+/* ── Noveno y décimo ─────────────────────────────────────────── */
+{id:'trabajo-grado', n:'Trabajo de Grado y Prácticas', sem:'9-10', cod:'21227-A · 21228-A · 21237-A · 21238-A',
+ gancho:'Sesenta instrumentos disponibles sin costo para el estudiante, con manual y baremos. Es la diferencia entre un proyecto viable y uno que se cae en el capítulo de método.',
+ caso:{
+  t:'Elegir el instrumento antes de cerrar el diseño',
+  min:'12 min', amb:'En el aula, con el catálogo proyectado',
+  rec:[['PSI031','D2'],['PSI047','FRIDA'],['PSI055','IDE'],['PSI041','TED-R']],
+  pasos:[
+   'Se abre el catálogo web proyectado y se filtra por la categoría que corresponda al tema del proyecto.',
+   'De cada ficha se leen los tres datos que deciden la viabilidad: rango de edad, tiempo de aplicación y si admite aplicación grupal.',
+   'Se hace la cuenta: tiempo de aplicación por tamaño de muestra, más corrección. Ahí muchos diseños se ajustan solos.',
+   'Se revisa quién puede aplicar el instrumento y bajo qué supervisión, porque eso también condiciona el cronograma.'],
+  llev:'El capítulo de método deja de escribirse al final y con lo que se consiga: <b>se decide al principio, con el inventario real delante</b>.'},
+ mas:[
+  {t:'Cómo se solicita siendo estudiante', d:'Un estudiante puede pedir material indicando el correo del docente que lo respalda. El préstamo se crea de inmediato y el docente recibe copia: la custodia del material es suya, según el procedimiento LAB-PR-004.'},
+  {t:'La Cámara de Gesell para recolección', d:'Entrevistas y grupos focales grabados en la Cámara (303) dan material de mucha mejor calidad que una grabación de celular en un pasillo, y se reserva como cualquier otra actividad.'}]}
+
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════════════════ */
+var $ = function(s){ return document.querySelector(s); };
+var grid = $('#grid'), empty = $('#empty'), q = $('#q'), chips = $('#chips');
+var filtroSem = null;
+
+document.getElementById('periodo').textContent = 'Periodo ' + PERIODO;
+document.getElementById('nAsig').textContent = ASIGNATURAS.length;
+
+function semTexto(s){ return s === '9-10' ? '9º y 10º semestre' : s + 'º semestre'; }
+
+/* Chips de semestre, en el orden del plan de estudios */
+(function(){
+  var vistos = [];
+  ASIGNATURAS.forEach(function(a){ if (vistos.indexOf(a.sem) < 0) vistos.push(a.sem); });
+  var html = '<button type="button" class="chip" data-sem="" aria-pressed="true">Todas</button>';
+  vistos.forEach(function(s){
+    html += '<button type="button" class="chip" data-sem="' + s + '" aria-pressed="false">' +
+            (s === '9-10' ? '9º y 10º' : s + 'º') + '</button>';
+  });
+  chips.innerHTML = html;
+  chips.addEventListener('click', function(e){
+    var b = e.target.closest('.chip'); if (!b) return;
+    filtroSem = b.dataset.sem || null;
+    Array.prototype.forEach.call(chips.children, function(c){
+      c.setAttribute('aria-pressed', c === b ? 'true' : 'false');
+    });
+    pintar();
+  });
+})();
+
+function pintar(){
+  var t = q.value.trim().toLowerCase();
+  var vis = ASIGNATURAS.filter(function(a){
+    if (filtroSem && String(a.sem) !== filtroSem) return false;
+    if (!t) return true;
+    var blob = (a.n + ' ' + a.gancho + ' ' + a.caso.t + ' ' +
+                a.caso.rec.map(function(r){ return r.join(' '); }).join(' ')).toLowerCase();
+    return blob.indexOf(t) >= 0;
+  });
+  grid.innerHTML = vis.map(function(a){
+    var n = 1 + (a.mas ? a.mas.length : 0);
+    return '<button type="button" class="tarj" data-id="' + a.id + '">' +
+      '<span class="sem">' + (a.sem === '9-10' ? '9º–10º' : a.sem + 'º SEMESTRE') + '</span>' +
+      '<span class="nom">' + a.n + '</span>' +
+      '<span class="gan">' + a.gancho + '</span>' +
+      '<span class="cuenta">' + n + (n === 1 ? ' caso de uso' : ' casos de uso') + '</span>' +
+      '</button>';
+  }).join('');
+  empty.hidden = vis.length > 0;
+}
+
+grid.addEventListener('click', function(e){
+  var b = e.target.closest('.tarj'); if (!b) return;
+  location.hash = b.dataset.id;
+});
+q.addEventListener('input', pintar);
+
+function verFicha(a){
+  var recs = a.caso.rec.map(function(r){
+    return '<span class="rec"><code>' + r[0] + '</code>' + r[1] + '</span>';
+  }).join('');
+  var pasos = a.caso.pasos.map(function(p){ return '<li>' + p + '</li>'; }).join('');
+  var mas = !a.mas ? '' :
+    '<div class="mas"><h4>Otras formas de usarlo en esta asignatura</h4>' +
+    a.mas.map(function(m){
+      return '<div class="it"><b>' + m.t + '</b><p>' + m.d + '</p></div>';
+    }).join('') + '</div>';
+
+  $('#fichaCuerpo').innerHTML =
+    '<div class="fcab">' +
+      '<span class="sem">' + semTexto(a.sem) + ' · ' + a.cod + '</span>' +
+      '<h2>' + a.n + '</h2>' +
+      '<p class="gancho">' + a.gancho + '</p>' +
+    '</div>' +
+    '<div class="caso">' +
+      '<p class="tag">Caso de uso principal</p>' +
+      '<h3>' + a.caso.t + '</h3>' +
+      '<div class="meta"><span><b>' + a.caso.min + '</b></span><span>' + a.caso.amb + '</span></div>' +
+      '<h4>Qué se necesita</h4><div class="recs">' + recs + '</div>' +
+      '<h4>Cómo se hace</h4><ol class="pasos">' + pasos + '</ol>' +
+      '<p class="llev"><b>Qué se lleva el estudiante · </b>' + a.caso.llev + '</p>' +
+    '</div>' +
+    mas +
+    '<div class="pedir">' +
+      '<h4>Cómo se pide</h4>' +
+      '<p>Cada recurso tiene su ficha en el catálogo del laboratorio, con fotografía, rango de edad, ' +
+        'tiempo de aplicación y un botón que radica la solicitud. Los estudiantes pueden solicitarlo ' +
+        'indicando el correo del docente que respalda el préstamo.</p>' +
+      '<a href="' + CATALOGO + '" target="_blank" rel="noopener">Abrir el catálogo del laboratorio →</a>' +
+    '</div>' +
+    '<details class="guion"><summary>Guion del auxiliar · ' + a.n + '</summary><div class="cuerpo">' +
+      '<p><em>Entra por el gancho, no por el inventario.</em> La primera frase que digas es la de arriba, ' +
+        'con tus palabras. Enumerar pruebas de entrada no engancha a nadie.</p>' +
+      '<p><em>El caso de uso es lo único que tienes que hacer bien.</em> Sigue los pasos en orden; ' +
+        'están escritos para que quepan en el tiempo acordado con el docente.</p>' +
+      '<p><em>Si te preguntan algo técnico que no sabes</em>, la respuesta correcta es «lo confirmo con el ' +
+        'encargado del laboratorio y le escribo al profesor». No improvises sobre una prueba: el contenido ' +
+        'técnico no es tu responsabilidad.</p>' +
+      '<p><em>Cierra siempre con el catálogo.</em> Que el docente y los estudiantes se lleven el enlace ' +
+        'es el único resultado que importa de la visita.</p>' +
+    '</div></details>';
+  document.body.classList.add('ver-ficha');
+  window.scrollTo(0, 0);
+}
+
+function ruta(){
+  var id = location.hash.replace('#', '');
+  var a = ASIGNATURAS.filter(function(x){ return x.id === id; })[0];
+  if (a) { verFicha(a); }
+  else {
+    document.body.classList.remove('ver-ficha');
+    window.scrollTo(0, 0);
+  }
+}
+window.addEventListener('hashchange', ruta);
+$('#volver').addEventListener('click', function(){ location.hash = ''; });
+
+/* ── Modo proyección y tamaño de letra ─────────────────────── */
+var esc = 1;
+function aplicarEsc(){ document.documentElement.style.setProperty('--esc', esc); }
+$('#btnProy').addEventListener('click', function(){
+  var on = document.body.classList.toggle('proy');
+  this.textContent = on ? 'Salir de proyección' : 'Modo proyección';
+  if (on && esc < 1.2) { esc = 1.25; aplicarEsc(); }
+  if (!on) { esc = 1; aplicarEsc(); }
+});
+$('#btnMas').addEventListener('click', function(){ esc = Math.min(1.9, esc + 0.12); aplicarEsc(); });
+$('#btnMenos').addEventListener('click', function(){ esc = Math.max(0.85, esc - 0.12); aplicarEsc(); });
+
+/* Escape vuelve al índice; sirve cuando se maneja con el control del proyector */
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && document.body.classList.contains('ver-ficha')) location.hash = '';
+});
+
+pintar();
+ruta();
+</script>
+</body>
+</html>
