@@ -127,11 +127,16 @@
   .r .nm{font-weight:650;font-size:.9em;line-height:1.32;color:var(--azul-hondo)}
   .r .qm{font-size:.82em;color:var(--muted);line-height:1.5;margin:0}
 
-  .ideas{margin:0 0 30px}
-  .idea{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--azul);
-    border-radius:0 13px 13px 0;padding:18px 22px;margin:0 0 13px;box-shadow:var(--shadow)}
-  .idea b{display:block;font-size:1.04em;color:var(--azul-hondo);margin-bottom:6px;line-height:1.3}
-  .idea p{margin:0;color:var(--muted);line-height:1.6;font-size:.94em}
+  /* Lista de actividades posibles. Va como <ul> y no como bloques de prosa
+     para que el auxiliar la lea de corrido y para que cada punto se lea como
+     una idea suelta, no como una propuesta cerrada. */
+  ul.ideas{margin:0 0 30px;padding:0;list-style:none}
+  ul.ideas li{position:relative;background:var(--surface);border:1px solid var(--line);
+    border-radius:11px;padding:13px 18px 13px 40px;margin:0 0 9px;box-shadow:var(--shadow);
+    font-size:.97em;line-height:1.5;color:var(--ink)}
+  ul.ideas li::before{content:"";position:absolute;left:17px;top:1.28em;
+    width:8px;height:8px;border-radius:50%;background:var(--azul)}
+  body.proy ul.ideas li{padding:16px 20px 16px 44px;margin-bottom:11px}
 
   .suya{background:var(--lila);border:1px solid #ddd0f0;border-radius:13px;padding:17px 21px;
     margin:0 0 26px;font-size:.94em;color:#4a3070}
@@ -278,10 +283,12 @@ var ASIGNATURAS = [
   ['PSI030','CARAS-R · percepción de diferencias','Detección de diferencias visuales sutiles. De 6 a 18 años, grupal, y se resuelve en 3–5 minutos: cabe en cualquier momento de la clase.'],
   ['PSI028','K-BIT · test breve de Kaufman','Estimación rápida de razonamiento verbal y no verbal. Útil para mostrar cómo se organiza una prueba de aptitudes sin ocupar dos horas.']],
  ideas:[
-  {t:'Un dato del propio curso, no de un libro',
-   d:'Las dos pruebas de atención se aplican al grupo entero en minutos y cada estudiante termina con su propio resultado. Qué se hace después con esos datos —una discusión sobre fatiga, una comparación entre quienes durmieron bien y quienes no, un puente con Estadística— es donde la clase se vuelve suya.'},
-  {t:'La diferencia entre definir y medir',
-   d:'Tener el cuadernillo delante permite preguntar algo que un texto no plantea: si esto es «atención», ¿qué parte de la atención quedó fuera? Es la primera conversación sobre validez que un estudiante de primero puede sostener con un objeto en la mano.'}]},
+  'Aplicar el D2 al curso completo: son diez minutos y cada estudiante termina con su propio perfil de rendimiento.',
+  'Comparar las primeras líneas de la prueba con las últimas, y ver aparecer la fatiga en su propia hoja.',
+  'Usar el CARAS-R como entrada rápida a la clase de percepción: se resuelve en tres o cuatro minutos.',
+  'Preguntar, con el cuadernillo delante, qué parte de la atención quedó fuera de lo que la prueba mide.',
+  'Aplicar la misma prueba a primera hora y al final de la jornada, y comparar los resultados del grupo.',
+  'Revisar cómo está construido el cuadernillo: qué decisiones tomó quien lo diseñó y por qué.']},
 
 {id:'fundamentos-psicologia', n:'Fundamentos de la Psicología', sem:1, cod:'21201-A',
  gancho:'En primer semestre se decide algo que dura la carrera entera: si el estudiante cree que la psicología se mide o que se opina.',
@@ -290,12 +297,11 @@ var ASIGNATURAS = [
   ['PSI053','16-PF · cuestionario factorial','La tradición psicométrica: 16 factores, ítems cerrados, un perfil numérico. El contraste con el anterior es el contenido.'],
   ['PSI023','NEUROPSI · evaluación breve','La mirada neuropsicológica: funciones cognitivas evaluadas una por una, con baremos por edad y escolaridad.']],
  ideas:[
-  {t:'Tres cajas, tres respuestas a la misma pregunta',
-   d:'Puestas juntas sobre la mesa, estas tres pruebas son tres maneras distintas de responder «¿cómo se estudia la mente?». No hace falta aplicarlas: verlas y compararlas ya ordena el mapa de corrientes que la asignatura recorre durante el semestre.'},
-  {t:'Anticipar el recorrido',
-   d:'Cada prueba pertenece a un semestre más adelante. Decir en primero dónde se van a encontrar con cada una le da al plan de estudios una forma concreta, y de paso avisa que el laboratorio va a estar ahí todo el camino.'},
-  {t:'Una visita al laboratorio, sin agenda',
-   d:'Diez minutos en el Laboratorio Experimental (305) al inicio del semestre bastan para que el grupo sepa que el sitio existe. Se reserva como cualquier otra clase.'}]},
+  'Poner las tres cajas juntas sobre la mesa y preguntar qué supone cada una sobre cómo se estudia la mente.',
+  'Ubicar cada instrumento en su corriente, y decir en qué semestre se lo van a volver a encontrar.',
+  'Mostrar un protocolo de registro para que vean cómo se documenta un dato psicológico de verdad.',
+  'Traer al curso al Laboratorio Experimental diez minutos al inicio del semestre, sin más agenda que conocerlo.',
+  'Abrir la conversación de por qué el material de evaluación está bajo custodia y no circula.']},
 
 {id:'competencias-socioemocionales', n:'Electiva Competencias Socioemocionales', sem:1, cod:'21411-A',
  gancho:'Una electiva sobre habilidades socioemocionales puede trabajar con la percepción que cada estudiante tiene de sí mismo, o puede ponerle una medida al lado.',
@@ -304,10 +310,11 @@ var ASIGNATURAS = [
   ['PSI049','EEHSA · habilidades sociales para adolescentes','Empatía, asertividad, toma de decisiones sociales y resolución de conflictos. Individual o grupal.'],
   ['PSI050','AF-5 · autoconcepto forma 5','Autoconcepto académico, social, emocional, familiar y físico. Desde los 8 años.']],
  ideas:[
-  {t:'Lo que creo de mí frente a lo que sale medido',
-   d:'Cualquiera de las tres puede aplicarse después de que cada estudiante haya escrito su propia estimación. La distancia entre las dos cosas suele ser el material más útil de la sesión, y qué se hace con esa distancia depende de hacia dónde quiera llevar el curso.'},
-  {t:'Medir antes y después de la electiva',
-   d:'Si la asignatura busca desarrollar habilidades, aplicar la misma escala al principio y al final convierte esa intención en algo verificable. El laboratorio presta el instrumento las dos veces.'}]},
+  'Pedir que cada estudiante se califique del 1 al 10 en asertividad antes de aplicar el EMA, y comparar después.',
+  'Recorrer las tres dimensiones del EMA con situaciones que proponga el propio grupo.',
+  'Aplicar la misma escala al abrir y al cerrar la electiva, para que el avance se pueda mirar.',
+  'Separar con el AF-5 el autoconcepto social del académico y del físico.',
+  'Usar el EEHSA si la electiva tiene proyectos con colegios: está baremado de 12 a 18 años.']},
 
 /* ── 2º ──────────────────────────────────────────────────────── */
 {id:'memoria-aprendizaje', n:'Memoria y Aprendizaje', sem:2, cod:'21242-A',
@@ -318,12 +325,12 @@ var ASIGNATURAS = [
   ['PSI022','BANETA · trastornos del aprendizaje','Lectura, escritura y cálculo evaluados por separado en escolares. Muestra cómo se localiza dónde falla el aprendizaje.'],
   ['PSI027','WISC-IV · Escala Wechsler para niños','Trae un índice de memoria de trabajo dentro de una medida más amplia de capacidad cognitiva.']],
  ideas:[
-  {t:'La memoria no es una',
-   d:'Ver cómo cuatro instrumentos distintos parten la memoria en subpruebas —inmediata, diferida, de trabajo, verbal, visual— hace visible algo que en el texto es una lista de etiquetas. Qué distinción vale la pena profundizar depende del enfoque de la asignatura.'},
-  {t:'Aprendizaje que no ocurre',
-   d:'El BANETA está diseñado para casos donde el aprendizaje falla. Trabajar desde el fallo —qué se evalúa cuando un niño no aprende a leer— suele explicar el proceso normal mejor que describirlo directamente.'},
-  {t:'Un mismo estudiante, dos momentos',
-   d:'Cualquier prueba del laboratorio admite aplicación repetida. Si el curso quiere ver curvas de retención o efectos de la práctica, el instrumento está disponible tantas veces como haga falta.'}]},
+  'Recorrer el índice de una batería y contar en cuántas subpruebas distintas se parte la memoria.',
+  'Aplicar una subprueba de memoria al curso y comparar el recuerdo inmediato con el diferido.',
+  'Trabajar desde el fallo: qué evalúa el BANETA cuando un niño no logra aprender a leer.',
+  'Comparar cómo mide memoria de trabajo el WISC-IV frente a cómo lo hace el NEUROPSI.',
+  'Repetir una prueba a distancia de días y mirar cuánto se retuvo.',
+  'Discutir por qué hacen falta versiones distintas para niños y para adultos.']},
 
 {id:'evolutiva-ninez', n:'Ps. Evolutiva Niñez y Adolescencia', sem:2, cod:'21212-A',
  gancho:'El laboratorio tiene el mismo constructo medido a tres edades distintas. Comparar los tres cuadernillos dice más sobre el desarrollo que un cuadro de etapas.',
@@ -335,12 +342,12 @@ var ASIGNATURAS = [
   ['PSI017','Dibujo de la Figura Humana','Técnica gráfica de 3 a 18 años: el desarrollo leído en cómo cambia el dibujo con la edad.'],
   ['PSI019','Pata Negra · con hoja de respuesta','Exploración de la dinámica infantil de 4 a 15 años, cuando el cuestionario todavía no es una opción.']],
  ideas:[
-  {t:'Por qué cambia el instrumento cuando cambia la edad',
-   d:'Las tres escalas de inteligencia miden lo mismo y no se parecen en nada. Esa diferencia es el desarrollo hecho visible: lo que se puede preguntar a los cuatro años, a los diez y a los quince no es igual. La discusión que salga de ahí la lleva quien conoce el temario.'},
-  {t:'El contexto también se mide',
-   d:'La ESPA convierte la tipología clásica de estilos parentales en un perfil con puntajes. Sirve para pasar de describir tipos a discutir qué se gana y qué se pierde al cuantificarlos.'},
-  {t:'Material para prácticas en colegios',
-   d:'Si la asignatura contempla salidas o proyectos con población infantil, estas pruebas se prestan y hay ambientes propios para aplicarlas dentro del campus.'}]},
+  'Abrir las tres escalas Wechsler y ver cómo cambia la tarea de los 3 a los 16 años.',
+  'Discutir por qué no se aplica una prueba fuera de su rango de edad aunque el niño parezca capaz.',
+  'Comparar los tiempos de aplicación —30, 60, 110 minutos— y qué implican al trabajar con niños.',
+  'Aplicar la ESPA y convertir la tipología de estilos parentales en un perfil con puntajes.',
+  'Analizar dibujos de la figura humana de distintas edades y ver qué cambia.',
+  'Usar el Pata Negra para hablar de evaluación cuando el niño todavía no responde cuestionarios.']},
 
 {id:'estadistica-descriptiva', n:'Estadística Descriptiva', sem:2, cod:'16114-C',
  gancho:'La estadística se enseña con datos de ejemplo que no le importan a nadie. El laboratorio puede producir, en cinco minutos, un conjunto de datos donde cada estudiante es una fila.',
@@ -349,10 +356,11 @@ var ASIGNATURAS = [
   ['PSI031','D2 · test de atención','Da varias medidas por persona —aciertos, errores, índice de concentración—, así que sirve para trabajar más de una variable.'],
   ['PSI029','TIG · inteligencia general, niveles 1 y 2','Su manual trae los baremos: la tabla que convierte un puntaje bruto en un percentil, hecha y publicada.']],
  ideas:[
-  {t:'La distribución del propio salón',
-   d:'Con los puntajes del curso en el tablero, media, mediana, moda y desviación dejan de ser un ejercicio de libro. Cada estudiante puede además ubicarse dentro de su grupo, que es la pregunta que de verdad le interesa.'},
-  {t:'Los baremos ya existen y son de verdad',
-   d:'Enseñar percentiles con la tabla de un manual real muestra para qué sirve lo que se está aprendiendo a construir, y abre una pregunta que no es solo estadística: contra qué población está baremada esa tabla.'}]},
+  'Aplicar el CARAS-R al curso y calcular la distribución con los datos del salón, no con los del libro.',
+  'Ubicar el puntaje de cada estudiante en percentiles dentro de su propio grupo.',
+  'Leer los baremos de un manual real y preguntar contra qué población se construyeron.',
+  'Meter un dato atípico del propio grupo y ver qué le pasa a la media y qué a la mediana.',
+  'Graficar por separado los resultados de dos mitades del salón y compararlas.']},
 
 /* ── 3º ──────────────────────────────────────────────────────── */
 {id:'neurociencias', n:'Neurociencias', sem:3, cod:'21232-A',
@@ -362,10 +370,11 @@ var ASIGNATURAS = [
   ['PSI025','BANFE-2 · funciones ejecutivas y lóbulos frontales','Planificación, inhibición y flexibilidad mental en adultos de 18 a 70 años. La función frontal, medida.'],
   ['PSI024','ENI-2 · evaluación neuropsicológica infantil','El mismo mapa funcional aplicado al cerebro en desarrollo.']],
  ideas:[
-  {t:'De la estructura a la medida',
-   d:'Cada subprueba del NEUROPSI o del BANFE-2 apunta a un sistema cerebral concreto. Recorrer el índice del manual es recorrer un mapa funcional, y permite preguntar cómo se sabe que esa tarea evalúa esa estructura.'},
-  {t:'Qué se pierde y cómo se detecta',
-   d:'Las baterías están hechas para detectar deterioro. Trabajar desde el déficit —qué prueba lo revelaría, qué la haría fallar— es una vía natural para explicar la función normal.'}]},
+  'Recorrer las subpruebas del BANFE-2 y asociar cada una a la función frontal que evalúa.',
+  'Plantear un déficit y preguntar al curso qué prueba lo detectaría.',
+  'Comparar cómo se evalúa lo mismo en un niño con el ENI-2 y en un adulto con el NEUROPSI.',
+  'Discutir cómo se justifica que una tarea concreta mida una estructura concreta.',
+  'Usar los baremos por edad y escolaridad para introducir la idea de reserva cognitiva.']},
 
 {id:'motivacion-emocion', n:'Motivación y Emoción', sem:3, cod:'21233-A',
  gancho:'Los modelos motivacionales del programa se pueden discutir en abstracto, o se pueden aplicar al propio grupo y mirar el perfil que sale.',
@@ -374,10 +383,11 @@ var ASIGNATURAS = [
   ['PSI035','BAI · inventario de ansiedad de Beck','La emoción cuantificada por sus síntomas: tensión, inquietud, preocupación, agitación.'],
   ['PSI039','AMAS · ansiedad manifiesta en adultos','Dos versiones según la etapa vital, lo que abre la pregunta de si la emoción se pregunta igual a los 25 que a los 70.']],
  ideas:[
-  {t:'Una teoría que se volvió escala',
-   d:'El APM es un modelo teórico convertido en instrumento. Verlo permite discutir el paso que rara vez se enseña: cómo alguien decide que un constructo tiene cinco dimensiones y no siete, y qué evidencia respalda ese recorte.'},
-  {t:'Aplicarlo al curso y leer el resultado juntos',
-   d:'El perfil motivacional del propio grupo suele generar conversación sola. Hacia dónde llevarla —orientación vocacional, motivación de logro, clima de aula— lo decide quien conoce el programa de la asignatura.'}]},
+  'Aplicar el APM al curso y leer juntos el perfil motivacional que sale.',
+  'Recorrer los cinco pares de motivo y contramotivo con ejemplos que ponga el grupo.',
+  'Preguntar cómo se decide que un constructo tiene cinco dimensiones y no siete.',
+  'Mirar los ítems del BAI y ver con qué síntomas concretos se cuantifica la ansiedad.',
+  'Comparar el AMAS para adultos con el de mayores de 60 y discutir por qué se pregunta distinto.']},
 
 {id:'evolutiva-adultez', n:'Ps. Evolutiva Adultez y Vejez', sem:3, cod:'21263-A',
  gancho:'La pregunta que atraviesa la asignatura —qué es envejecimiento normal y qué es deterioro— tiene aquí instrumentos que la responden con números.',
@@ -387,10 +397,11 @@ var ASIGNATURAS = [
   ['PSI041','TED-R · test de desesperanza','Esperanza y desesperanza como variables pronósticas de salud y de calidad de vida. Desde los 12 años.'],
   ['PSI052','ESFA · satisfacción familiar por adjetivos','La red de apoyo familiar, medida de forma breve y sencilla de aplicar.']],
  ideas:[
-  {t:'Un puntaje no significa nada sin su grupo de referencia',
-   d:'El NEUROPSI se interpreta contra baremos por edad y escolaridad. Preguntar qué pasaría si se usara el baremo de un universitario joven con un adulto de 70 años y primaria incompleta abre de golpe el problema central de la evaluación en esta etapa.'},
-  {t:'Por qué existe una versión para mayores de 60',
-   d:'Que el AMAS tenga una forma aparte para la vejez no es un detalle editorial: implica que los síntomas se expresan distinto. Es una entrada concreta a la especificidad del desarrollo tardío.'}]},
+  'Aplicar el NEUROPSI y trabajar la interpretación contra baremos de edad y escolaridad.',
+  'Plantear qué pasaría si se usara con un adulto de 70 años el baremo de un universitario joven.',
+  'Comparar el AMAS-A con el AMAS-E como ejemplo de especificidad del desarrollo tardío.',
+  'Introducir la desesperanza como variable pronóstica de salud con el TED-R.',
+  'Usar la ESFA para trabajar redes de apoyo familiar en la vejez.']},
 
 {id:'estadistica-inferencial', n:'Estadística Inferencial', sem:3, cod:'16115-B',
  gancho:'Contrastar dos medias convence mucho más cuando los dos grupos son mitades del mismo salón y el dato lo produjeron ellos hace veinte minutos.',
@@ -399,10 +410,11 @@ var ASIGNATURAS = [
   ['PSI030','CARAS-R · percepción de diferencias','Aún más corto: permite varias mediciones dentro de una misma sesión.'],
   ['PSI050','AF-5 · autoconcepto','Cinco dimensiones a la vez, útil cuando se quiere trabajar más de una variable dependiente.']],
  ideas:[
-  {t:'Un contraste con datos propios',
-   d:'Cualquier condición que el curso pueda manipular —ruido de fondo, hora del día, presión de tiempo— convierte una prueba de atención en un diseño de dos grupos. Qué estadístico corresponde y qué supuestos hay que revisar es justo el temario.'},
-  {t:'Tamaño de muestra como problema real',
-   d:'Con los tiempos de aplicación en la mano, calcular cuántos sujetos harían falta deja de ser un ejercicio abstracto y se vuelve una decisión logística que el estudiante puede razonar.'}]},
+  'Dividir el salón en dos y aplicar el D2 con y sin ruido de fondo.',
+  'Escribir la hipótesis en el tablero antes de recoger el dato, y contrastarla después.',
+  'Calcular cuántos sujetos harían falta usando los tiempos reales de aplicación.',
+  'Revisar los supuestos del contraste con los datos que produjo el propio curso.',
+  'Repetir el diseño cambiando la variable manipulada y comparar los dos resultados.']},
 
 /* ── 4º ──────────────────────────────────────────────────────── */
 {id:'psicometria', n:'Psicometría', sem:4, cod:'21235-A',
@@ -414,12 +426,13 @@ var ASIGNATURAS = [
   ['PSI031','D2 · test de atención','Aplicación rápida y repetible: el candidato natural para trabajar fiabilidad test-retest con datos del propio curso.'],
   ['PSI044','TAMADUL · cuestionario clínico de personalidad','Incorpora escalas de sinceridad y de respuestas inconsistentes: los controles que responden a la crítica de falseabilidad.']],
  ideas:[
-  {t:'Abrir un kit y separar sus partes',
-   d:'Manual, cuadernillo, hoja de respuestas, plantilla de corrección. Ver dónde vive físicamente cada concepto de la asignatura —dónde está reportada la fiabilidad, en qué página empiezan los baremos— convierte el temario en algo localizable.'},
-  {t:'Baremos importados, población local',
-   d:'Varias pruebas del laboratorio están baremadas en España o México. Qué implica eso para un informe firmado en Colombia es contenido de psicometría y de ética a la vez, y da para una sesión entera.'},
-  {t:'Comprobar un coeficiente en vez de leerlo',
-   d:'Una prueba breve aplicada dos veces al curso, con los dos puntajes correlacionados, produce el mismo tipo de coeficiente que el manual reporta. Si el resultado no coincide, la discusión sobre por qué es todavía mejor.'}]},
+  'Abrir un kit completo y separar sus cuatro partes: manual, cuadernillo, hoja de respuestas y plantilla.',
+  'Buscar en el manual el coeficiente de fiabilidad y leerlo en voz alta.',
+  'Revisar contra qué muestra se construyeron los baremos: país, año y tamaño.',
+  'Aplicar el D2 en dos momentos y correlacionar los puntajes para ver la fiabilidad test-retest.',
+  'Comparar el TIG-1 con el TIG-2 y discutir por qué un mismo constructo necesita dos niveles.',
+  'Que cada estudiante aplique un K-BIT completo a un compañero y viva el rol de evaluador.',
+  'Discutir qué implica firmar en Colombia un informe con un baremo español o mexicano.']},
 
 {id:'neuropsicologia', n:'Neuropsicología', sem:4, cod:'21243-A',
  gancho:'Es el área con más baterías del laboratorio: cuatro instrumentos completos, cada uno para una población distinta, y elegir cuál va con qué caso es la competencia central del área.',
@@ -429,12 +442,11 @@ var ASIGNATURAS = [
   ['PSI024','ENI-2 · evaluación neuropsicológica infantil','6 a 16 años, 45–60 minutos. El perfil cognitivo completo del niño.'],
   ['PSI022','BANETA · trastornos del aprendizaje','6 a 16 años, unas 3 horas. Específica para dislexia, discalculia y disgrafía.']],
  ideas:[
-  {t:'Cuatro baterías, cuatro decisiones distintas',
-   d:'Dado un caso, elegir batería obliga a razonar edad, tiempo disponible, pregunta de referencia y profundidad. Es la decisión que un neuropsicólogo toma antes de evaluar, y con las cuatro cajas sobre la mesa se puede practicar sin aplicar nada.'},
-  {t:'Perfiles, no puntajes globales',
-   d:'Estas baterías producen un perfil de fortalezas y debilidades. Leer un perfil real —dónde sube, dónde cae, qué patrón sugiere— es una habilidad que solo se entrena con el material delante.'},
-  {t:'Cribar o profundizar',
-   d:'Veinte minutos de NEUROPSI y tres horas de BANETA responden preguntas distintas. Cuándo basta lo primero y cuándo hace falta lo segundo es criterio clínico, y es suyo para enseñarlo.'}]},
+  'Dar un caso y pedir que elijan entre las cuatro baterías, justificando edad, tiempo y pregunta.',
+  'Leer un perfil real y describir dónde sube, dónde cae y qué patrón sugiere.',
+  'Comparar 20 minutos de NEUROPSI con tres horas de BANETA: cuándo basta cribar y cuándo hay que profundizar.',
+  'Recorrer el BANFE-2 como mapa de la función ejecutiva: planificación, inhibición, flexibilidad.',
+  'Discutir qué cambia al evaluar a un niño con el ENI-2 frente a un adulto.']},
 
 {id:'teorias-personalidad', n:'Teorías de la Personalidad', sem:4, cod:'21264-A',
  gancho:'El laboratorio permite hacer algo que un texto no puede: poner al lado dos instrumentos que preguntan por la misma persona desde teorías incompatibles.',
@@ -445,12 +457,11 @@ var ASIGNATURAS = [
   ['PSI050','AF-5 · autoconcepto forma 5','El autoconcepto separado en cinco facetas: la idea de que un constructo global se descompone.'],
   ['PSI054','VINCULATEST · vínculos interpersonales en adultos','Estilo de apego predominante en pareja, familia, amistades y trabajo.']],
  ideas:[
-  {t:'Qué supone cada instrumento sobre la persona',
-   d:'Un cuestionario asume que uno sabe y quiere decir cómo es; una técnica proyectiva asume lo contrario. Comparar los dos objetos hace explícito un supuesto teórico que normalmente se estudia sin verlo.'},
-  {t:'La respuesta factorial a la crítica proyectiva',
-   d:'Las escalas de sinceridad del TAMADUL existen porque alguien objetó que los cuestionarios son falseables. Es un buen ejemplo de cómo una crítica teórica termina cambiando el diseño de un instrumento.'},
-  {t:'Del rasgo al vínculo',
-   d:'Si la asignatura llega a las teorías relacionales, el VINCULATEST muestra cómo se opera un constructo que no está dentro de la persona sino entre personas.'}]},
+  'Poner el 16-PF y el Wartegg lado a lado y comparar qué supone cada uno sobre la persona.',
+  'Pedir que predigan su propio perfil antes de responder el cuestionario, y contrastar después.',
+  'Revisar las escalas de sinceridad del TAMADUL como respuesta concreta a una crítica teórica.',
+  'Aplicar el AF-5 y discutir qué se gana al descomponer un constructo global en facetas.',
+  'Pasar del rasgo al vínculo con el VINCULATEST, que mide algo que no está dentro de la persona.']},
 
 {id:'pensamiento-lenguaje', n:'Pensamiento y Lenguaje', sem:4, cod:'21234-A',
  gancho:'Decodificar y comprender son dos procesos distintos, y hay pruebas en el laboratorio que los separan para que la diferencia se vea.',
@@ -459,10 +470,11 @@ var ASIGNATURAS = [
   ['PSI022','BANETA · trastornos del aprendizaje','Lectura, escritura y cálculo como dominios independientes, lo que sostiene por qué dislexia y discalculia son diagnósticos distintos.'],
   ['PSI028','K-BIT · razonamiento verbal y matrices','Enfrenta una escala verbal con una no verbal en la misma persona.']],
  ideas:[
-  {t:'Leer bien no es entender',
-   d:'La separación entre ejecución y comprensión que el PROLEER hace explícita se puede mostrar en segundos y sostiene buena parte de la unidad de lenguaje. Cómo se conecte con la teoría que esté usando el curso es decisión suya.'},
-  {t:'Pensamiento con y sin palabras',
-   d:'Comparar el rendimiento verbal y no verbal de una misma persona en el K-BIT es la vía corta hacia la pregunta clásica de la asignatura: cuánto del pensamiento depende del lenguaje.'}]},
+  'Leer en voz alta, con entonación perfecta, un texto que nadie entienda, y preguntar si eso es leer.',
+  'Separar los componentes del PROLEER y discutir cuál falla en cada caso que se plantee.',
+  'Comparar el rendimiento verbal y el no verbal de una misma persona en el K-BIT.',
+  'Revisar cómo el BANETA distingue dislexia, disgrafía y discalculia como dominios separados.',
+  'Discutir cuánto del pensamiento depende del lenguaje, con los dos cuadernillos delante.']},
 
 {id:'historia-psicoanalisis', n:'Historia de la Psicología (Psicoanálisis)', sem:4, cod:'21221-A',
  gancho:'Las diez láminas de Rorschach están en este edificio, bajo custodia, y esa custodia es en sí misma parte de la historia que la asignatura cuenta.',
@@ -473,10 +485,11 @@ var ASIGNATURAS = [
   ['PSI016','H-T-P · técnica de dibujo proyectivo','Casa, árbol y persona: la familia de técnicas gráficas que salió de la misma tradición.'],
   ['PSI021','Test de la Casa','La vivencia del hogar leída en la estructura del dibujo.']],
  ideas:[
-  {t:'Una lámina basta',
-   d:'Mostrar una sola lámina y recoger tres respuestas distintas del curso deja claro, sin explicar nada, qué pretende una técnica proyectiva. Y abre la razón por la que el material no circula: una prueba cuyo contenido se conoce deja de medir.'},
-  {t:'De la teoría al protocolo',
-   d:'Estos instrumentos son el momento en que una teoría clínica intentó volverse procedimiento reproducible. Si ese intento funcionó o no es una discusión viva, y aquí se puede tener con el material sobre la mesa.'}]},
+  'Mostrar una sola lámina del Rorschach y recoger tres respuestas distintas del curso.',
+  'Explicar qué le pasa a la validez de una prueba cuando su contenido circula por internet.',
+  'Comparar Rorschach, TAT y Pata Negra según la edad y el tipo de estímulo de cada uno.',
+  'Revisar el protocolo de registro como el intento de volver reproducible una teoría clínica.',
+  'Discutir, con el material sobre la mesa, si ese intento funcionó o no.']},
 
 /* ── 5º ──────────────────────────────────────────────────────── */
 {id:'psicopatologia', n:'Psicopatología', sem:5, cod:'21245-A',
@@ -493,12 +506,12 @@ var ASIGNATURAS = [
   ['PSI040','CMASR-2 · ansiedad manifiesta en niños','Preocupación excesiva, inquietud y miedo a la separación, de 6 a 19 años.'],
   ['PSI032','GADS · escala de Gilliam para TDA y Asperger','Identificación diferencial en población de 3 a 22 años.']],
  ideas:[
-  {t:'Del criterio al punto de corte',
-   d:'Tomar un criterio diagnóstico y buscar qué ítems lo recogen en un inventario real muestra el paso que casi nunca se hace explícito. Y deja servida la pregunta de qué significa quedar un punto por debajo del corte.'},
-  {t:'Cribar no es diagnosticar',
-   d:'El LSB-50 orienta hacia dónde mirar; el BDI-II cuantifica gravedad; el CHIPS pregunta. Ninguno diagnostica. Ordenar esa jerarquía es criterio profesional, y es exactamente lo que la asignatura forma.'},
-  {t:'La misma categoría a distintas edades',
-   d:'Depresión y ansiedad tienen aquí versiones para niños, adolescentes, adultos y mayores de 60. Verlas juntas explica por qué no existe «la escala» de un trastorno.'}]},
+  'Tomar un criterio diagnóstico y buscar qué ítems del BDI-II lo recogen y cómo están redactados.',
+  'Preguntar qué significa, para una persona real, quedar un punto por debajo del punto de corte.',
+  'Ordenar la jerarquía del proceso: cribar, cuantificar gravedad, entrevistar.',
+  'Poner juntas las escalas de ansiedad de las cuatro edades y ver por qué no existe una sola.',
+  'Revisar el CIT para hablar de un cuadro que casi nunca viene solo.',
+  'Contrastar el formato de entrevista del CHIPS con el formato de inventario del BDI-II.']},
 
 {id:'psicologia-educativa', n:'Psicología Educativa', sem:5, cod:'21253-A',
  gancho:'El motivo de consulta más frecuente en un colegio —«no atiende, no rinde»— tiene aquí varios instrumentos posibles, y el orden en que se usen cambia la conclusión.',
@@ -510,12 +523,12 @@ var ASIGNATURAS = [
   ['PSI048','ESPA · estilos de socialización parental','El contexto familiar del rendimiento, medido en vez de supuesto.'],
   ['PSI049','EEHSA · habilidades sociales para adolescentes','Base para programas de convivencia que después se puedan evaluar.']],
  ideas:[
-  {t:'El motivo de consulta no es la hipótesis',
-   d:'La queja dice «no atiende»; la causa puede estar en la decodificación lectora. Con estos instrumentos disponibles se puede trabajar la decisión de qué evaluar primero, que es donde se separa un buen diagnóstico escolar de uno apresurado.'},
-  {t:'Medir el contexto, no solo al niño',
-   d:'Que existan escalas para el estilo parental y para las habilidades sociales permite sostener con datos la parte del análisis que suele quedarse en supuestos.'},
-  {t:'Programas que se puedan evaluar',
-   d:'Si la asignatura diseña intervenciones escolares, aplicar antes y después convierte la propuesta en algo demostrable. El laboratorio presta el instrumento las dos veces.'}]},
+  'Plantear el caso «no atiende, no rinde» y decidir en grupo qué se evalúa primero.',
+  'Aplicar el CARAS-R como cribado y discutir por qué no alcanza para concluir.',
+  'Comprobar con BANETA y PROLEER si el problema es atencional o si es lector.',
+  'Medir el contexto familiar con la ESPA en vez de darlo por supuesto.',
+  'Diseñar un programa de convivencia usando el EEHSA como línea base.',
+  'Leer un perfil del WISC-IV por índices y no por el puntaje global.']},
 
 {id:'psicologia-social-fund', n:'Psicología Social (Fundamentos)', sem:5, cod:'21244-A',
  gancho:'Buena parte de lo social se estudia con escalas de autoinforme, y el laboratorio tiene varias que miden exactamente los constructos del programa.',
@@ -525,10 +538,11 @@ var ASIGNATURAS = [
   ['PSI050','AF-5 · autoconcepto','Incluye una dimensión social explícita: cómo entra el grupo en la imagen de uno mismo.'],
   ['PSI048','ESPA · estilos de socialización parental','El primer grupo de referencia de cualquier persona, medido.']],
  ideas:[
-  {t:'Lo que digo que haría y lo que hago',
-   d:'Toda escala de autoinforme mide lo declarado. Poner una situación concreta al curso, recoger respuestas y luego mostrar el instrumento hace visible el problema clásico de la disciplina sin necesidad de explicarlo.'},
-  {t:'Constructos sociales, medidas individuales',
-   d:'Que un fenómeno de grupo se evalúe con un cuestionario que responde una persona sola es una tensión metodológica real. Tener las escalas delante permite plantearla en serio.'}]},
+  'Plantear una situación social concreta, recoger respuestas y clasificarlas en las tres categorías del EMA.',
+  'Discutir la distancia entre lo que la gente dice que haría y lo que hace.',
+  'Separar con el AF-5 la dimensión social del autoconcepto del resto.',
+  'Preguntar qué se pierde al medir un fenómeno de grupo con un cuestionario que responde una sola persona.',
+  'Aplicar el EEHSA y comparar la percepción de cada uno con la que tiene el grupo de él.']},
 
 {id:'intro-investigacion', n:'Introducción a la Investigación en Psicología', sem:5, cod:'21513-A',
  gancho:'La dificultad real de un anteproyecto no es la pregunta: es encontrar un instrumento que la mida y al que se tenga acceso. Aquí hay decenas, y son gratis para el estudiante.',
@@ -538,10 +552,11 @@ var ASIGNATURAS = [
   ['PSI041','TED-R · test de desesperanza','Variable pronóstica en estudios de salud y calidad de vida.'],
   ['PSI031','D2 · test de atención','Variable dependiente cómoda: rápida, grupal y con varias medidas por persona.']],
  ideas:[
-  {t:'Del tema al instrumento, en vivo',
-   d:'Con el catálogo proyectado se puede buscar, delante del curso, si existe una prueba para la variable que alguien acaba de proponer. La respuesta —y a veces la ausencia de respuesta— enseña más que una clase sobre operacionalización.'},
-  {t:'La viabilidad es una cuenta, no un párrafo',
-   d:'Tiempo de aplicación por tamaño de muestra, más corrección. Hacer ese cálculo con datos reales del catálogo ajusta solo la ambición de muchos anteproyectos.'}]},
+  'Pedir una pregunta de investigación al curso y buscar en vivo, en el catálogo, si existe instrumento.',
+  'Leer las tres líneas que deciden la viabilidad: rango de edad, tiempo y si admite aplicación grupal.',
+  'Calcular en clase las horas que costaría aplicarlo a la muestra que el estudiante imagina.',
+  'Revisar variables ya operacionalizadas —riesgo de consumo, dependencia emocional, desesperanza— como ejemplos.',
+  'Discutir qué hacer cuando no existe instrumento para la variable que se quiere medir.']},
 
 /* ── 6º ──────────────────────────────────────────────────────── */
 {id:'tecnicas-evaluacion', n:'Técnicas de Evaluación', sem:6, cod:'21236-A',
@@ -554,12 +569,12 @@ var ASIGNATURAS = [
   ['PSI053','16-PF · cuestionario factorial','Perfil extenso, para trabajar la lectura e interpretación de resultados.'],
   ['PSI029','TIG · inteligencia general','Aplicación colectiva, útil cuando se quiere que todo el curso pase por el rol de evaluado.']],
  ideas:[
-  {t:'Aplicar con veinte personas mirando',
-   d:'La Cámara de Gesell permite que dos estudiantes trabajen mientras el resto observa sin interferir. La devolución posterior —qué instrucción se dio mal, dónde se perdió el encuadre— es el tipo de aprendizaje que no da ningún texto.'},
-  {t:'Armar la batería de un caso',
-   d:'Elegir qué instrumentos usaría para un motivo de consulta dado, y justificar cada elección por edad, tiempo y constructo, es la competencia central del área. El catálogo completo está disponible para ese ejercicio.'},
-  {t:'Corregir a mano antes que con plantilla',
-   d:'Puntuar manualmente una hoja de respuestas hace entender de dónde sale el número que después se leerá en un informe.'}]},
+  'Aplicar una prueba breve completa en la Cámara con el resto del curso observando tras el espejo.',
+  'Repartir una pauta de observación antes de entrar, y devolver en grupo al terminar.',
+  'Armar la batería de un caso dado y justificar cada instrumento por edad, tiempo y constructo.',
+  'Corregir a mano una hoja de respuestas antes de usar la plantilla.',
+  'Grabar una aplicación y revisarla después con el estudiante que la hizo.',
+  'Practicar la instrucción inicial y el encuadre, que es donde más se falla y menos se enseña.']},
 
 {id:'psicologia-organizacional', n:'Psicología Organizacional', sem:6, cod:'21265-A',
  gancho:'Las pruebas de selección, orientación y perfil que la asignatura menciona no son abstracciones: cuatro de ellas están disponibles y se pueden aplicar al propio curso.',
@@ -570,12 +585,11 @@ var ASIGNATURAS = [
   ['PSI058','KV · escala de preferencias vocacionales','Intereses relacionados con trabajo y estudio, individual o grupal.'],
   ['PSI056','EMA · escala multidimensional de asertividad','Comunicación y manejo del conflicto, base de buena parte de la formación en habilidades directivas.']],
  ideas:[
-  {t:'Qué se puede y qué no se puede concluir de un perfil',
-   d:'Tener el manual del 16-PF delante permite discutir con evidencia lo que un perfil factorial autoriza a decir sobre un candidato. Es la conversación que separa una selección profesional de una lectura de horóscopo.'},
-  {t:'Perfil de puesto y perfil de persona',
-   d:'Los cinco pares de motivos del APM se leen tanto como descripción de una persona como de un cargo. Cruzar los dos es un ejercicio de ajuste persona-puesto que se puede hacer en clase.'},
-  {t:'Orientación aplicada dentro del campus',
-   d:'EXPLORA y KV se aplican de forma grupal desde los 15 años. Si la asignatura tiene proyectos con colegios o con programas de bienestar, el instrumento se presta.'}]},
+  'Leer un perfil del 16-PF y discutir, con el manual delante, qué autoriza a decir de un candidato.',
+  'Cruzar los cinco motivos del APM con el perfil de un puesto concreto.',
+  'Aplicar EXPLORA o KV en un proyecto de orientación con colegios o con bienestar.',
+  'Comparar qué predice mejor el desempeño: la entrevista o una medida directa de lo que el puesto exige.',
+  'Trabajar comunicación y manejo de conflicto con el EMA en formación de habilidades directivas.']},
 
 {id:'investigacion-cualitativa', n:'Investigación Cualitativa', sem:6, cod:'21254-A',
  gancho:'La Cámara de Gesell es el ambiente que esta asignatura necesita y casi nunca usa: un grupo focal con observadores que no contaminan la escena.',
@@ -583,12 +597,11 @@ var ASIGNATURAS = [
  recursos:[
   ['PSI046','CTC-R · cuestionario clínico revisado','Sirve como modelo de guía estructurada, para contrastar con la guía abierta de un grupo focal.']],
  ideas:[
-  {t:'Observar sin estar dentro',
-   d:'El espejo permite que media clase observe una sesión completa mientras la otra media participa. Repartir focos de observación distintos —turnos de habla, no verbal, contenido— y luego contrastar los registros hace visible la reflexividad sin necesidad de nombrarla.'},
-  {t:'Grabar para transcribir de verdad',
-   d:'Una entrevista grabada en la Cámara se puede revisar línea por línea. Es la única forma seria de aprender a transcribir y codificar, y la calidad del audio no se parece a la de una grabación en un pasillo.'},
-  {t:'Material propio para todo el semestre',
-   d:'Tres o cuatro sesiones grabadas dan corpus suficiente para trabajar saturación, categorías emergentes y triangulación con datos que el curso produjo.'}]},
+  'Hacer un grupo focal con media clase dentro y media observando tras el espejo.',
+  'Repartir focos distintos de observación —turnos de habla, no verbal, contenido— y contrastar los registros.',
+  'Grabar una entrevista en la Cámara y transcribirla línea por línea.',
+  'Acumular tres sesiones a lo largo del semestre y discutir saturación con material propio.',
+  'Comparar una guía estructurada como el CTC-R con la guía abierta de un grupo focal.']},
 
 {id:'psicologia-social-int', n:'Psicología Social (Intervención)', sem:6, cod:'21255-A',
  gancho:'Una intervención sin línea base no se puede evaluar, y el laboratorio tiene los instrumentos con los que se levanta esa línea base.',
@@ -598,10 +611,11 @@ var ASIGNATURAS = [
   ['PSI056','EMA · asertividad','Complementa lo anterior con el manejo del conflicto interpersonal.'],
   ['PSI052','ESFA · satisfacción familiar','El entorno inmediato como factor protector o de riesgo.']],
  ideas:[
-  {t:'Medir antes de intervenir',
-   d:'Que el FRIDA evalúe riesgo y no consumo es justo lo que necesita un programa preventivo. Diseñar la intervención a partir de lo que la escala señale, y no de un temario genérico, es la diferencia entre un programa y una charla.'},
-  {t:'Demostrar que algo cambió',
-   d:'Aplicar el mismo instrumento al cerrar convierte la intervención en evidencia. Qué tanto cambio es suficiente, y qué explicaciones alternativas hay, es discusión de la asignatura.'}]},
+  'Aplicar el FRIDA como línea base antes de diseñar cualquier programa preventivo.',
+  'Dirigir la intervención a lo que la escala señale, y no a un temario genérico.',
+  'Volver a aplicar el mismo instrumento al cerrar y comparar con la línea base.',
+  'Discutir qué explicaciones alternativas podría tener el cambio observado.',
+  'Identificar con el EEHSA qué habilidad concreta está baja en ese grupo y no en otro.']},
 
 /* ── 7º ──────────────────────────────────────────────────────── */
 {id:'psicologia-clinica', n:'Psicología Clínica y de la Salud', sem:7, cod:'21246-A',
@@ -615,12 +629,12 @@ var ASIGNATURAS = [
   ['PSI055','IDE · inventario de dependencia emocional','Miedo a la ruptura, subordinación y prioridad de la pareja sobre uno mismo.'],
   ['PSI034','ICOD · instrumento de codependencia','Prevalencia y factores asociados a la codependencia.']],
  ideas:[
-  {t:'Primero documentar, después medir',
-   d:'Hay un orden en la evaluación clínica: documentar el motivo, cribar y solo entonces elegir el instrumento específico. Al revés se mide lo que uno ya suponía. Tener las tres cajas en secuencia hace ese orden evidente.'},
-  {t:'Medir el resultado, no solo el diagnóstico',
-   d:'El LSB-50 está hecho para aplicarse varias veces a lo largo de un tratamiento. Es la entrada natural a la medición de resultados, que es lo que hoy exige cualquier servicio de salud.'},
-  {t:'Los motivos de consulta más frecuentes ya tienen escala',
-   d:'Pareja, dependencia y codependencia aparecen en consulta todo el tiempo y aquí están operacionalizados. Cómo usarlos dentro de su modelo de intervención es decisión suya.'}]},
+  'Recorrer la secuencia completa de una primera consulta: documentar, cribar y solo entonces medir.',
+  'Aplicar el LSB-50 y discutir qué señala y qué no puede señalar.',
+  'Elegir el instrumento específico según lo que el cribado haya indicado.',
+  'Plantear una medición repetida a lo largo de un tratamiento y qué se esperaría ver.',
+  'Revisar los instrumentos de pareja, dependencia y codependencia como motivos de consulta frecuentes.',
+  'Discutir qué se documenta en una historia clínica y por qué conviene que sea comparable entre casos.']},
 
 {id:'entrevista', n:'Entrevista', sem:7, cod:'21730-A',
  gancho:'Nadie aprende a entrevistar leyendo sobre entrevistas. La Cámara de Gesell existe justamente para que la primera vez sea observada y comentada.',
@@ -630,12 +644,11 @@ var ASIGNATURAS = [
   ['PSI046','CTC-R · exploración clínica general','Cómo una conversación se convierte en un registro comparable entre casos.'],
   ['PSI044','TAMADUL · con escalas de sinceridad','Introduce la pregunta de qué hacer cuando lo que se dice no coincide con lo que se observa.']],
  ideas:[
-  {t:'Una devolución de veinte personas',
-   d:'Que el curso entero observe una entrevista y devuelva después es el ejercicio central de la asignatura, y solo es posible con un espejo de por medio. Qué se pide observar y cómo se conduce la devolución lo define usted.'},
-  {t:'Verse a uno mismo',
-   d:'Grabar la sesión y que el estudiante la revise es lo más incómodo y lo más eficaz que ofrece este espacio.'},
-  {t:'Estructurada, semiestructurada, abierta',
-   d:'Tener el CHIPS y el CTC-R en la mano permite recorrer el continuo con objetos y no con definiciones.'}]},
+  'Hacer una entrevista inicial en la Cámara con el curso entero observando.',
+  'Repartir pauta: apertura, tipo de preguntas, manejo del silencio y cierre.',
+  'Devolver en grupo al terminar, con foco en la forma de preguntar y no en el contenido.',
+  'Grabar la sesión y que el estudiante se revise a sí mismo después.',
+  'Recorrer el continuo de estructurada a abierta con el CHIPS y el CTC-R en la mano.']},
 
 {id:'psicologia-juridica', n:'Psicología Jurídica', sem:7, cod:'21731-A',
  gancho:'El laboratorio tiene la guía práctica del perito en el sistema penal acusatorio colombiano y un ambiente donde se puede simular un contrainterrogatorio.',
@@ -646,10 +659,11 @@ var ASIGNATURAS = [
   ['PSI055','IDE · dependencia emocional','De uso frecuente en la valoración de relaciones de pareja conflictivas y de violencia.'],
   ['PSI054','VINCULATEST · vínculos en adultos','Estilo de apego y patrones de conflicto interpersonal.']],
  ideas:[
-  {t:'Defender cada frase del informe',
-   d:'Un peritaje simulado que después se contrainterroga muestra algo que ninguna clase teórica transmite: en lo forense no basta con evaluar bien, hay que poder sostener cada afirmación ante alguien cuyo trabajo es desmontarla.'},
-  {t:'La simulación como problema técnico',
-   d:'Que un evaluado en contexto judicial tenga motivos para no responder con sinceridad cambia qué instrumentos son admisibles. Es una discusión que la guía plantea y que aquí se puede tener con el material delante.'}]},
+  'Simular un peritaje breve y sostenerlo en contrainterrogatorio dentro de la Cámara.',
+  'Observar desde el espejo qué afirmaciones del informe resistieron y cuáles no.',
+  'Revisar el capítulo de contrainterrogatorio de la guía y comparar con lo que pasó en la simulación.',
+  'Discutir las escalas de validez del TAMADUL cuando el evaluado tiene motivos para no ser sincero.',
+  'Trabajar valoración de violencia de pareja con el IDE y el VINCULATEST.']},
 
 {id:'investigacion-experimental', n:'Investigación Experimental en Psicología', sem:7, cod:'21256-A',
  gancho:'Un experimento necesita una variable dependiente que se pueda medir con precisión, y las pruebas del laboratorio dan exactamente eso: puntajes continuos, repetibles y con baremos.',
@@ -659,12 +673,11 @@ var ASIGNATURAS = [
   ['PSI028','K-BIT · test breve','Medida de aptitud para usar como variable de control o de emparejamiento entre grupos.'],
   ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, para diseños con más de una variable dependiente.']],
  ideas:[
-  {t:'La variable dependiente ya está construida',
-   d:'Buena parte del trabajo de un experimento es decidir cómo se mide el efecto. Usar un instrumento con baremos y fiabilidad conocida ahorra ese problema y permite que la clase se concentre en el diseño, que es lo que la asignatura enseña.'},
-  {t:'Manipular algo que el curso pueda controlar',
-   d:'Ruido, presión de tiempo, práctica previa, hora del día. Cualquiera de esas condiciones convierte una prueba disponible en un experimento con datos propios, sin permisos éticos externos ni población externa.'},
-  {t:'Repetir es posible',
-   d:'Los instrumentos se prestan tantas veces como haga falta, así que los diseños de medidas repetidas y las réplicas dejan de ser inviables por logística.'}]},
+  'Usar una prueba con baremos conocidos como variable dependiente, y concentrar la clase en el diseño.',
+  'Manipular ruido, práctica previa o presión de tiempo, y medir el efecto en el rendimiento.',
+  'Montar un diseño de medidas repetidas aprovechando que el instrumento se presta las veces que haga falta.',
+  'Emparejar los grupos con una medida breve de aptitud antes de manipular nada.',
+  'Replicar el experimento de otro grupo del curso y comparar los dos resultados.']},
 
 {id:'etica-profesional', n:'Ética Profesional', sem:7, cod:'21276-A',
  gancho:'El laboratorio es un caso de ética profesional en funcionamiento: material bajo custodia, restricciones sobre quién aplica qué, y consecuencias reales si un protocolo circula.',
@@ -673,12 +686,11 @@ var ASIGNATURAS = [
   ['PSI029','TIG · manual con baremos','La población de baremación, impresa en el manual, y lo que implica usarla en otro país.'],
   ['PSI060','Guía forense · uso pericial del instrumento','El terreno donde un error de aplicación tiene consecuencias jurídicas.']],
  ideas:[
-  {t:'Por qué el catálogo publica objetivos y no ítems',
-   d:'El laboratorio difunde nombre, rango de edad, tiempo y objetivo de cada prueba, y nunca su contenido. Explicar esa decisión —qué le pasa a la validez de una prueba cuyos ítems circulan— convierte un principio abstracto en una regla con razón.'},
-  {t:'Quién puede aplicar qué',
-   d:'Firmar un informe con un instrumento para el que no se tiene formación es un problema ético y técnico a la vez. El acervo real, con sus requisitos de formación, permite discutirlo sin hipótesis.'},
-  {t:'Custodia y responsabilidad',
-   d:'El material prestado queda a cargo de quien organiza la actividad, por procedimiento y por escrito. Es un ejemplo cotidiano de responsabilidad profesional documentada.'}]},
+  'Preguntar por qué el catálogo del laboratorio publica objetivos y rangos de edad, pero nunca los ítems.',
+  'Discutir qué le pasa a la validez de una prueba cuyo contenido circula: no se degrada, deja de medir.',
+  'Revisar quién puede aplicar qué instrumento y con qué formación respaldarlo.',
+  'Analizar el caso de un informe firmado con un baremo de otra población.',
+  'Trabajar consentimiento y devolución a partir de las aplicaciones que el curso hace entre compañeros.']},
 
 /* ── 8º ──────────────────────────────────────────────────────── */
 {id:'intervencion-cc', n:'Intervención Cognitivo Conductual (Estudio de Caso)', sem:8, cod:'21811-A',
@@ -690,12 +702,11 @@ var ASIGNATURAS = [
   ['PSI045','LSB-50 · listado de síntomas breve','Cribado inicial y seguimiento periódico con índices globales.'],
   ['PSI043','CIT · impacto del trauma','Cuando el caso incluye antecedentes traumáticos.']],
  ideas:[
-  {t:'Línea base y resultado',
-   d:'Definir la variable dependiente del caso, elegir con qué se mide y cada cuánto, y dibujar la gráfica esperada es un ejercicio corto que ordena todo el estudio de caso. Los instrumentos están disponibles para hacerlo con datos y no con supuestos.'},
-  {t:'Cambio estadístico y cambio clínico',
-   d:'Que un puntaje baje no es lo mismo que un paciente mejore. Tener el manual con sus puntos de corte permite plantear la diferencia con precisión.'},
-  {t:'Grabar para supervisar',
-   d:'Las sesiones simuladas en la Cámara se graban y se revisan. Es la forma en que realmente se aprende a intervenir.'}]},
+  'Definir cuál es la variable dependiente del caso y con qué instrumento se va a medir.',
+  'Dibujar en el tablero la gráfica que se esperaría si la intervención funciona, y la que aparecería si no.',
+  'Discutir la diferencia entre un cambio estadístico y un cambio clínicamente significativo.',
+  'Aplicar el LSB-50 al inicio para detectar lo que el motivo de consulta no mencionó.',
+  'Grabar sesiones simuladas en la Cámara y revisarlas en supervisión.']},
 
 {id:'intervencion-dinamica', n:'Intervención Dinámica (Estudio de Caso)', sem:8, cod:'21810-A',
  gancho:'Las seis técnicas proyectivas del laboratorio pertenecen a esta tradición, y trabajar con ellas obliga a enfrentar de frente el problema de la interpretación.',
@@ -706,10 +717,11 @@ var ASIGNATURAS = [
   ['PSI019','Pata Negra','Mecanismos de defensa y organización psíquica infantil, de 4 a 15 años.'],
   ['PSI015','Wartegg','Ocho cuadros a completar: autoimagen, vínculos y forma de afrontar problemas.']],
  ideas:[
-  {t:'Interpretar sin inventar',
-   d:'Tres estudiantes escribiendo historias distintas a partir de la misma lámina plantean solos la pregunta central: qué del material sostiene una interpretación y qué la aporta quien interpreta. Los manuales proponen criterios; contrastarlos con esas tres historias es el ejercicio.'},
-  {t:'Elegir la técnica según el caso',
-   d:'Las cinco cubren edades y focos distintos. Justificar por qué una y no otra, para un caso concreto, es la decisión clínica que la asignatura forma.'}]},
+  'Mostrar una lámina del TAT y pedir a tres estudiantes que escriban la historia que sugiere.',
+  'Leer las tres en voz alta y preguntar qué del material sostiene cada interpretación.',
+  'Contrastar esas historias con los criterios que propone el manual.',
+  'Elegir técnica según el caso —edad, foco, tipo de estímulo— y justificar la elección.',
+  'Trabajar las técnicas gráficas con población infantil, cuando la palabra no alcanza.']},
 
 {id:'familia-grupos', n:'Psicología de la Familia y Grupos', sem:8, cod:'21812-A',
  gancho:'La familia se puede describir por lo que cuenta un miembro, o se puede observar interactuando detrás de un espejo mientras el curso registra.',
@@ -720,10 +732,11 @@ var ASIGNATURAS = [
   ['PSI054','VINCULATEST · vínculos interpersonales en adultos','La pareja y la familia como subsistemas con estilo de apego propio.'],
   ['PSI055','IDE · dependencia emocional','Patrones de subordinación y miedo a la ruptura dentro de la pareja.']],
  ideas:[
-  {t:'Lo observado y lo declarado no coinciden',
-   d:'Una interacción familiar simulada tras el espejo, con la escala aplicada después a los mismos participantes, produce dos retratos distintos del mismo sistema. Esa discrepancia es el contenido de la asignatura.'},
-  {t:'Medidas individuales de un fenómeno relacional',
-   d:'Todas estas escalas las responde una persona sola sobre un sistema que la incluye. Tenerlas delante permite discutir en serio esa limitación, en vez de mencionarla al pasar.'}]},
+  'Simular una interacción familiar tras el espejo, con roles y un conflicto asignados.',
+  'Observar quién habla por quién, quién interrumpe y quién queda fuera de la conversación.',
+  'Aplicar la ESFA a los mismos participantes y contrastar lo declarado con lo observado.',
+  'Discutir la limitación de medir un sistema entero con un cuestionario que responde un solo miembro.',
+  'Trabajar la pareja como subsistema con el VINCULATEST y el IDE.']},
 
 /* ── 9º y 10º ────────────────────────────────────────────────── */
 {id:'trabajo-grado', n:'Trabajo de Grado y Prácticas', sem:'9-10', cod:'21227-A · 21228-A · 21237-A · 21238-A',
@@ -735,12 +748,11 @@ var ASIGNATURAS = [
   ['PSI045','LSB-50 · cribado de malestar psicológico','Medida general útil como variable de control o de caracterización.'],
   ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, aplicable desde los 8 años, individual o grupal.']],
  ideas:[
-  {t:'Elegir el instrumento antes de cerrar el diseño',
-   d:'Rango de edad, tiempo de aplicación y si admite aplicación grupal deciden la viabilidad de un proyecto. Revisarlo al principio, con el catálogo abierto, evita rehacer el método a mitad de camino.'},
-  {t:'Cómo se solicita siendo estudiante',
-   d:'Un estudiante puede pedir material indicando el correo del docente que lo respalda. El préstamo se crea de inmediato y el docente recibe copia, porque la custodia del material es suya según el procedimiento del laboratorio.'},
-  {t:'La Cámara de Gesell también es recolección de datos',
-   d:'Entrevistas y grupos focales grabados ahí dan un material de calidad muy distinta a la de una grabación improvisada.'}]}
+  'Revisar el catálogo antes de cerrar el diseño, y no cuando ya está escrito el método.',
+  'Calcular la viabilidad en horas: tiempo de aplicación por tamaño de muestra, más corrección.',
+  'Elegir instrumento por rango de edad y por si admite aplicación grupal.',
+  'Solicitar el material indicando el correo del docente que respalda el préstamo.',
+  'Grabar entrevistas y grupos focales en la Cámara en vez de con un celular en un pasillo.']}
 
 ];
 
@@ -813,8 +825,11 @@ function verFicha(a){
       '<div class="txt"><code>' + r[0] + '</code><span class="nm">' + r[1] + '</span>' +
       '<p class="qm">' + r[2] + '</p></div></div>';
   }).join('');
+  /* Lista, no párrafos: el auxiliar puede leerla en voz alta tal cual, sin
+     parafrasear, y cada punto suelto deja más margen al docente que un bloque
+     de prosa que ya suena a propuesta cerrada. */
   var ideas = a.ideas.map(function(i){
-    return '<div class="idea"><b>' + i.t + '</b><p>' + i.d + '</p></div>';
+    return '<li>' + i + '</li>';
   }).join('');
 
   $('#fichaCuerpo').innerHTML =
@@ -826,8 +841,8 @@ function verFicha(a){
     '<p class="secc">Lo que hay disponible para esta asignatura</p>' +
     '<div class="recursos">' + recs + '</div>' +
     (a.amb ? '<div class="suya"><b>Ambiente disponible: ' + a.amb + '.</b> Se reserva como cualquier otra clase, y el laboratorio acompaña la sesión si hace falta.</div>' : '') +
-    '<p class="secc">Ideas de partida</p>' +
-    '<div class="ideas">' + ideas + '</div>' +
+    '<p class="secc">Actividades posibles · ideas sueltas</p>' +
+    '<ul class="ideas">' + ideas + '</ul>' +
     '<div class="suya"><b>Esto son puntos de partida, no un guion.</b> Quien conoce el curso, ' +
       'el nivel del grupo y lo que hace falta reforzar es usted. Si ve un uso mejor que estos, ' +
       'el laboratorio se lo facilita igual: lo que aquí importa es que sepa que el material ' +
@@ -844,6 +859,9 @@ function verFicha(a){
         'palabras. Enumerar pruebas de entrada no engancha a nadie.</p>' +
       '<p><em>Muestra las fotos y di qué permite ver cada prueba.</em> Eso es todo lo que tienes ' +
         'que hacer bien. No expliques cómo se aplica ni cómo se interpreta.</p>' +
+      '<p><em>La lista se lee, no se explica.</em> Puedes leerla en voz alta tal cual, sin ' +
+        'desarrollar ninguna: son ideas sueltas y basta con que suenen. Si una le interesa al ' +
+        'docente, él preguntará.</p>' +
       '<p><em>Las ideas se ofrecen, no se dictan.</em> Di que son puntos de partida y que el ' +
         'docente sabrá si le sirven o si se le ocurre algo mejor. Es verdad, y evita que la ' +
         'visita se lea como si vinieras a decirle cómo dar su clase.</p>' +
