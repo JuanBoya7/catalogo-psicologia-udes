@@ -66,6 +66,22 @@
   .pilar p{margin:0;font-size:.91em;color:var(--muted)}
   .pilar b{color:var(--ink);font-weight:650}
 
+
+  /* Ventanas de atención. Va en la apertura porque es lo primero que alguien
+     necesita saber para pedir algo, antes que cualquier argumento. */
+  .ventanas{background:var(--aqua);border:1px solid var(--aqua-borde);border-radius:14px;
+    padding:20px 22px;margin:22px 0 0}
+  .ventanas h3{font-size:1.05em;margin:0 0 7px;color:#2c6b5c}
+  .ventanas p{margin:0 0 14px;font-size:.92em;color:#39615a;max-width:76ch}
+  .ventanas .nota{margin:12px 0 0;font-size:.86em;font-style:italic}
+  table.tabla-turno{border-collapse:collapse;width:100%;max-width:620px;background:#fff;
+    border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+  table.tabla-turno th{background:var(--azul);color:#fff;font-size:.8em;font-weight:600;
+    letter-spacing:.03em;text-align:left;padding:9px 14px}
+  table.tabla-turno td{padding:9px 14px;font-size:.92em;border-top:1px solid var(--line)}
+  table.tabla-turno td:first-child{font-weight:600;color:var(--azul-hondo)}
+  table.tabla-turno td.hora{font-weight:600;color:var(--azul);white-space:nowrap}
+
   .cifras{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0 0}
   .cifra{background:var(--aqua);border:1px solid var(--aqua-borde);border-radius:12px;
     padding:14px 18px;flex:1;min-width:155px}
@@ -183,35 +199,45 @@
 <div class="wrap">
 
   <section class="apertura" id="apertura">
-    <h2>Tres minutos antes de entrar en materia</h2>
-    <p class="lead">El laboratorio no es una bodega de cajas: es el sitio donde lo que se
-      define en el tablero se vuelve un dato que se puede mirar. Esto es lo que hay y para
-      qué sirve.</p>
+    <h2>Dónde está, cuándo se atiende y cómo se pide</h2>
+    <p class="lead">Antes de los casos por asignatura, lo práctico: qué espacios hay, a qué
+      horas hay alguien para entregar el material y por dónde entra una solicitud.</p>
 
     <div class="tres">
       <div class="pilar">
-        <span class="num">01</span>
-        <h3>Lo que se dice en clase, medido</h3>
-        <p>Atención, memoria, personalidad, ansiedad, funciones ejecutivas: todo eso tiene
-          <b>una prueba con manual, baremos y tiempo de aplicación</b> aquí al lado. Una
-          definición que se aplica y produce un puntaje se recuerda distinto a una que solo
-          se copia.</p>
+        <span class="num">303</span>
+        <h3>Cámara de Gesell</h3>
+        <p>Sala de observación con espejo unidireccional. Permite que un grupo entero observe
+          una entrevista, una aplicación o un grupo focal <b>sin entrar en la escena</b>, y
+          grabar la sesión para revisarla después. Se reserva como cualquier otra clase.</p>
       </div>
       <div class="pilar">
-        <span class="num">02</span>
-        <h3>La primera vez no debería ser con un paciente</h3>
-        <p>El estudiante que llega a práctica sin haber <b>abierto una caja, cronometrado una
-          aplicación ni corregido una hoja de respuestas</b> aprende con una persona real
-          delante. Aquí puede equivocarse sin que le cueste a nadie.</p>
+        <span class="num">305</span>
+        <h3>Laboratorio Experimental</h3>
+        <p>El espacio donde se aplican las pruebas y se trabaja con el material. Es también
+          donde vive el acervo: <b>las pruebas están inventariadas, fotografiadas y bajo
+          custodia</b>, y salen de ahí con un registro de préstamo.</p>
       </div>
       <div class="pilar">
-        <span class="num">03</span>
-        <h3>Está disponible y se pide por un enlace</h3>
-        <p>Las pruebas están inventariadas y fotografiadas, hay dos ambientes propios
-          —<b>Cámara de Gesell (303)</b> y <b>Laboratorio Experimental (305)</b>— y un
-          catálogo web donde cada ficha tiene su botón de solicitud. No hay que buscar a
-          nadie en un pasillo.</p>
+        <span class="num">WEB</span>
+        <h3>El catálogo, que es por donde se pide</h3>
+        <p>Cada prueba tiene ficha con foto, rango de edad, tiempo de aplicación y un botón
+          que radica la solicitud. <b>Los estudiantes también pueden pedir</b>, indicando el
+          correo del docente que respalda el préstamo. No hay que buscar a nadie en un pasillo.</p>
       </div>
+    </div>
+
+    <div class="ventanas">
+      <h3>Cuándo hay alguien para entregar y recibir</h3>
+      <p>La solicitud se puede radicar a cualquier hora por el catálogo. La entrega del
+        material en persona ocurre en estas dos ventanas, <b>de lunes a viernes</b>, y siempre
+        hay un auxiliar de turno responsable del día.</p>
+      <table class="tabla-turno">
+        <thead><tr><th>Día</th><th>Ventana de mediodía</th><th>Ventana de la tarde</th></tr></thead>
+        <tbody id="cuerpoTurno"></tbody>
+      </table>
+      <p class="nota">Si la solicitud entra fuera de esas franjas, el auxiliar de turno
+        responde el mismo día indicando la ventana más próxima.</p>
     </div>
 
     <div class="cifras">
@@ -227,11 +253,14 @@
         <p><em>Preséntate y di a qué vienes.</em> «Buenos días, soy [nombre], auxiliar del
           Laboratorio de Psicología. El profesor me dio diez minutos para mostrarles algo que
           tienen disponible y que casi nadie pide.»</p>
-        <p><em>No leas los tres bloques.</em> Di uno solo —el 02 funciona con cualquier
-          curso— y pasa de una vez a la asignatura.</p>
+        <p><em>Esta apertura es lo práctico, no el discurso.</em> Di dónde quedan los dos
+          espacios, muestra la tabla de ventanas y deja claro que la solicitud se radica por
+          el catálogo a cualquier hora. Con eso basta: pasa de una vez a la asignatura.</p>
         <p><em>Tu trabajo es mostrar, no enseñar.</em> Lo que traes son las pruebas que
           existen y qué permiten ver. Cómo se usan en esa clase lo decide el docente, que es
           quien sabe de la materia. Dilo así, en voz alta: funciona mejor y es verdad.</p>
+        <p><em>Si preguntan por el turno</em>, no hace falta que digas nombres: basta con
+          «hay alguien de turno todos los días» y que la solicitud llega igual por el catálogo.</p>
       </div>
     </details>
   </section>
@@ -762,6 +791,21 @@ var ASIGNATURAS = [
 var $ = function(s){ return document.querySelector(s); };
 var grid = $('#grid'), empty = $('#empty'), q = $('#q'), chips = $('#chips');
 var filtroSem = null;
+
+/* Ventanas de atención. Los nombres de las auxiliares NO se publican aquí:
+   esta página es pública —sin indexar, pero pública— y el docente no necesita
+   saber quién está de turno, solo a qué hora hay alguien. */
+var TURNO = [
+  ['Lunes',     '11:50 a 12:40', '18:20 a 19:05'],
+  ['Martes',    '13:30 a 14:20', '18:20 a 19:05'],
+  ['Miércoles', '13:30 a 14:20', '18:20 a 19:05'],
+  ['Jueves',    '13:30 a 14:20', '18:20 a 19:05'],
+  ['Viernes',   '13:30 a 14:20', '18:20 a 19:05']
+];
+document.getElementById('cuerpoTurno').innerHTML = TURNO.map(function(t){
+  return '<tr><td>' + t[0] + '</td><td class="hora">' + t[1] +
+         '</td><td class="hora">' + t[2] + '</td></tr>';
+}).join('');
 
 document.getElementById('periodo').textContent = 'Periodo ' + PERIODO;
 document.getElementById('nAsig').textContent = ASIGNATURAS.length;
