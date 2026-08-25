@@ -229,15 +229,15 @@
 
     <div class="ventanas">
       <h3>Cuándo hay alguien para entregar y recibir</h3>
-      <p>La solicitud se puede radicar a cualquier hora por el catálogo. La entrega del
-        material en persona ocurre en estas dos ventanas, <b>de lunes a viernes</b>, y siempre
-        hay un auxiliar de turno responsable del día.</p>
+      <p>La solicitud se puede radicar <b>a cualquier hora</b> por el catálogo. La entrega
+        del material en persona ocurre en una franja fija, <b>de lunes a viernes</b>, con un
+        auxiliar de turno responsable de cada día.</p>
       <table class="tabla-turno">
-        <thead><tr><th>Día</th><th>Ventana de mediodía</th><th>Ventana de la tarde</th></tr></thead>
+        <thead><tr><th>Día</th><th>Ventana de entrega</th></tr></thead>
         <tbody id="cuerpoTurno"></tbody>
       </table>
-      <p class="nota">Si la solicitud entra fuera de esas franjas, el auxiliar de turno
-        responde el mismo día indicando la ventana más próxima.</p>
+      <p class="nota">Quien necesite material para una clase de la mañana lo recoge la
+        tarde anterior. Conviene radicar la solicitud con un día de antelación.</p>
     </div>
 
     <div class="cifras">
@@ -795,16 +795,10 @@ var filtroSem = null;
 /* Ventanas de atención. Los nombres de las auxiliares NO se publican aquí:
    esta página es pública —sin indexar, pero pública— y el docente no necesita
    saber quién está de turno, solo a qué hora hay alguien. */
-var TURNO = [
-  ['Lunes',     '11:50 a 12:40', '18:20 a 19:05'],
-  ['Martes',    '13:30 a 14:20', '18:20 a 19:05'],
-  ['Miércoles', '13:30 a 14:20', '18:20 a 19:05'],
-  ['Jueves',    '13:30 a 14:20', '18:20 a 19:05'],
-  ['Viernes',   '13:30 a 14:20', '18:20 a 19:05']
-];
-document.getElementById('cuerpoTurno').innerHTML = TURNO.map(function(t){
-  return '<tr><td>' + t[0] + '</td><td class="hora">' + t[1] +
-         '</td><td class="hora">' + t[2] + '</td></tr>';
+var TURNO = ['Lunes','Martes','Miércoles','Jueves','Viernes'];
+var VENTANA = '16:50 a 17:40';
+document.getElementById('cuerpoTurno').innerHTML = TURNO.map(function(d){
+  return '<tr><td>' + d + '</td><td class="hora">' + VENTANA + '</td></tr>';
 }).join('');
 
 document.getElementById('periodo').textContent = 'Periodo ' + PERIODO;

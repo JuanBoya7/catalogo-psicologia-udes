@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Presentación para la reunión de arranque con las cuatro auxiliares.
+     La conduce Juan; se proyecta.
+
+     Sobre los nombres: aparecen SOLO los de pila. Esta página es pública
+     —sin indexar, pero pública—, y para la reunión basta con eso. El detalle
+     de quién visita qué clase vive en el .docx, que no se publica. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Reunión de auxiliares — Laboratorio de Psicología UDES</title>
+<style>
+  :root{
+    --azul:#004899; --azul-hondo:#00306a; --azul-suave:#e8f0fa; --azul-borde:#c9dcf2;
+    --aqua:#d9f5ec; --aqua-borde:#a8e3d0; --lila:#efe9f8; --lila-tinta:#59308f;
+    --bg:#f7fafd; --surface:#ffffff; --ink:#10233a; --muted:#4f6178; --line:#dde6f1;
+    --shadow:0 1px 2px rgba(0,50,110,.05), 0 8px 22px rgba(0,50,110,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font:clamp(15px,1.35vw,19px)/1.6 "Segoe UI",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow:hidden}
+
+  .lam{display:none;height:100vh;padding:clamp(28px,4vh,60px) clamp(28px,5vw,80px) 86px;
+    overflow-y:auto}
+  .lam.on{display:block;animation:entra .28s ease-out}
+  @keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){ .lam.on{animation:none} }
+  .in{max-width:1080px;margin:0 auto}
+
+  .eyebrow{font-size:.72em;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+    color:var(--azul);margin:0 0 12px}
+  h1{font-size:clamp(30px,5vw,54px);line-height:1.08;margin:0 0 16px;letter-spacing:-.025em;
+    color:var(--azul-hondo)}
+  h2{font-size:clamp(24px,3.4vw,38px);line-height:1.14;margin:0 0 12px;letter-spacing:-.02em;
+    color:var(--azul-hondo)}
+  .lead{font-size:clamp(16px,1.6vw,21px);color:var(--muted);max-width:68ch;margin:0 0 26px}
+  .grande{font-size:clamp(18px,1.9vw,24px);color:var(--ink);max-width:60ch}
+
+  .cajas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:26px 0 0}
+  .caja{background:var(--surface);border:1px solid var(--line);border-radius:15px;
+    padding:22px 24px;box-shadow:var(--shadow)}
+  .caja .num{font:700 .72em/1 ui-monospace,Consolas,monospace;letter-spacing:.08em;color:#fff;
+    background:var(--azul);padding:5px 10px;border-radius:6px;display:inline-block;margin-bottom:12px}
+  .caja h3{font-size:1.08em;margin:0 0 8px;line-height:1.3;color:var(--azul-hondo)}
+  .caja p{margin:0;font-size:.92em;color:var(--muted)}
+  .caja b{color:var(--ink);font-weight:650}
+
+  .cifras{display:flex;gap:14px;flex-wrap:wrap;margin:30px 0 0}
+  .cifra{background:var(--aqua);border:1px solid var(--aqua-borde);border-radius:14px;
+    padding:18px 22px;flex:1;min-width:160px}
+  .cifra .n{font-size:clamp(28px,3.4vw,44px);font-weight:700;letter-spacing:-.03em;
+    color:var(--azul-hondo);line-height:1}
+  .cifra .q{font-size:.82em;color:#39615a;margin-top:6px}
+
+  table{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;
+    box-shadow:var(--shadow);margin:22px 0 0}
+  th{background:var(--azul);color:#fff;font-size:.8em;font-weight:600;text-align:left;padding:11px 16px}
+  td{padding:11px 16px;font-size:.92em;border-top:1px solid var(--line)}
+  td:first-child{font-weight:650;color:var(--azul-hondo)}
+  td.hora{color:var(--azul);font-weight:600;white-space:nowrap}
+
+  ul.puntos{margin:22px 0 0;padding:0;list-style:none}
+  ul.puntos li{position:relative;padding:0 0 0 30px;margin:0 0 14px;font-size:clamp(15px,1.5vw,19px)}
+  ul.puntos li::before{content:"";position:absolute;left:4px;top:.62em;width:9px;height:9px;
+    border-radius:50%;background:var(--azul)}
+  ul.puntos b{color:var(--azul-hondo)}
+
+  .destacado{background:var(--lila);border:1px solid #ddd0f0;border-radius:14px;
+    padding:20px 24px;margin:26px 0 0;font-size:clamp(15px,1.5vw,19px);color:#4a3070}
+  .destacado b{color:var(--lila-tinta)}
+
+  .enlace{display:inline-block;font-weight:600;text-decoration:none;color:#fff;
+    background:var(--azul);border-radius:9px;padding:11px 20px;font-size:.9em;margin-top:6px}
+  .enlace:hover{background:var(--azul-hondo)}
+  .url{font:600 .78em/1.5 ui-monospace,Consolas,monospace;color:var(--azul);
+    word-break:break-all;display:block;margin-top:6px}
+
+  /* ── barra de navegación ─────────────────────────────────────── */
+  .barra{position:fixed;left:0;right:0;bottom:0;height:64px;background:var(--surface);
+    border-top:1px solid var(--line);display:flex;align-items:center;
+    justify-content:space-between;padding:0 clamp(20px,4vw,60px);gap:16px}
+  .barra .tit{font-size:.82em;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .barra .ctrl{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+  .barra button{font:inherit;font-size:.82em;font-weight:600;cursor:pointer;color:var(--azul);
+    background:#fff;border:1px solid var(--azul-borde);border-radius:8px;padding:8px 15px}
+  .barra button:hover:not(:disabled){background:var(--azul);color:#fff;border-color:var(--azul)}
+  .barra button:disabled{opacity:.35;cursor:default}
+  .cuenta{font:600 .82em/1 ui-monospace,Consolas,monospace;color:var(--muted);min-width:52px;text-align:center}
+  .progreso{position:fixed;top:0;left:0;height:3px;background:var(--azul);transition:width .28s}
+</style>
+</head>
+<body>
+
+<div class="progreso" id="progreso"></div>
+
+<!-- 1 ─────────────────────────────────────────────────────────── -->
+<section class="lam on"><div class="in">
+  <p class="eyebrow">Laboratorio de Psicología · UDES Campus Valledupar · 2026-B</p>
+  <h1>Lo que vamos a hacer<br>este semestre</h1>
+  <p class="lead">Reunión de arranque del equipo de auxiliares. Cuatro compromisos, con
+    nombre, día y hora — para que nadie se quede con la duda de qué le toca.</p>
+  <div class="cifras">
+    <div class="cifra"><div class="n">4</div><div class="q">auxiliares</div></div>
+    <div class="cifra"><div class="n">46</div><div class="q">pruebas en el acervo</div></div>
+    <div class="cifra"><div class="n">2</div><div class="q">ambientes propios</div></div>
+    <div class="cifra"><div class="n">34</div><div class="q">visitas a las aulas</div></div>
+  </div>
+</div></section>
+
+<!-- 2 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">De qué estamos a cargo</p>
+  <h2>El laboratorio no es una bodega</h2>
+  <p class="lead">Son dos espacios y un acervo que hoy se usa por debajo de lo que podría.
+    Ese es el problema que este semestre queremos mover.</p>
+  <div class="cajas">
+    <div class="caja"><span class="num">303</span>
+      <h3>Cámara de Gesell</h3>
+      <p>Sala con espejo unidireccional: permite que un grupo observe una entrevista o una
+        aplicación <b>sin entrar en la escena</b>, y grabarla para revisarla después.</p></div>
+    <div class="caja"><span class="num">305</span>
+      <h3>Laboratorio Experimental</h3>
+      <p>Donde se aplican las pruebas y donde vive el acervo, <b>inventariado, fotografiado
+        y bajo custodia</b>.</p></div>
+    <div class="caja"><span class="num">WEB</span>
+      <h3>El catálogo</h3>
+      <p>Cada prueba con foto, edad, tiempo de aplicación y <b>un botón que radica la
+        solicitud</b>. Es la puerta de entrada de todo.</p></div>
+  </div>
+</div></section>
+
+<!-- 3 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">El panorama</p>
+  <h2>Cuatro compromisos</h2>
+  <ul class="puntos">
+    <li><b>Visitas de socialización.</b> Diez minutos al inicio de una clase para mostrar qué
+      del laboratorio le sirve a esa asignatura. Son 34 en el semestre, ya repartidas.</li>
+    <li><b>Turno de atención.</b> Un día a la semana cada una, para responder solicitudes y
+      entregar material en una franja fija.</li>
+    <li><b>Rotulación del inventario.</b> 71 rótulos ya impresos, pendientes de pegar.</li>
+    <li><b>Fotografía de los ambientes.</b> Faltan las fotos de la Cámara y del Laboratorio
+      Experimental, y una sola del catálogo de pruebas.</li>
+  </ul>
+  <div class="destacado"><b>Lo que NO es responsabilidad de ustedes:</b> el contenido técnico.
+    Ante una pregunta que no sepan responder, la respuesta correcta es «lo confirmo con el
+    encargado y le escribo». Nadie tiene que improvisar sobre una prueba.</div>
+</div></section>
+
+<!-- 4 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Compromiso 1</p>
+  <h2>Las visitas de socialización</h2>
+  <p class="lead">Diez o doce minutos al inicio de una clase. Se muestra qué pruebas del
+    laboratorio le sirven a esa asignatura y cómo se piden. No hay que preparar nada: el
+    contenido está escrito, una ficha por asignatura.</p>
+  <ul class="puntos">
+    <li>Se visita <b>una vez por curso</b>, no una vez por sesión: Psicometría se dicta tres
+      veces por semana y son los mismos estudiantes.</li>
+    <li>Antes de ir, <b>se le escribe al docente</b> para acordar el día. El mensaje ya está
+      redactado; sale de un botón en la rejilla.</li>
+    <li>Se abre la ficha de la asignatura en el computador del salón y <b>se proyecta</b>.</li>
+    <li>Las ideas de cada ficha son <b>puntos de partida, no un guion</b>. El docente es el
+      experto de su materia; nosotros mostramos qué existe.</li>
+  </ul>
+</div></section>
+
+<!-- 5 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Compromiso 1 · el reparto</p>
+  <h2>Quién lleva cuántas</h2>
+  <p class="lead">Repartidas según los horarios de cada una, cuidando dos cosas a la vez: que
+    el número quede parejo y que las franjas incómodas no le caigan todas a la misma.</p>
+  <table>
+    <thead><tr><th>Auxiliar</th><th>Visitas</th><th>En franja incómoda</th></tr></thead>
+    <tbody>
+      <tr><td>Sofía</td><td>9</td><td>ninguna</td></tr>
+      <tr><td>María Sara</td><td>8</td><td>1 — martes 06:50</td></tr>
+      <tr><td>Angie</td><td>8</td><td>1 — sábado 07:40</td></tr>
+      <tr><td>Eliana</td><td>8</td><td>1 — martes 06:00</td></tr>
+    </tbody>
+  </table>
+  <div class="destacado"><b>Se pueden cambiar entre ustedes.</b> Cada visita tiene un botón
+    «Cambiármela» en la rejilla. Lo único que pedimos es que el cambio quede ahí registrado,
+    no en un mensaje suelto de WhatsApp.</div>
+</div></section>
+
+<!-- 6 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Compromiso 2</p>
+  <h2>El turno de atención</h2>
+  <p class="lead">Una solicitud de material puede entrar a cualquier hora por el catálogo. El
+    turno garantiza que cada día haya alguien que la responda, y una franja fija donde se
+    entrega y se recibe el material en persona.</p>
+  <table>
+    <thead><tr><th>Día</th><th>Responsable</th><th>Ventana de entrega</th></tr></thead>
+    <tbody>
+      <tr><td>Lunes</td><td>Sofía</td><td class="hora">16:50 a 17:40</td></tr>
+      <tr><td>Martes</td><td>Eliana</td><td class="hora">16:50 a 17:40</td></tr>
+      <tr><td>Miércoles</td><td>María Sara</td><td class="hora">16:50 a 17:40</td></tr>
+      <tr><td>Jueves</td><td>Angie</td><td class="hora">16:50 a 17:40</td></tr>
+      <tr><td>Viernes</td><td>Rotativo</td><td class="hora">16:50 a 17:40</td></tr>
+    </tbody>
+  </table>
+  <ul class="puntos">
+    <li>Quien necesite material para una clase de la mañana <b>lo recoge la tarde anterior</b>.
+      Eso vuelve estructural el pedir con antelación.</li>
+    <li>Si ese día no puedes, <b>se cambia con otra y se avisa</b>. El turno se cambia, nunca
+      se salta.</li>
+  </ul>
+</div></section>
+
+<!-- 7 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Compromisos 3 y 4</p>
+  <h2>Rótulos y fotografías</h2>
+  <div class="cajas">
+    <div class="caja"><span class="num">71</span>
+      <h3>Rótulos por pegar</h3>
+      <p>Ya están impresos. Cada uno lleva el código del recurso, que es el mismo que aparece
+        en el catálogo y en la lista de préstamos. <b>Mientras no estén pegados, encontrar una
+        prueba depende de la memoria de quien busque.</b> Es una tarea de una tarde entre varias.</p></div>
+    <div class="caja"><span class="num">FOTO</span>
+      <h3>Los dos ambientes</h3>
+      <p>Faltan las fotografías de la Cámara de Gesell y del Laboratorio Experimental para el
+        catálogo y la divulgación. Del catálogo de pruebas <b>solo falta una</b>: el cuerpo
+        celular. Formato: JPG, 520 px de ancho, fondo neutro.</p></div>
+  </div>
+</div></section>
+
+<!-- 8 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Dónde está todo</p>
+  <h2>Tres enlaces y nada más</h2>
+  <ul class="puntos">
+    <li><b>La rejilla de visitas.</b> Ahí está lo tuyo, el mensaje para el docente y el botón
+      para cambiar una visita.
+      <span class="url">SharePoint › Laboratorios de Psicología › Visitas de socialización</span></li>
+    <li><b>El recurso por asignatura.</b> Lo que se proyecta en el aula.
+      <span class="url">juanboya7.github.io/catalogo-psicologia-udes/usos/</span></li>
+    <li><b>El catálogo.</b> Por donde entra cualquier solicitud de material.
+      <span class="url">juanboya7.github.io/catalogo-psicologia-udes/</span></li>
+  </ul>
+  <p class="grande" style="margin-top:26px">Además, cada una recibe el documento con sus
+    visitas en detalle: día, hora, aula, asignatura y docente.</p>
+</div></section>
+
+<!-- 9 ─────────────────────────────────────────────────────────── -->
+<section class="lam"><div class="in">
+  <p class="eyebrow">Para cerrar</p>
+  <h2>Lo que queda acordado hoy</h2>
+  <ul class="puntos">
+    <li>Cada una revisa <b>sus visitas</b> y avisa si alguna no le sirve — se cambia ahora,
+      no en octubre.</li>
+    <li>Confirmamos el <b>turno</b> y quién arranca el viernes rotativo.</li>
+    <li>Ponemos <b>fecha para los rótulos</b>: una tarde, entre todas.</li>
+    <li>Definimos quién toma las <b>fotos de los ambientes</b>.</li>
+    <li>Antes de la primera visita, cada una <b>le escribe a su docente</b>.</li>
+  </ul>
+  <div class="destacado"><b>Una cosa que quiero decir en voz alta:</b> esto no es trabajo
+    administrativo. Un docente que no sabe qué hay en el laboratorio no lo pide, y un
+    estudiante que llega a práctica sin haber abierto una caja aprende con un paciente
+    delante. Eso es lo que estamos moviendo.</div>
+</div></section>
+
+<div class="barra">
+  <span class="tit" id="tit"></span>
+  <span class="ctrl">
+    <button type="button" id="ant">← Anterior</button>
+    <span class="cuenta" id="cuenta"></span>
+    <button type="button" id="sig">Siguiente →</button>
+  </span>
+</div>
+
+<script>
+var lams = document.querySelectorAll('.lam');
+var titulos = [];
+lams.forEach(function(l){
+  var h = l.querySelector('h1, h2');
+  titulos.push(h ? h.textContent.replace(/\s+/g, ' ').trim() : '');
+});
+var i = 0;
+
+function ir(n){
+  i = Math.max(0, Math.min(lams.length - 1, n));
+  lams.forEach(function(l, k){ l.classList.toggle('on', k === i); });
+  document.getElementById('cuenta').textContent = (i + 1) + ' / ' + lams.length;
+  document.getElementById('tit').textContent = titulos[i];
+  document.getElementById('ant').disabled = (i === 0);
+  document.getElementById('sig').disabled = (i === lams.length - 1);
+  document.getElementById('progreso').style.width =
+    ((i + 1) / lams.length * 100) + '%';
+  lams[i].scrollTop = 0;
+  /* El hash permite volver a una lámina concreta sin pasar por todas: útil si
+     hay que retomar la reunión donde se quedó. */
+  history.replaceState(null, '', '#' + (i + 1));
+}
+
+document.getElementById('ant').addEventListener('click', function(){ ir(i - 1); });
+document.getElementById('sig').addEventListener('click', function(){ ir(i + 1); });
+document.addEventListener('keydown', function(e){
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { ir(i + 1); e.preventDefault(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  { ir(i - 1); e.preventDefault(); }
+  if (e.key === 'Home') ir(0);
+  if (e.key === 'End')  ir(lams.length - 1);
+});
+
+var inicial = parseInt(location.hash.replace('#', ''), 10);
+ir(isNaN(inicial) ? 0 : inicial - 1);
+</script>
+</body>
+</html>
