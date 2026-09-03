@@ -9,16 +9,27 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Catálogo de pruebas y recursos — Laboratorio de Psicología UDES</title>
 <style>
+  /* Misma paleta que el recurso de usos por asignatura (/usos/): azul
+     institucional para lo que manda, y aqua y lila en versión pastel para
+     los bloques de apoyo. Los dos recursos se enseñan juntos en la misma
+     reunión y tienen que leerse como una sola cosa. */
   :root{
-    --azul:#004899; --aqua:#7CFED8; --morado:#6C3AA8;
-    --bg:#f4f7fb; --surface:#ffffff; --ink:#0e1b2c; --muted:#5a6b80;
-    --line:#dbe3ee; --soft:#e8f0fb; --chip:#eef2f8;
-    --shadow:0 1px 2px rgba(0,40,90,.06), 0 6px 20px rgba(0,40,90,.07);
+    --azul:#004899; --azul-hondo:#00306a; --azul-suave:#e8f0fa; --azul-borde:#c9dcf2;
+    --aqua:#d9f5ec; --aqua-borde:#a8e3d0; --lila:#efe9f8; --lila-tinta:#59308f;
+    --morado:#59308f;
+    --bg:#f7fafd; --surface:#ffffff; --ink:#10233a; --muted:#4f6178;
+    --line:#dde6f1; --soft:#e8f0fa; --chip:#eef3f9;
+    --band-a:#eaf2fb; --band-b:#f7fafd;
+    --shadow:0 1px 2px rgba(0,50,110,.05), 0 8px 22px rgba(0,50,110,.07);
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --azul:#5c9ce6; --bg:#0c141f; --surface:#141f2e; --ink:#e6edf6;
+      --azul:#5c9ce6; --azul-hondo:#cfe0f5; --azul-suave:#16283f; --azul-borde:#2c4361;
+      --aqua:#122e2a; --aqua-borde:#22493f; --lila:#1f1a2e; --lila-tinta:#b79ae0;
+      --morado:#7d55c7;
+      --bg:#0c141f; --surface:#141f2e; --ink:#e6edf6;
       --muted:#96a7bd; --line:#243549; --soft:#16283f; --chip:#1c2a3b;
+      --band-a:#16283f; --band-b:#0c141f;
       --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 20px rgba(0,0,0,.35);
     }
   }
@@ -27,15 +38,16 @@
     font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
   .wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
 
-  .band{background:var(--azul);color:#fff;margin:0 -20px 26px;padding:30px 20px 26px;
-    background-image:linear-gradient(135deg,#004899 0%,#003370 100%)}
+  .band{background:linear-gradient(160deg,var(--band-a) 0%,var(--band-b) 100%);
+    border-bottom:3px solid var(--azul);margin:0 -20px 26px;padding:30px 20px 26px}
   .band .inner{max-width:1140px;margin:0 auto}
   .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;
-    color:var(--aqua);margin:0 0 8px}
-  h1{font-size:clamp(23px,3.6vw,33px);line-height:1.15;margin:0 0 10px;letter-spacing:-.02em}
-  .sub{margin:0;max-width:66ch;color:#d3e2f5}
+    color:var(--azul);margin:0 0 8px}
+  h1{font-size:clamp(23px,3.6vw,33px);line-height:1.15;margin:0 0 10px;letter-spacing:-.02em;
+    color:var(--azul-hondo)}
+  .sub{margin:0;max-width:66ch;color:var(--muted)}
 
-  .notice{background:var(--soft);border:1px solid var(--line);border-left:3px solid var(--azul);
+  .notice{background:var(--azul-suave);border:1px solid var(--azul-borde);border-left:3px solid var(--azul);
     border-radius:8px;padding:13px 16px;margin:0 0 20px;font-size:14px}
   .notice b{color:var(--azul)}
 
@@ -88,15 +100,15 @@
      .notice para que no se lea como más letra pequeña: es lo único de
      la cabecera sobre lo que se puede hacer clic. */
   .cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
-    background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--morado);
+    background:var(--lila);border:1px solid #ddd0f0;border-left:3px solid var(--lila-tinta);
     border-radius:8px;padding:13px 16px;margin:0 0 20px}
   .cta .txt{flex:1;min-width:240px;font-size:14px}
-  .cta b{color:var(--morado)}
+  .cta b{color:var(--lila-tinta)}
   .cta button{font:inherit;font-size:14px;white-space:nowrap;cursor:pointer;
     color:#fff;background:var(--morado);border:1px solid var(--morado);
     border-radius:7px;padding:8px 15px;transition:.12s}
   .cta button:hover{filter:brightness(1.1)}
-  @media (prefers-color-scheme: dark){ .cta b{color:#b79ae0} }
+  @media (prefers-color-scheme: dark){ .cta{border-color:#3a2d55} }
 
   /* ── Laboratorios del campus ───────────────────────────────────
      Servicio distinto y de otro dueño, así que se separa con una
@@ -131,7 +143,8 @@
   .lab .donde{font-size:12.5px;color:var(--muted);margin:0 0 9px}
   .lab p{margin:0 0 14px;font-size:14px;color:var(--muted);flex:1}
   .lab .yasirve{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;
-    font-weight:700;color:var(--azul);background:var(--soft);border-radius:5px;padding:3px 8px;margin:0 0 9px}
+    font-weight:700;color:var(--azul-hondo);background:var(--aqua);border:1px solid var(--aqua-borde);
+    border-radius:5px;padding:3px 8px;margin:0 0 9px}
 
   footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
   footer p{margin:0 0 7px}
@@ -144,11 +157,12 @@
     display:flex;flex-direction:column;align-items:center}
   .ind[hidden]{display:none}
   .ind-caja{width:100%;max-width:700px;padding:0 20px 60px}
-  .ind-band{background:linear-gradient(135deg,#004899 0%,#003370 100%);color:#fff;
-    width:100%;padding:26px 20px}
+  .ind-band{background:linear-gradient(160deg,var(--band-a) 0%,var(--band-b) 100%);
+    border-bottom:3px solid var(--azul);width:100%;padding:26px 20px}
   .ind-band .in{max-width:700px;margin:0 auto}
-  .ind-band h2{margin:0 0 6px;font-size:clamp(20px,3.2vw,27px);letter-spacing:-.02em}
-  .ind-band p{margin:0;color:#d3e2f5;font-size:14px}
+  .ind-band h2{margin:0 0 6px;font-size:clamp(20px,3.2vw,27px);letter-spacing:-.02em;
+    color:var(--azul-hondo)}
+  .ind-band p{margin:0;color:var(--muted);font-size:14px}
 
   .ind-pasos{display:flex;gap:6px;margin:22px 0 20px}
   .ind-pasos i{flex:1;height:4px;border-radius:2px;background:var(--line)}
@@ -160,7 +174,7 @@
   .ind ul{margin:0;padding-left:20px}
   .ind li{margin:0 0 10px}
   .ind li b{color:var(--azul)}
-  .ind .clave{background:var(--soft);border-left:3px solid var(--azul);border-radius:0 8px 8px 0;
+  .ind .clave{background:var(--azul-suave);border-left:3px solid var(--azul);border-radius:0 8px 8px 0;
     padding:12px 15px;margin:16px 0 0;font-size:14px}
 
   .ind-pie{display:flex;gap:10px;align-items:center;margin-top:26px;
@@ -193,9 +207,10 @@
   dialog.dlg{border:0;border-radius:14px;padding:0;width:min(520px,94vw);
     background:var(--surface);color:var(--ink);box-shadow:0 18px 60px rgba(0,30,70,.3)}
   dialog.dlg::backdrop{background:rgba(6,18,34,.55)}
-  .dlg-cab{background:linear-gradient(135deg,#004899 0%,#003370 100%);color:#fff;padding:17px 20px}
-  .dlg-cab h3{margin:0;font-size:17px}
-  .dlg-cab p{margin:3px 0 0;font-size:13px;color:#cfe0f5}
+  .dlg-cab{background:linear-gradient(160deg,var(--band-a) 0%,var(--band-b) 100%);
+    border-bottom:2px solid var(--azul);padding:17px 20px}
+  .dlg-cab h3{margin:0;font-size:17px;color:var(--azul-hondo)}
+  .dlg-cab p{margin:3px 0 0;font-size:13px;color:var(--muted)}
   .dlg-cuerpo{padding:18px 20px}
   .dlg-cuerpo label{display:block;font-size:13px;font-weight:600;margin:0 0 5px}
   .dlg-cuerpo select,.dlg-cuerpo input{width:100%;font:inherit;font-size:15px;padding:9px 11px;
@@ -209,7 +224,7 @@
   @media print{
     .ind,.campus{display:none}
     .controls,.ask,.notice{display:none}
-    .band{background:#fff!important;color:#000;padding:0 0 12px}
+    .band{background:#fff!important;color:#000;padding:0 0 12px;border-bottom:2px solid #004899}
     .eyebrow{color:#004899}.sub{color:#333}
     body{background:#fff;font-size:10.5px}
     .grid{grid-template-columns:repeat(3,1fr);gap:9px}
