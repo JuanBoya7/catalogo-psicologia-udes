@@ -67,6 +67,25 @@
     box-shadow:var(--shadow);display:flex;flex-direction:column}
   .thumb{aspect-ratio:4/3;background:var(--soft);display:block;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:contain;display:block;padding:10px}
+  .thumb:not(.ph) img{cursor:zoom-in}
+  /* ── Lupa ─────────────────────────────────────────────────────
+     Las fotos se abren a tamaño completo sobre un velo, y se cierran
+     tocando fuera, con la X o con Escape. Va en position fixed y no en
+     <dialog> para no competir con los diálogos que ya existen aquí. */
+  .lupa{position:fixed;inset:0;z-index:9000;display:none;place-items:center;
+    padding:clamp(14px,4vw,34px);background:rgba(6,18,34,.86)}
+  .lupa:not([hidden]){display:grid}
+  .lupa img{max-width:min(1180px,94vw);max-height:86vh;width:auto;height:auto;
+    border-radius:10px;background:#fff;cursor:zoom-out;
+    box-shadow:0 20px 64px rgba(0,0,0,.5)}
+  .lupa .cerrar{position:absolute;top:14px;right:16px;width:44px;height:44px;
+    border:0;border-radius:50%;cursor:pointer;font:400 26px/1 system-ui,sans-serif;
+    color:#12263f;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+  .lupa .pie{position:absolute;left:0;right:0;bottom:14px;margin:0;text-align:center;
+    color:#fff;font-size:.86em;line-height:1.4;padding:0 clamp(14px,4vw,34px);
+    text-shadow:0 1px 4px rgba(0,0,0,.7)}
+  @media print{ .lupa{display:none!important} }
+
   /* Sin foto: el escudo de la UDES, tenue, para que se lea como marcador
      y no como si el recurso fuera un logo. */
   .thumb.ph{display:grid;place-items:center;align-content:center;gap:9px}
@@ -336,6 +355,12 @@
   <p><b>Gestor de Laboratorios de Psicología:</b> Juan David Boya Guerra · juan.boya@mail.udes.edu.co</p>
 </footer>
 
+</div>
+
+<div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden>
+  <button type="button" class="cerrar" id="lupaCerrar" aria-label="Cerrar">&times;</button>
+  <img id="lupaImg" src="" alt="">
+  <p class="pie" id="lupaPie"></p>
 </div>
 
 <script>
@@ -995,6 +1020,53 @@ if(indVigente()){
   document.body.style.overflow = "hidden";
   indPintar();
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LUPA
+   Delegada en document porque las fotos se pintan y se repintan por
+   JS: enganchar cada <img> al crearla obligaría a acordarse de ello
+   en cada sitio donde se pinta una tarjeta.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var velo = document.getElementById('lupa'),
+      foto = document.getElementById('lupaImg'),
+      pie  = document.getElementById('lupaPie'),
+      scrollPrevio = '';
+  if (!velo) return;
+
+  function abrir(im){
+    foto.src = im.currentSrc || im.src;
+    foto.alt = im.alt || '';
+    pie.textContent = im.alt || '';
+    velo.hidden = false;
+    /* Se guarda el valor anterior en vez de vaciarlo al cerrar: aquí hay
+       otras capas que también bloquean el scroll del fondo. */
+    scrollPrevio = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrar(){
+    velo.hidden = true;
+    foto.removeAttribute('src');
+    document.body.style.overflow = scrollPrevio;
+  }
+
+  document.addEventListener('click', function(e){
+    if (!velo.hidden){
+      /* Con la lupa abierta todo cierra: el velo, la X y la propia foto.
+         Es lo que espera quien viene de una tienda en línea. */
+      cerrar();
+      return;
+    }
+    var im = e.target.closest && e.target.closest('.thumb:not(.ph) img');
+    if (im && im.getAttribute('src')){ e.preventDefault(); abrir(im); }
+  });
+
+  /* En captura, para cerrar la lupa antes de que Escape llegue a quien lo
+     use para otra cosa: en el recurso de usos, Escape cierra la ficha. */
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !velo.hidden){ e.stopPropagation(); cerrar(); }
+  }, true);
+})();
 </script>
 </body>
 </html>

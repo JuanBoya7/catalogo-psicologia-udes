@@ -157,7 +157,8 @@
   .r{background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden;
     box-shadow:var(--shadow);display:flex;flex-direction:column}
   .r .foto{aspect-ratio:4/3;background:var(--azul-suave);display:block;overflow:hidden}
-  .r .foto img{width:100%;height:100%;object-fit:contain;display:block;padding:9px}
+  .r .foto img{width:100%;height:100%;object-fit:contain;display:block;padding:9px;
+    cursor:zoom-in}
   .r .txt{padding:13px 14px 15px;display:flex;flex-direction:column;gap:6px}
   .r code{font:600 .68em/1 ui-monospace,Consolas,monospace;letter-spacing:.04em;color:#fff;
     background:var(--azul);padding:5px 8px;border-radius:5px;align-self:flex-start}
@@ -205,6 +206,25 @@
   body.proy .wrap{max-width:1340px}
   body.proy .guion{display:none}
   body.proy .band .sub{display:none}
+
+
+  /* ── Lupa ─────────────────────────────────────────────────────
+     Las fotos se abren a tamaño completo sobre un velo, y se cierran
+     tocando fuera, con la X o con Escape. Va en position fixed y no en
+     <dialog> para no competir con los diálogos que ya existen aquí. */
+  .lupa{position:fixed;inset:0;z-index:9000;display:none;place-items:center;
+    padding:clamp(14px,4vw,34px);background:rgba(6,18,34,.86)}
+  .lupa:not([hidden]){display:grid}
+  .lupa img{max-width:min(1180px,94vw);max-height:86vh;width:auto;height:auto;
+    border-radius:10px;background:#fff;cursor:zoom-out;
+    box-shadow:0 20px 64px rgba(0,0,0,.5)}
+  .lupa .cerrar{position:absolute;top:14px;right:16px;width:44px;height:44px;
+    border:0;border-radius:50%;cursor:pointer;font:400 26px/1 system-ui,sans-serif;
+    color:#12263f;background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+  .lupa .pie{position:absolute;left:0;right:0;bottom:14px;margin:0;text-align:center;
+    color:#fff;font-size:.86em;line-height:1.4;padding:0 clamp(14px,4vw,34px);
+    text-shadow:0 1px 4px rgba(0,0,0,.7)}
+  @media print{ .lupa{display:none!important} }
 
   @media (max-width:640px){ .band .inner{align-items:flex-start} }
   @media print{ .modo,.controls,.volver,.guion{display:none} }
@@ -323,6 +343,12 @@
     <div id="fichaCuerpo"></div>
   </section>
 
+</div>
+
+<div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Imagen ampliada" hidden>
+  <button type="button" class="cerrar" id="lupaCerrar" aria-label="Cerrar">&times;</button>
+  <img id="lupaImg" src="" alt="">
+  <p class="pie" id="lupaPie"></p>
 </div>
 
 <script>
@@ -473,26 +499,6 @@ var ASIGNATURAS = [
     'Repartirlos desordenados por grupos y que los ordenen del menor al mayor.',
     'Comparar con la edad real y con los indicadores por edad que trae el manual del DFH.']]},
 
-{id:'estadistica-descriptiva', n:'Estadística Descriptiva', sem:2, cod:'16114-C',
- gancho:'La estadística se enseña con tablas de ejemplo que no le importan a nadie. En el laboratorio están las tablas reales con las que se corrigen las pruebas: construidas con miles de personas, y con su año, su país y cuánta gente respondió impresos al lado.',
- recursos:[
-  ['PSI030','CARAS-R · percepción de diferencias','Se corrige al momento, y su manual trae la tabla —curso por curso— que convierte los aciertos en el puesto que ocupa el niño entre cien de su edad.'],
-  ['PSI031','D2 · test de atención','Da varias medidas por persona —aciertos, errores, índice de concentración—, así que sirve para trabajar más de una variable.'],
-  ['PSI029','TIG · inteligencia general, niveles 1 y 2','Su manual trae la tabla ya hecha y publicada: la que convierte el puntaje tal como sale en un puesto entre cien.']],
- ideas:[
-  ['Levantar una variable del propio grupo —horas de sueño, minutos de trayecto— y calcular con ella la distribución.',
-    'Elegir la variable y recogerla en una hoja apenas entren.',
-    'Vaciar los datos en el tablero y armar la tabla de frecuencias.',
-    'Calcular media, mediana y desviación con el grupo entero mirando.'],
-  ['Convertir juntos tres puntajes en el puesto que ocuparían entre cien, con la tabla que trae el manual del TIG.',
-    'Solicitar el manual del TIG para consulta en sala.',
-    'Tomar tres puntajes y buscarlos en la tabla del manual.',
-    'Escribir al lado el puesto que le corresponde y discutir qué significa cada uno.'],
-  ['Meter un dato atípico del grupo en la tabla y ver en el tablero qué le pasa a la media y qué a la mediana.',
-    'Añadir a los datos del curso un valor extremo inventado.',
-    'Recalcular la media y la mediana en el tablero.',
-    'Comparar cuánto se movió cada una y explicar por qué.']]},
-
 {id:'biologia-humana', n:'Biología Humana', sem:2, cod:'16201-A · A1 · A2',
  gancho:'El sistema nervioso que esta asignatura describe está en el laboratorio en tamaño natural y se abre con las manos: tres encéfalos desmontables, una neurona, un cuerpo celular y un oído que se separa pieza por pieza.',
  recursos:[
@@ -597,29 +603,6 @@ var ASIGNATURAS = [
     'Solicitar la ESFA y proyectar su lista de adjetivos.',
     'Leerlos en voz alta y marcar los que no describan una familia mayor.',
     'Proponer entre todos qué haría falta preguntar.']]},
-
-{id:'estadistica-inferencial', n:'Estadística Inferencial', sem:3, cod:'16115-B',
- gancho:'Contrastar dos medias convence mucho más cuando los dos grupos son mitades del mismo salón y el dato lo acaba de entregar un aparato del laboratorio, no una tabla del libro.',
- recursos:[
-  ['PSI012','Groove Type Steadiness Tester · probador de pulso','Un punzón que se pasa por ranuras estrechas y un contador que registra cada roce. Entrega un número por persona, sin que nadie tenga que corregir nada.'],
-  ['PSI011','Auto Tally Maze · laberinto con contador de errores','Lo mismo con el aprendizaje: el aparato lleva la cuenta solo, así que el dato llega limpio y sin discusión sobre quién anotó qué.'],
-  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','El instrumento con el que se mide el tiempo exacto de la tarea, y el que casi siempre se improvisa mal con un celular.'],
-  ['PSI031','D2 · test de atención','El modelo de aquello que se mide cuando está bien definido: da un número, permite varias medidas por persona y cambia si se cambian las condiciones.'],
-  ['PSI030','CARAS-R · percepción de diferencias','Aún más breve, y con sus tablas publicadas: el ejemplo de cómo se informa una medición hecha dos veces.'],
-  ['PSI050','AF-5 · autoconcepto','Cinco cosas medidas a la vez: útil cuando el estudio quiere mirar más de un resultado.']],
- ideas:[
-  ['Partir el salón en dos y contrastar las medias con un dato que produjo el aparato, no una fotocopia.',
-    'Solicitar el probador de pulso y el cronómetro del laboratorio.',
-    'Media clase pasa el punzón en silencio y la otra media con ruido; el contador anota los roces de cada quien.',
-    'Escribir las dos medias en el tablero y contrastar la hipótesis con los números del propio curso.'],
-  ['Escribir la hipótesis en el tablero antes de que el aparato entregue el primer dato.',
-    'Escribir la hipótesis y hacia dónde debería ir, antes de medir nada.',
-    'Recoger los datos sin volver a mirar el tablero.',
-    'Contrastar al final, y discutir qué habría cambiado si la hipótesis se escribe después de ver los números.'],
-  ['Mirar cómo se reparten diez datos reales antes de creerle al contraste que se va a aplicar.',
-    'Solicitar el laberinto con contador y que diez voluntarios lo recorran una vez cada uno.',
-    'Escribir los diez números en el tablero y ver cómo se agrupan y si alguno se sale.',
-    'Decidir en grupo si el contraste elegido seguía siendo el adecuado para unos datos así.']]},
 
 {id:'historia-conductismo', n:'Historia de la Psicología (Conductismo)', sem:3, cod:'21223-A',
  gancho:'El conductismo se discute en clase como si fuera una postura sobre si la mente existe. En el laboratorio están los aparatos con los que esa postura se volvió método: un laberinto que lleva la cuenta de los errores solo, un contador y un cronómetro. La conducta observable no era una idea; era un instrumento sobre una mesa.',
@@ -1372,6 +1355,53 @@ document.addEventListener('keydown', function(e){
 
 pintar();
 ruta();
+
+/* ═══════════════════════════════════════════════════════════════
+   LUPA
+   Delegada en document porque las fotos se pintan y se repintan por
+   JS: enganchar cada <img> al crearla obligaría a acordarse de ello
+   en cada sitio donde se pinta una tarjeta.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var velo = document.getElementById('lupa'),
+      foto = document.getElementById('lupaImg'),
+      pie  = document.getElementById('lupaPie'),
+      scrollPrevio = '';
+  if (!velo) return;
+
+  function abrir(im){
+    foto.src = im.currentSrc || im.src;
+    foto.alt = im.alt || '';
+    pie.textContent = im.alt || '';
+    velo.hidden = false;
+    /* Se guarda el valor anterior en vez de vaciarlo al cerrar: aquí hay
+       otras capas que también bloquean el scroll del fondo. */
+    scrollPrevio = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+  function cerrar(){
+    velo.hidden = true;
+    foto.removeAttribute('src');
+    document.body.style.overflow = scrollPrevio;
+  }
+
+  document.addEventListener('click', function(e){
+    if (!velo.hidden){
+      /* Con la lupa abierta todo cierra: el velo, la X y la propia foto.
+         Es lo que espera quien viene de una tienda en línea. */
+      cerrar();
+      return;
+    }
+    var im = e.target.closest && e.target.closest('.recursos img');
+    if (im && im.getAttribute('src')){ e.preventDefault(); abrir(im); }
+  });
+
+  /* En captura, para cerrar la lupa antes de que Escape llegue a quien lo
+     use para otra cosa: en el recurso de usos, Escape cierra la ficha. */
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !velo.hidden){ e.stopPropagation(); cerrar(); }
+  }, true);
+})();
 </script>
 </body>
 </html>
