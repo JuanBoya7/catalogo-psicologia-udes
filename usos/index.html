@@ -139,10 +139,16 @@
   .ficha{display:none}
   body.ver-ficha .ficha{display:block}
   body.ver-ficha .apertura,body.ver-ficha .selector{display:none}
-  .volver{font:inherit;font-size:.87em;font-weight:600;cursor:pointer;color:var(--azul);
-    background:#fff;border:1px solid var(--azul-borde);border-radius:8px;padding:9px 15px;
-    margin:24px 0 20px;transition:.12s}
-  .volver:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+  /* Barra de la ficha: volver a la izquierda y el paso de una asignatura a la
+     siguiente a la derecha, para recorrerlas sin regresar a la lista cada vez. */
+  .barra{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    flex-wrap:wrap;margin:24px 0 20px}
+  .volver,.pasar button{font:inherit;font-size:.87em;font-weight:600;cursor:pointer;
+    color:var(--azul);background:#fff;border:1px solid var(--azul-borde);border-radius:8px;
+    padding:9px 15px;transition:.12s}
+  .volver:hover,.pasar button:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .pasar{display:flex;align-items:center;gap:8px}
+  .pasar button{padding:9px 15px;line-height:1;min-width:46px}
   .fcab{margin:0 0 26px}
   .fcab .sem{font:600 .74em/1 ui-monospace,Consolas,monospace;letter-spacing:.05em;
     color:var(--azul);background:var(--azul-suave);border:1px solid var(--azul-borde);
@@ -294,6 +300,9 @@
         <p><em>Preséntate y di a qué vienes.</em> «Buenos días, soy [nombre], auxiliar del
           Laboratorio de Psicología. El profesor me dio diez minutos para mostrarles algo que
           tienen disponible y que casi nadie pide.»</p>
+        <p><em>Para pasar de una asignatura a otra</em> están las flechas de arriba, al lado
+          de «Todas las asignaturas»: también funcionan con las teclas ← y → del teclado, que
+          es lo cómodo si estás proyectando.</p>
         <p><em>Esta apertura es lo práctico, no el discurso.</em> Di dónde quedan los dos
           espacios, muestra la tabla de ventanas y deja claro que la solicitud se radica por
           el catálogo a cualquier hora. Con eso basta: pasa de una vez a la asignatura.</p>
@@ -326,7 +335,13 @@
   </section>
 
   <section class="ficha" id="ficha">
-    <button type="button" class="volver" id="volver">← Todas las asignaturas</button>
+    <div class="barra">
+      <button type="button" class="volver" id="volver">← Todas las asignaturas</button>
+      <div class="pasar">
+        <button type="button" id="antAsig" aria-label="Asignatura anterior">←</button>
+        <button type="button" id="sigAsig" aria-label="Asignatura siguiente">→</button>
+      </div>
+    </div>
     <div id="fichaCuerpo"></div>
   </section>
 
@@ -536,8 +551,6 @@ var ASIGNATURAS = [
  gancho:'La dificultad real de un anteproyecto no es la pregunta: es encontrar un instrumento que la mida y al que se tenga acceso. Aquí hay decenas.',
  recursos:[
   ['PSI047','FRIDA · riesgo interpersonal de consumo en adolescentes','Un ejemplo de algo difuso ya traducido a algo que se puede medir, con sus partes bien definidas.','Un tema difuso vuelto medible'],
-  ['PSI055','IDE · inventario de dependencia emocional','Tema recurrente en trabajos de grado, con instrumento disponible.','Instrumento para un tema recurrente'],
-  ['PSI041','TED-R · test de desesperanza','Sirve para anticipar cómo evoluciona un problema de salud o la calidad de vida.','Una variable que anticipa la evolución'],
   ['PSI031','D2 · test de atención','Cómoda como aquello que se mide en un estudio: rápida, aplicable en grupo y con varias medidas por persona.','Una medida cómoda para un estudio']]},
 
 /* ── 6º ──────────────────────────────────────────────────────── */
@@ -663,8 +676,6 @@ var ASIGNATURAS = [
  gancho:'El laboratorio presta los instrumentos con su manual y sus tablas de comparación, y la Cámara para las entrevistas. Es la diferencia entre un proyecto viable y uno que se cae en el capítulo de método.',
  recursos:[
   ['PSI047','FRIDA · riesgo de consumo en adolescentes','Tema frecuente en proyectos hechos con estudiantes de colegio.','Variable frecuente en población escolar'],
-  ['PSI055','IDE · dependencia emocional','Tema recurrente en trabajos de grado sobre relaciones de pareja.','Tema recurrente en trabajos de grado'],
-  ['PSI041','TED-R · desesperanza','Se usa para anticipar cómo evoluciona un caso en investigaciones de salud.','Variable pronóstica en salud'],
   ['PSI045','LSB-50 · revisión rápida del malestar','Medida general, útil para describir cómo llega el grupo o para tenerlo en cuenta al comparar.','Caracterización general del grupo'],
   ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, aplicable desde los 8 años, individual o grupal.','Cinco dimensiones desde los 8 años']]}
 
@@ -761,15 +772,22 @@ document.getElementById('palabras').innerHTML =
   });
 })();
 
-function pintar(){
+/* El mismo filtro sirve para pintar la lista y para decidir cuál es la
+   asignatura siguiente: si el docente filtró por semestre, las flechas se
+   mueven dentro de ese semestre y no por las 32. */
+function visibles(){
   var t = q.value.trim().toLowerCase();
-  var vis = ASIGNATURAS.filter(function(a){
+  return ASIGNATURAS.filter(function(a){
     if (filtroSem && String(a.sem) !== filtroSem) return false;
     if (!t) return true;
     var blob = (a.n + ' ' + a.gancho + ' ' +
                 a.recursos.map(function(r){ return r.join(' '); }).join(' ')).toLowerCase();
     return blob.indexOf(t) >= 0;
   });
+}
+
+function pintar(){
+  var vis = visibles();
   grid.innerHTML = vis.map(function(a){
     return '<button type="button" class="tarj" data-id="' + a.id + '">' +
       '<span class="sem">' + (a.sem === '9-10' ? '9º–10º' : a.sem + 'º SEMESTRE') + '</span>' +
@@ -844,8 +862,39 @@ function verFicha(a){
       '<p><em>Cierra siempre con el catálogo.</em> Que el docente y los estudiantes se lleven el ' +
         'enlace es el único resultado que importa de la visita.</p>' +
     '</div></details>';
+  pintarPaso(a);
   document.body.classList.add('ver-ficha');
   window.scrollTo(0, 0);
+}
+
+/* Recorrido circular: al llegar al final se vuelve a la primera, para que
+   ninguna flecha quede muerta cuando se está pasando ficha tras ficha. */
+function vecinas(a){
+  var lista = visibles();
+  if (lista.map(function(x){ return x.id; }).indexOf(a.id) < 0) lista = ASIGNATURAS;
+  var i = lista.map(function(x){ return x.id; }).indexOf(a.id);
+  return {
+    lista: lista, i: i,
+    ant: lista[(i - 1 + lista.length) % lista.length],
+    sig: lista[(i + 1) % lista.length]
+  };
+}
+
+function pintarPaso(a){
+  var v = vecinas(a);
+  $('#antAsig').title = 'Anterior: ' + v.ant.n;
+  $('#sigAsig').title = 'Siguiente: ' + v.sig.n;
+  var solo = v.lista.length < 2;
+  $('#antAsig').disabled = solo;
+  $('#sigAsig').disabled = solo;
+}
+
+function pasar(cuanto){
+  var id = location.hash.replace('#', '');
+  var a = ASIGNATURAS.filter(function(x){ return x.id === id; })[0];
+  if (!a) return;
+  var v = vecinas(a);
+  location.hash = cuanto < 0 ? v.ant.id : v.sig.id;
 }
 
 function ruta(){
@@ -856,6 +905,8 @@ function ruta(){
 }
 window.addEventListener('hashchange', ruta);
 $('#volver').addEventListener('click', function(){ location.hash = ''; });
+$('#antAsig').addEventListener('click', function(){ pasar(-1); });
+$('#sigAsig').addEventListener('click', function(){ pasar(1); });
 
 var esc = 1;
 function aplicarEsc(){ document.documentElement.style.setProperty('--esc', esc); }
@@ -867,7 +918,14 @@ $('#btnProy').addEventListener('click', function(){
 $('#btnMas').addEventListener('click', function(){ esc = Math.min(1.9, esc + 0.12); aplicarEsc(); });
 $('#btnMenos').addEventListener('click', function(){ esc = Math.max(0.85, esc - 0.12); aplicarEsc(); });
 document.addEventListener('keydown', function(e){
-  if (e.key === 'Escape' && document.body.classList.contains('ver-ficha')) location.hash = '';
+  if (!document.body.classList.contains('ver-ficha')) return;
+  if (e.key === 'Escape') { location.hash = ''; return; }
+  /* Las flechas pasan de asignatura solo cuando no se está escribiendo en
+     ningún campo, para no robarle el cursor a nadie. */
+  var enCampo = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''));
+  if (enCampo || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); pasar(1); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); pasar(-1); }
 });
 
 pintar();
