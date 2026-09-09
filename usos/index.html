@@ -82,27 +82,11 @@
   table.tabla-turno td:first-child{font-weight:600;color:var(--azul-hondo)}
   table.tabla-turno td.hora{font-weight:600;color:var(--azul);white-space:nowrap}
 
-  /* Glosario. El recurso lo presenta un auxiliar que todavía está aprendiendo
-     psicometría, y lo recibe un salón con estudiantes de primer semestre: cada
-     palabra propia del oficio tiene que estar dicha en castellano corriente en
-     algún lugar visible. Va en la apertura y, plegado, dentro de cada ficha,
-     porque en la ficha la apertura está oculta. */
-  /* Se pliega y se ve igual que los guiones: quien ya conoce las palabras no
-     tiene que pasar por encima de doce definiciones para llegar al contenido.
-     Clase propia y no .guion, porque el guion se oculta en modo proyección y
-     el glosario tiene que seguir estando ahí: es cuando el salón lo necesita. */
-  .glos{margin:22px 0 0;border:1px dashed var(--azul-borde);border-radius:13px;background:#fff}
-  .ficha .glos{margin:0 0 26px}
-  .glos summary{cursor:pointer;padding:14px 19px;font-size:.86em;font-weight:600;color:var(--azul)}
-  .glos .cuerpo{padding:0 19px 17px}
-  .glos .cuerpo > p{margin:0 0 13px;font-size:.89em;color:var(--muted);max-width:76ch}
-  dl.glosario{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));
-    gap:10px;margin:0}
-  dl.glosario div{background:var(--azul-suave);border:1px solid var(--azul-borde);
-    border-radius:10px;padding:11px 14px}
-  dl.glosario dt{font-weight:650;font-size:.88em;color:var(--azul-hondo);margin:0 0 3px}
-  dl.glosario dd{margin:0;font-size:.85em;color:var(--muted);line-height:1.46}
-
+  /* El recurso lo presenta un auxiliar que todavía está aprendiendo psicometría
+     y lo recibe un salón con estudiantes de primer semestre: nada de lo que hay
+     escrito aquí puede dar por sabido un término del oficio. Hubo un glosario
+     desplegable mientras el texto lo necesitaba; al pasar la actividad al cuadro
+     del instrumento, el contenido perdió los tecnicismos y el glosario sobró. */
   .cifras{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0 0}
   .cifra{background:var(--aqua);border:1px solid var(--aqua-borde);border-radius:12px;
     padding:14px 18px;flex:1;min-width:155px}
@@ -292,8 +276,6 @@
       <div class="cifra"><div class="n">10</div><div class="q">minutos: lo que dura la presentación</div></div>
     </div>
 
-    <details class="glos" id="palabras"></details>
-
     <details class="guion">
       <summary>Guion del auxiliar · apertura</summary>
       <div class="cuerpo">
@@ -313,8 +295,8 @@
           «hay alguien de turno todos los días» y que la solicitud llega igual por el catálogo.</p>
         <p><em>Recuerda quién te está escuchando.</em> En el salón hay estudiantes de primer
           semestre que todavía no han visto psicometría. Habla como le hablarías a alguien que
-          entra hoy: si se te escapa una palabra técnica, ábrela en el desplegable de palabras
-          —está aquí arriba y también dentro de cada asignatura— y léela tal como está.</p>
+          entra hoy, y no uses una palabra técnica que no puedas explicar en el momento: todo
+          lo que hay escrito en las fichas está dicho en corriente y puedes leerlo tal cual.</p>
       </div>
     </details>
   </section>
@@ -517,7 +499,7 @@ var ASIGNATURAS = [
 {id:'psicopatologia', n:'Psicopatología', sem:5, cod:'21245-A',
  gancho:'Diecisiete instrumentos clínicos disponibles. La pregunta interesante no es cuáles hay, sino qué se pierde cuando los requisitos para diagnosticar una depresión se convierten en veintiuna preguntas.',
  recursos:[
-  ['PSI042','BDI-II · inventario de depresión de Beck','Qué tan graves son los síntomas de depresión en adolescentes y adultos, con una cifra a partir de la cual se considera preocupante.','Del criterio diagnóstico al ítem'],
+  ['PSI042','BDI-II · inventario de depresión de Beck','Qué tan graves son los síntomas de depresión en adolescentes y adultos, con una cifra a partir de la cual se considera preocupante.','Del criterio diagnóstico a la pregunta'],
   ['PSI035','BAI · inventario de ansiedad de Beck','Síntomas emocionales y fisiológicos de la ansiedad, desde los 13 años.','Los síntomas que definen la ansiedad'],
   ['PSI045','LSB-50 · listado de síntomas breve','Una revisión general en 10–15 minutos, con dos puntajes de resumen: cuánto riesgo hay y qué tan intenso es el malestar. Pensada también para repetirse y seguir un caso.','Revisión breve de seis áreas'],
   ['PSI043','CIT · cuestionario de impacto del trauma','Revivir lo ocurrido, evitar todo lo que lo recuerde, pensar distinto desde entonces y vivir en alerta, más depresión, ira, culpa y consumo.','La huella del trauma'],
@@ -707,52 +689,6 @@ document.getElementById('nAsig').textContent = ASIGNATURAS.length;
 
 function semTexto(s){ return s === '9-10' ? '9º y 10º semestre' : s + 'º semestre'; }
 
-/* ═══════════════════════════════════════════════════════════════
-   PALABRAS DEL OFICIO, DICHAS EN CORRIENTE
-   Ninguna ficha puede dar por sabida una de estas. Si se añade un
-   término nuevo al contenido, se añade aquí en la misma edición.
-   ═══════════════════════════════════════════════════════════════ */
-var GLOSARIO = [
- ['Baremo (o tabla de comparación)',
-  'La tabla del manual que dice si un puntaje es alto o bajo. Se construyó aplicando la prueba a miles de personas, y compara a cada quien con las de su misma edad y sus mismos años de estudio.'],
- ['Puntaje bruto',
-  'El número que sale al corregir, antes de compararlo con esa tabla. Por sí solo no dice si es mucho o poco.'],
- ['Percentil',
-  'El puesto que ocupa una persona entre cien parecidas a ella. Percentil 80 quiere decir que 80 de cada 100 quedaron por debajo.'],
- ['Cribado (o tamizaje)',
-  'Prueba corta que no diagnostica nada: solo dice si vale la pena mirar más a fondo.'],
- ['Punto de corte',
-  'La cifra a partir de la cual el resultado deja de considerarse esperable. La fija el manual, no quien aplica la prueba.'],
- ['Consigna',
-  'La instrucción exacta que se le lee a quien responde. Se lee igual para todos: si cambia, el resultado ya no se puede comparar con nada.'],
- ['Protocolo (u hoja de respuestas)',
-  'El papel donde queda registrado lo que la persona respondió, y con el que después se corrige.'],
- ['Perfil',
-  'Todos los puntajes de una persona vistos juntos, de un golpe: dónde sube y dónde baja.'],
- ['Índice',
-  'Un puntaje parcial dentro de una prueba grande. Por ejemplo, el de memoria de trabajo dentro del WISC-IV.'],
- ['Prueba proyectiva',
-  'Lámina, dibujo o frase sin respuesta correcta. Lo que interesa no es acertar, sino qué ve o qué cuenta la persona.'],
- ['Escalas de sinceridad',
-  'Preguntas de control repartidas dentro de la prueba que delatan si alguien contestó a la ligera o quiso quedar bien.'],
- ['Ítem',
-  'Cada una de las preguntas o elementos sueltos de una prueba.']
-];
-
-function glosarioDL(){
-  return '<dl class="glosario">' + GLOSARIO.map(function(g){
-    return '<div><dt>' + g[0] + '</dt><dd>' + g[1] + '</dd></div>';
-  }).join('') + '</dl>';
-}
-
-document.getElementById('palabras').innerHTML =
-  '<summary>Las palabras técnicas, explicadas en corto</summary>' +
-  '<div class="cuerpo">' +
-    '<p>En las fichas aparecen algunos términos propios de las pruebas. Aquí están explicados ' +
-      'sin tecnicismos, y vuelven a estar dentro de cada asignatura por si hacen falta allí.</p>' +
-    glosarioDL() +
-  '</div>';
-
 (function(){
   var vistos = [];
   ASIGNATURAS.forEach(function(a){ if (vistos.indexOf(a.sem) < 0) vistos.push(a.sem); });
@@ -828,8 +764,6 @@ function verFicha(a){
       'curso, el nivel del grupo y lo que hace falta reforzar. Tome de aquí lo que le sirva, ' +
       'cámbielo a su manera o pida el material para algo completamente distinto: el laboratorio ' +
       'se lo prepara con mucho gusto.</div>' +
-    '<details class="glos"><summary>Las palabras técnicas de esta ficha, explicadas en corto</summary>' +
-      '<div class="cuerpo">' + glosarioDL() + '</div></details>' +
     '<div class="pedir">' +
       '<p class="secc">Cómo se pide</p>' +
       '<p>Cada instrumento tiene su ficha en el catálogo del laboratorio, con fotografía, rango de edad, ' +
@@ -850,9 +784,6 @@ function verFicha(a){
         'el docente. La respuesta es «eso lo arma usted como le sirva; el laboratorio le ' +
         'facilita el material y se lo tiene listo el día que lo pida». No improvises una ' +
         'metodología: no es tu trabajo y él sabe más que tú de su clase.</p>' +
-      '<p><em>Si te preguntan qué significa una palabra</em> —baremo, percentil, cribado, punto ' +
-        'de corte—, no la improvises: abre el desplegable de palabras que está en la misma ' +
-        'ficha y léelo tal como está escrito. Para eso se puso ahí.</p>' +
       '<p><em>Las actividades se ofrecen, no se dictan.</em> Di que son puntos de partida y ' +
         'que el docente sabrá si le sirven o si se le ocurre algo mejor. Es verdad, y evita que ' +
         'la visita se lea como si vinieras a decirle cómo dar su clase.</p>' +
