@@ -143,7 +143,13 @@
   .secc{font-size:.78em;letter-spacing:.09em;text-transform:uppercase;color:var(--azul);
     font-weight:700;margin:0 0 14px}
 
-  .recursos{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px;margin:0 0 30px}
+  /* El ancho del cuadro crece con la letra. Con el botón A+ el texto se agranda
+     hasta 1,9 veces, y con el ancho clavado en 232px el rótulo del gesto se partía
+     en dos renglones justo cuando se está proyectando, que es cuando se lee de
+     lejos. El min(100%) es para que en un teléfono con la letra grande el cuadro
+     no se salga de la pantalla. */
+  .recursos{display:grid;gap:14px;margin:0 0 30px;
+    grid-template-columns:repeat(auto-fill,minmax(min(100%,calc(232px * var(--esc))),1fr))}
   .r{background:var(--surface);border:1px solid var(--line);border-radius:13px;overflow:hidden;
     box-shadow:var(--shadow);display:flex;flex-direction:column}
   .r .foto{aspect-ratio:4/3;background:var(--azul-suave);display:block;overflow:hidden}
@@ -155,10 +161,13 @@
   .r .nm{font-weight:650;font-size:.9em;line-height:1.32;color:var(--azul-hondo)}
   .r .qm{font-size:.82em;color:var(--muted);line-height:1.5;margin:0}
   /* La actividad, al pie del cuadro y separada por un filete: se lee después
-     de la foto y de qué permite ver, que es el orden en que mira cualquiera. */
+     de la foto y de qué permite ver, que es el orden en que mira cualquiera.
+     El rótulo ya no dice «Actividad»: esa palabra era la misma en los 159 cuadros
+     y no distinguía ninguno. Dice el gesto —qué hace el salón con el aparato—,
+     que era lo único que faltaba y no costó un renglón nuevo. */
   .r .act{margin:4px 0 0;padding:10px 0 0;border-top:1px dashed var(--azul-borde)}
-  .r .act b{display:block;font:700 .62em/1 ui-monospace,Consolas,monospace;
-    letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .r .act b{display:block;font:700 .62em/1.35 ui-monospace,Consolas,monospace;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--azul);margin-bottom:5px}
   .r .act span{display:block;font-size:.85em;font-weight:650;line-height:1.35;
     color:var(--azul-hondo)}
   /* La pregunta no está en todos los cuadros: solo donde el instrumento da para
@@ -352,7 +361,7 @@ var IMG = CATALOGO + 'catalogo-img/';
 
 /* ═══════════════════════════════════════════════════════════════
    CONTENIDO
-   recursos: [código, nombre, qué permite ver, actividad, pregunta opcional]
+   recursos: [código, nombre, qué permite ver, actividad, gesto, pregunta opcional]
              La actividad es una frase de tres a seis palabras, casi un título,
              y va DENTRO del cuadro del instrumento: es lo que ese instrumento
              le sirve a ESTA asignatura y solo a ella. El mismo D2 dice cosas
@@ -360,313 +369,344 @@ var IMG = CATALOGO + 'catalogo-img/';
              No es una receta: nombra el asunto y el docente decide la sesión.
              Si a un instrumento no se le encuentra una actividad pertinente
              para una asignatura, el instrumento sobra en esa ficha.
-             La quinta posición es una pregunta para abrir discusión, y es
+             El gesto es una clave de GESTOS y ocupa el rótulo del cuadro: la
+             actividad dice el asunto y el gesto dice qué hace el salón con el
+             instrumento. Va en los 159 y es obligatorio, porque ocupa el lugar
+             de un rótulo que antes decía «Actividad» en todos por igual.
+             La última posición es una pregunta para abrir discusión, y es
              OPCIONAL: va solo donde hay algo que discutir de verdad. Si se
              pusiera en los 159 cuadros dejaría de señalar nada.
    ═══════════════════════════════════════════════════════════════ */
+/* Los gestos son un vocabulario CERRADO: trece entradas y ninguna más. Cada
+   cuadro elige una, y esa palabra ocupa el rótulo donde antes decía «Actividad»
+   en los 159 por igual. Que se repitan es la gracia: la auxiliar aprende seis
+   modos y los reconoce de un vistazo, y el docente ve de una pasada qué se
+   desmonta, qué se aplica y qué solamente se muestra.
+   La división que más importa es entre «aplicar» y «leer»: hay material que un
+   salón puede responder sin problema y hay material clínico que no se le aplica
+   a nadie en una clase. El rótulo dice cuál es cuál.
+   Para agregar un gesto hay que poder decir qué hace el salón con las manos. Si
+   empieza a explicar CÓMO se hace la actividad, se pasó de la raya: eso lo decide
+   el docente. Cuatro palabras como máximo, que el rótulo es angosto. */
+var GESTOS = {
+  aplicar:     'Aplicarlo entre ellos',   /* escalas breves que el grupo responde en clase */
+  leer:        'Leer los ítems',          /* clínicas: se leen y se comentan, NO se aplican */
+  cuadernillo: 'Abrir el cuadernillo',    /* baterías largas: se muestran por dentro */
+  corregir:    'Ver cómo se corrige',     /* cuando el asunto es el puntaje o el perfil */
+  comparar:    'Comparar dos pruebas',    /* pares que solo dicen algo puestos juntos */
+  desmontar:   'Desmontar y nombrar',     /* los modelos anatómicos */
+  tocar:       'Pasarlo por las manos',   /* lo que se palpa: las pesas, los filamentos */
+  probar:      'Probar las dos manos',    /* los aparatos de destreza */
+  cronometrar: 'Cronometrar y anotar',    /* los que miden tiempo y respuesta */
+  repetir:     'Repetirlo varias veces',  /* curva de aprendizaje, fiabilidad y seguimiento */
+  laminas:     'Mostrar las láminas',     /* las proyectivas de lámina */
+  dibujar:     'Dibujarlo en clase',      /* las gráficas: esas sí las hace el salón */
+  guia:        'Hojear la guía'           /* documentos */
+};
+
 var ASIGNATURAS = [
 
 /* ── 1º ──────────────────────────────────────────────────────── */
 {id:'procesos-basicos', n:'Procesos Básicos', sem:1, cod:'21211-A',
  gancho:'Los procesos que esta asignatura define —atención, percepción, concentración— tienen aquí los instrumentos con los que la psicología decidió cómo se miden, y se pueden tener sobre la mesa en una sola clase.',
  recursos:[
-  ['PSI031','D2 · test de atención','Precisión y velocidad bajo presión de tiempo. Distingue atención selectiva de sostenida y deja ver la fatiga mental. De 8 a 88 años, individual o grupal, 8–10 minutos.','Medición de la atención sostenida'],
-  ['PSI030','CARAS-R · percepción de diferencias','Detección de diferencias visuales sutiles. De 6 a 18 años, grupal, y se resuelve en 3–5 minutos: cabe en cualquier momento de la clase.','Atención selectiva contra reloj'],
-  ['PSI028','K-BIT · test breve de Kaufman','Estimación rápida de la capacidad de razonar, con palabras y sin ellas. Útil para mostrar cómo está armada una prueba de aptitudes sin ocupar dos horas.','Anatomía de una prueba de aptitudes'],
-  ['PSI010','Discrimination Weights · juego de pesas','Pesas iguales por fuera y distintas por dentro. Con ellas se busca la diferencia más pequeña que una persona alcanza a notar: la percepción medida con la mano, no explicada en el tablero.','Umbral de percepción del peso','¿Dónde está el límite entre notar y no notar la diferencia?'],
-  ['PSI014','Touch Test · evaluador de sensibilidad táctil','Filamentos de distinto grosor que se apoyan en la piel hasta que la persona los siente. La sensibilidad al tacto, convertida en un número.','Umbral de sensibilidad táctil','¿Por qué la piel no siente igual en todas partes?'],
-  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','Con qué se mide el tiempo exacto de una tarea y se llevan aciertos y errores, sin depender de un celular.','Medición del tiempo de respuesta'],
-  ['PSI004','Oído derecho · modelo desmontable','Por dónde entra lo que después llamamos percepción: pabellón, conducto, tímpano, huesecillos y caracol, separables uno por uno.','Exploración del sentido de la audición','¿En qué punto exacto el sonido deja de ser sonido?']]},
+  ['PSI031','D2 · test de atención','Precisión y velocidad bajo presión de tiempo. Distingue atención selectiva de sostenida y deja ver la fatiga mental. De 8 a 88 años, individual o grupal, 8–10 minutos.','Medición de la atención sostenida','aplicar'],
+  ['PSI030','CARAS-R · percepción de diferencias','Detección de diferencias visuales sutiles. De 6 a 18 años, grupal, y se resuelve en 3–5 minutos: cabe en cualquier momento de la clase.','Atención selectiva contra reloj','aplicar'],
+  ['PSI028','K-BIT · test breve de Kaufman','Estimación rápida de la capacidad de razonar, con palabras y sin ellas. Útil para mostrar cómo está armada una prueba de aptitudes sin ocupar dos horas.','Anatomía de una prueba de aptitudes','cuadernillo'],
+  ['PSI010','Discrimination Weights · juego de pesas','Pesas iguales por fuera y distintas por dentro. Con ellas se busca la diferencia más pequeña que una persona alcanza a notar: la percepción medida con la mano, no explicada en el tablero.','Umbral de percepción del peso','tocar','¿Dónde está el límite entre notar y no notar la diferencia?'],
+  ['PSI014','Touch Test · evaluador de sensibilidad táctil','Filamentos de distinto grosor que se apoyan en la piel hasta que la persona los siente. La sensibilidad al tacto, convertida en un número.','Umbral de sensibilidad táctil','tocar','¿Por qué la piel no siente igual en todas partes?'],
+  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','Con qué se mide el tiempo exacto de una tarea y se llevan aciertos y errores, sin depender de un celular.','Medición del tiempo de respuesta','cronometrar'],
+  ['PSI004','Oído derecho · modelo desmontable','Por dónde entra lo que después llamamos percepción: pabellón, conducto, tímpano, huesecillos y caracol, separables uno por uno.','Exploración del sentido de la audición','desmontar','¿En qué punto exacto el sonido deja de ser sonido?']]},
 
 {id:'fundamentos-psicologia', n:'Fundamentos de la Psicología', sem:1, cod:'21201-A',
  gancho:'En primer semestre se decide algo que dura la carrera entera: si el estudiante cree que la psicología se mide o que se opina.',
  recursos:[
-  ['PSI018','Rorschach · láminas y protocolo','La tradición proyectiva —láminas sin respuesta correcta— en su forma más conocida. Sirve para hablar de qué pretende ver una prueba en la que no se puede acertar ni fallar.','La tradición proyectiva de la psicología','¿Puede ser científico un instrumento que no tiene respuestas correctas?'],
-  ['PSI053','16-PF · cuestionario factorial','La tradición que mide: 16 rasgos, preguntas con opciones fijas y un resultado en números. El contraste con la anterior es el contenido de la clase.','La tradición que mide con números','¿Alcanzan dieciséis números para describir a una persona?'],
-  ['PSI023','NEUROPSI · evaluación breve','La mirada del cerebro: memoria, atención y lenguaje evaluados uno por uno, y una tabla que compara el resultado con personas de la misma edad y los mismos años de estudio.','La mirada neuropsicológica']]},
+  ['PSI018','Rorschach · láminas y protocolo','La tradición proyectiva —láminas sin respuesta correcta— en su forma más conocida. Sirve para hablar de qué pretende ver una prueba en la que no se puede acertar ni fallar.','La tradición proyectiva de la psicología','laminas','¿Puede ser científico un instrumento que no tiene respuestas correctas?'],
+  ['PSI053','16-PF · cuestionario factorial','La tradición que mide: 16 rasgos, preguntas con opciones fijas y un resultado en números. El contraste con la anterior es el contenido de la clase.','La tradición que mide con números','cuadernillo','¿Alcanzan dieciséis números para describir a una persona?'],
+  ['PSI023','NEUROPSI · evaluación breve','La mirada del cerebro: memoria, atención y lenguaje evaluados uno por uno, y una tabla que compara el resultado con personas de la misma edad y los mismos años de estudio.','La mirada neuropsicológica','cuadernillo']]},
 
 {id:'competencias-socioemocionales', n:'Electiva Competencias Socioemocionales', sem:1, cod:'21411-A',
  gancho:'Una electiva sobre habilidades socioemocionales puede quedarse en la percepción que cada estudiante tiene de sí mismo, o puede mirar de cerca cómo tres escalas distintas convirtieron eso en algo medible.',
  recursos:[
-  ['PSI056','EMA · escala multidimensional de asertividad','Asertividad directa, asertividad indirecta y no asertividad, medidas por separado. Desde los 15 años, unos 20 minutos.','Autoevaluación de la asertividad','¿Coincide la asertividad que uno se atribuye con la que sale medida?'],
-  ['PSI049','EEHSA · habilidades sociales para adolescentes','Empatía, asertividad, toma de decisiones sociales y resolución de conflictos. Individual o grupal.','Qué habilidad social conviene reforzar'],
-  ['PSI050','AF-5 · autoconcepto forma 5','Autoconcepto académico, social, emocional, familiar y físico. Desde los 8 años.','Las cinco caras del autoconcepto']]},
+  ['PSI056','EMA · escala multidimensional de asertividad','Asertividad directa, asertividad indirecta y no asertividad, medidas por separado. Desde los 15 años, unos 20 minutos.','Autoevaluación de la asertividad','aplicar','¿Coincide la asertividad que uno se atribuye con la que sale medida?'],
+  ['PSI049','EEHSA · habilidades sociales para adolescentes','Empatía, asertividad, toma de decisiones sociales y resolución de conflictos. Individual o grupal.','Qué habilidad social conviene reforzar','aplicar'],
+  ['PSI050','AF-5 · autoconcepto forma 5','Autoconcepto académico, social, emocional, familiar y físico. Desde los 8 años.','Las cinco caras del autoconcepto','aplicar']]},
 
 /* ── 2º ──────────────────────────────────────────────────────── */
 {id:'memoria-aprendizaje', n:'Memoria y Aprendizaje', sem:2, cod:'21242-A',
  gancho:'La memoria es de los temas mejor cubiertos del laboratorio: hay pruebas que la evalúan en niños, en adolescentes y en adultos, y todas la descomponen en partes.',
  recursos:[
-  ['PSI023','NEUROPSI · evaluación breve','Incluye memoria en sus distintas formas dentro de una evaluación general de 20 minutos. Desde los 16 años.','La memoria evaluada en el adulto'],
-  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','Atención, memoria y funciones ejecutivas —organizarse, planear, no dejarse distraer— en niños de 6 a 16 años, con 45–60 minutos de aplicación.','Memoria y atención en el niño'],
-  ['PSI022','BANETA · trastornos del aprendizaje','Lectura, escritura y cálculo evaluados por separado en escolares. Muestra cómo se localiza dónde falla el aprendizaje.','Dónde falla el aprendizaje escolar'],
-  ['PSI027','WISC-IV · Escala Wechsler para niños','Trae un puntaje aparte para la memoria de trabajo —la que se usa mientras se resuelve algo— dentro de una medida más amplia de capacidad intelectual.','La memoria de trabajo, medida','¿Es la misma memoria la que mide cada prueba?'],
-  ['PSI011','Auto Tally Maze · laberinto con contador de errores','Un laberinto que se recorre con un punzón y que lleva la cuenta de los errores por sí solo. Repetirlo varias veces deja la curva de aprendizaje dibujada en números.','Curva de aprendizaje, ensayo a ensayo','¿Cabe todo el aprendizaje en un contador de errores?']]},
+  ['PSI023','NEUROPSI · evaluación breve','Incluye memoria en sus distintas formas dentro de una evaluación general de 20 minutos. Desde los 16 años.','La memoria evaluada en el adulto','cuadernillo'],
+  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','Atención, memoria y funciones ejecutivas —organizarse, planear, no dejarse distraer— en niños de 6 a 16 años, con 45–60 minutos de aplicación.','Memoria y atención en el niño','cuadernillo'],
+  ['PSI022','BANETA · trastornos del aprendizaje','Lectura, escritura y cálculo evaluados por separado en escolares. Muestra cómo se localiza dónde falla el aprendizaje.','Dónde falla el aprendizaje escolar','cuadernillo'],
+  ['PSI027','WISC-IV · Escala Wechsler para niños','Trae un puntaje aparte para la memoria de trabajo —la que se usa mientras se resuelve algo— dentro de una medida más amplia de capacidad intelectual.','La memoria de trabajo, medida','cuadernillo','¿Es la misma memoria la que mide cada prueba?'],
+  ['PSI011','Auto Tally Maze · laberinto con contador de errores','Un laberinto que se recorre con un punzón y que lleva la cuenta de los errores por sí solo. Repetirlo varias veces deja la curva de aprendizaje dibujada en números.','Curva de aprendizaje, ensayo a ensayo','repetir','¿Cabe todo el aprendizaje en un contador de errores?']]},
 
 {id:'evolutiva-ninez', n:'Ps. Evolutiva Niñez y Adolescencia', sem:2, cod:'21212-A',
  gancho:'El laboratorio tiene lo mismo medido a tres edades distintas. Comparar los tres cuadernillos dice más sobre el desarrollo que un cuadro de etapas.',
  recursos:[
-  ['PSI026','WPPSI-III · Wechsler preescolar','De 2 a 7 años, 30–50 minutos. Tareas para hacer con las manos, porque a esa edad la palabra no alcanza.','Evaluación cognitiva en preescolares','¿Basta con hacer la prueba más fácil para un niño de cuatro años?'],
-  ['PSI027','WISC-IV · Wechsler para niños','De 6 a 16 años, unos 110 minutos. Razonar con palabras, retener mientras se resuelve y qué tan rápido se trabaja.','La misma capacidad, en la escuela'],
-  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','Retrato detallado de 6 a 16 años: atención, memoria y capacidad de organizarse.','Perfil cognitivo del niño escolar'],
-  ['PSI048','ESPA · estilos de socialización parental','Cómo perciben los adolescentes la autoridad, el apoyo y la comunicación en casa. De 12 a 18 años.','La autoridad según el hijo','¿Coincide la autoridad que ejerce un padre con la que percibe el hijo?'],
-  ['PSI017','Dibujo de la Figura Humana','Técnica gráfica de 3 a 18 años: el desarrollo leído en cómo cambia el dibujo con la edad.','El desarrollo leído en el dibujo','¿Cuánto delata un dibujo sobre la edad de quien lo hizo?'],
-  ['PSI019','Pata Negra · con hoja de respuesta','Explora el mundo interno del niño de 4 a 15 años, a través de láminas, cuando todavía es muy pequeño para un cuestionario.','Exploración del mundo interno infantil']]},
+  ['PSI026','WPPSI-III · Wechsler preescolar','De 2 a 7 años, 30–50 minutos. Tareas para hacer con las manos, porque a esa edad la palabra no alcanza.','Evaluación cognitiva en preescolares','cuadernillo','¿Basta con hacer la prueba más fácil para un niño de cuatro años?'],
+  ['PSI027','WISC-IV · Wechsler para niños','De 6 a 16 años, unos 110 minutos. Razonar con palabras, retener mientras se resuelve y qué tan rápido se trabaja.','La misma capacidad, en la escuela','comparar'],
+  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','Retrato detallado de 6 a 16 años: atención, memoria y capacidad de organizarse.','Perfil cognitivo del niño escolar','cuadernillo'],
+  ['PSI048','ESPA · estilos de socialización parental','Cómo perciben los adolescentes la autoridad, el apoyo y la comunicación en casa. De 12 a 18 años.','La autoridad según el hijo','aplicar','¿Coincide la autoridad que ejerce un padre con la que percibe el hijo?'],
+  ['PSI017','Dibujo de la Figura Humana','Técnica gráfica de 3 a 18 años: el desarrollo leído en cómo cambia el dibujo con la edad.','El desarrollo leído en el dibujo','dibujar','¿Cuánto delata un dibujo sobre la edad de quien lo hizo?'],
+  ['PSI019','Pata Negra · con hoja de respuesta','Explora el mundo interno del niño de 4 a 15 años, a través de láminas, cuando todavía es muy pequeño para un cuestionario.','Exploración del mundo interno infantil','laminas']]},
 
 {id:'biologia-humana', n:'Biología Humana', sem:2, cod:'16201-A · A1 · A2',
  gancho:'El sistema nervioso que esta asignatura describe está en el laboratorio en tamaño natural y se abre con las manos: tres encéfalos desmontables, una neurona, un cuerpo celular y un oído que se separa pieza por pieza.',
  recursos:[
-  ['PSI001','Encéfalo desmontable en color natural · modelo anatómico','Tamaño natural, sin colores que ayuden. Se separa por la mitad y quedan a la vista el cuerpo calloso, el tálamo, el hipotálamo y los ventrículos.','Reconocimiento de estructuras internas'],
-  ['PSI002','Encéfalo con los lóbulos en colores · modelo desmontable','El mismo encéfalo con cada lóbulo y cada zona de la corteza en un color distinto: dónde queda el área del habla, la motora y la visual.','Localización de las áreas corticales','¿El color ayuda a entender, o solo facilita memorizar?'],
-  ['PSI003','Encéfalo con irrigación arterial · modelo anatómico','Las arterias montadas sobre el modelo: por dónde llega la sangre y qué zona se queda sin ella en un accidente cerebrovascular.','Irrigación cerebral y accidente cerebrovascular','¿Por qué una lesión pequeña puede cambiarlo todo?'],
-  ['PSI004','Oído derecho · modelo desmontable','El oído por partes: pabellón, conducto, tímpano, la cadena de huesecillos y el caracol. Se abre para seguir el camino del sonido.','Recorrido anatómico del sonido'],
-  ['PSI005','Neurona · modelo anatómico','La célula del sistema nervioso en grande y en las manos: cuerpo, dendritas y axón.','Partes de la neurona','¿En qué momento un montón de células empieza a producir conducta?'],
-  ['PSI006','Cuerpo celular · modelo anatómico','La célula por dentro, ampliada: el núcleo y las partes que la sostienen.','Estructura interna de la célula']]},
+  ['PSI001','Encéfalo desmontable en color natural · modelo anatómico','Tamaño natural, sin colores que ayuden. Se separa por la mitad y quedan a la vista el cuerpo calloso, el tálamo, el hipotálamo y los ventrículos.','Reconocimiento de estructuras internas','desmontar'],
+  ['PSI002','Encéfalo con los lóbulos en colores · modelo desmontable','El mismo encéfalo con cada lóbulo y cada zona de la corteza en un color distinto: dónde queda el área del habla, la motora y la visual.','Localización de las áreas corticales','desmontar','¿El color ayuda a entender, o solo facilita memorizar?'],
+  ['PSI003','Encéfalo con irrigación arterial · modelo anatómico','Las arterias montadas sobre el modelo: por dónde llega la sangre y qué zona se queda sin ella en un accidente cerebrovascular.','Irrigación cerebral y accidente cerebrovascular','desmontar','¿Por qué una lesión pequeña puede cambiarlo todo?'],
+  ['PSI004','Oído derecho · modelo desmontable','El oído por partes: pabellón, conducto, tímpano, la cadena de huesecillos y el caracol. Se abre para seguir el camino del sonido.','Recorrido anatómico del sonido','desmontar'],
+  ['PSI005','Neurona · modelo anatómico','La célula del sistema nervioso en grande y en las manos: cuerpo, dendritas y axón.','Partes de la neurona','desmontar','¿En qué momento un montón de células empieza a producir conducta?'],
+  ['PSI006','Cuerpo celular · modelo anatómico','La célula por dentro, ampliada: el núcleo y las partes que la sostienen.','Estructura interna de la célula','desmontar']]},
 
 /* ── 3º ──────────────────────────────────────────────────────── */
 {id:'neurociencias', n:'Neurociencias', sem:3, cod:'21232-A',
  gancho:'Entre la estructura del sistema nervioso y la conducta observable están las pruebas que miden función. El laboratorio tiene las dos cosas: los encéfalos desmontables y las pruebas que dicen qué hace cada zona, sobre la misma mesa.',
  recursos:[
-  ['PSI023','NEUROPSI · evaluación breve','Orientación, atención, memoria, lenguaje y capacidad de organizarse, en 20 minutos, con tablas que comparan por edad y por años de estudio.','Revisión rápida de funciones cognitivas'],
-  ['PSI025','BANFE-2 · funciones ejecutivas y lóbulos frontales','Planear, frenar un impulso y cambiar de estrategia, en adultos de 18 a 70 años. Lo que hace la parte frontal del cerebro, medido.','Qué hace el lóbulo frontal','¿Qué queda de una persona cuando falla el lóbulo frontal?'],
-  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','El mismo mapa funcional aplicado al cerebro en desarrollo.','Las mismas funciones en el niño'],
-  ['PSI002','Encéfalo con los lóbulos en colores · modelo desmontable','Cada lóbulo y cada zona de la corteza en un color distinto: dónde queda el área del habla, la motora y la visual. Tamaño natural, se abre por la mitad.','Del área cortical a la prueba','¿Qué zonas del cerebro no las mide ninguna prueba del laboratorio?'],
-  ['PSI001','Encéfalo desmontable en color natural · modelo anatómico','El mismo cerebro sin colores que ayuden: por dentro quedan a la vista el cuerpo calloso, el tálamo y los ventrículos.','Estructuras internas en la mano'],
-  ['PSI003','Encéfalo con irrigación arterial · modelo anatómico','Las arterias montadas sobre el modelo: por dónde llega la sangre y por dónde ocurre un accidente cerebrovascular.','Qué se apaga en un ACV'],
-  ['PSI005','Neurona · modelo anatómico','La célula de la que está hecho todo lo anterior, en grande y en las manos: cuerpo, dendritas y axón.','La unidad del sistema nervioso']]},
+  ['PSI023','NEUROPSI · evaluación breve','Orientación, atención, memoria, lenguaje y capacidad de organizarse, en 20 minutos, con tablas que comparan por edad y por años de estudio.','Revisión rápida de funciones cognitivas','cuadernillo'],
+  ['PSI025','BANFE-2 · funciones ejecutivas y lóbulos frontales','Planear, frenar un impulso y cambiar de estrategia, en adultos de 18 a 70 años. Lo que hace la parte frontal del cerebro, medido.','Qué hace el lóbulo frontal','cuadernillo','¿Qué queda de una persona cuando falla el lóbulo frontal?'],
+  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','El mismo mapa funcional aplicado al cerebro en desarrollo.','Las mismas funciones en el niño','comparar'],
+  ['PSI002','Encéfalo con los lóbulos en colores · modelo desmontable','Cada lóbulo y cada zona de la corteza en un color distinto: dónde queda el área del habla, la motora y la visual. Tamaño natural, se abre por la mitad.','Del área cortical a la prueba','desmontar','¿Qué zonas del cerebro no las mide ninguna prueba del laboratorio?'],
+  ['PSI001','Encéfalo desmontable en color natural · modelo anatómico','El mismo cerebro sin colores que ayuden: por dentro quedan a la vista el cuerpo calloso, el tálamo y los ventrículos.','Estructuras internas en la mano','desmontar'],
+  ['PSI003','Encéfalo con irrigación arterial · modelo anatómico','Las arterias montadas sobre el modelo: por dónde llega la sangre y por dónde ocurre un accidente cerebrovascular.','Qué se apaga en un ACV','desmontar'],
+  ['PSI005','Neurona · modelo anatómico','La célula de la que está hecho todo lo anterior, en grande y en las manos: cuerpo, dendritas y axón.','La unidad del sistema nervioso','desmontar']]},
 
 {id:'motivacion-emocion', n:'Motivación y Emoción', sem:3, cod:'21233-A',
  gancho:'Los modelos motivacionales del programa se pueden discutir en abstracto, o se pueden aplicar al propio grupo y mirar el perfil que sale.',
  recursos:[
-  ['PSI051','APM · análisis del perfil motivacional','Cinco motivos y contramotivos: afiliación–autonomía, cooperación–poder, hedonismo–logro, seguridad–exploración, conservación–contribución. Desde los 16 años.','Perfil motivacional del propio grupo','¿Coincide el perfil que uno se atribuye con el que sale?'],
-  ['PSI035','BAI · inventario de ansiedad de Beck','La emoción convertida en número a partir de lo que se siente: tensión, inquietud, preocupación, agitación.','La ansiedad convertida en síntomas'],
-  ['PSI039','AMAS · ansiedad manifiesta en adultos','Dos versiones según la etapa vital, lo que abre la pregunta de si la emoción se pregunta igual a los 25 que a los 70.','La misma emoción a dos edades','¿Se pregunta igual la ansiedad a los 25 que a los 70?']]},
+  ['PSI051','APM · análisis del perfil motivacional','Cinco motivos y contramotivos: afiliación–autonomía, cooperación–poder, hedonismo–logro, seguridad–exploración, conservación–contribución. Desde los 16 años.','Perfil motivacional del propio grupo','aplicar','¿Coincide el perfil que uno se atribuye con el que sale?'],
+  ['PSI035','BAI · inventario de ansiedad de Beck','La emoción convertida en número a partir de lo que se siente: tensión, inquietud, preocupación, agitación.','La ansiedad convertida en síntomas','leer'],
+  ['PSI039','AMAS · ansiedad manifiesta en adultos','Dos versiones según la etapa vital, lo que abre la pregunta de si la emoción se pregunta igual a los 25 que a los 70.','La misma emoción a dos edades','comparar','¿Se pregunta igual la ansiedad a los 25 que a los 70?']]},
 
 {id:'evolutiva-adultez', n:'Ps. Evolutiva Adultez y Vejez', sem:3, cod:'21263-A',
  gancho:'La pregunta que atraviesa la asignatura —qué es envejecimiento normal y qué es deterioro— tiene aquí instrumentos que la responden con números.',
  recursos:[
-  ['PSI023','NEUROPSI · evaluación breve','Diseñado para detectar deterioro cognitivo leve y daño cerebral en población hispanohablante. 16 años en adelante.','Envejecimiento normal frente a deterioro','¿Cuándo deja un olvido de ser normal para la edad?'],
-  ['PSI039','AMAS · versión E, 60 años en adelante','Una escala de ansiedad hecha específicamente para la vejez.','La ansiedad medida en la vejez'],
-  ['PSI041','TED-R · test de desesperanza','La esperanza y su ausencia, que anticipan bastante bien cómo le irá a alguien en salud y en calidad de vida. Desde los 12 años.','La esperanza como pronóstico de salud','¿Puede la esperanza anticipar cómo evoluciona una enfermedad?'],
-  ['PSI052','ESFA · satisfacción familiar por adjetivos','La red de apoyo familiar, medida de forma breve y sencilla de aplicar.','La red de apoyo familiar']]},
+  ['PSI023','NEUROPSI · evaluación breve','Diseñado para detectar deterioro cognitivo leve y daño cerebral en población hispanohablante. 16 años en adelante.','Envejecimiento normal frente a deterioro','corregir','¿Cuándo deja un olvido de ser normal para la edad?'],
+  ['PSI039','AMAS · versión E, 60 años en adelante','Una escala de ansiedad hecha específicamente para la vejez.','La ansiedad medida en la vejez','leer'],
+  ['PSI041','TED-R · test de desesperanza','La esperanza y su ausencia, que anticipan bastante bien cómo le irá a alguien en salud y en calidad de vida. Desde los 12 años.','La esperanza como pronóstico de salud','leer','¿Puede la esperanza anticipar cómo evoluciona una enfermedad?'],
+  ['PSI052','ESFA · satisfacción familiar por adjetivos','La red de apoyo familiar, medida de forma breve y sencilla de aplicar.','La red de apoyo familiar','aplicar']]},
 
 {id:'historia-conductismo', n:'Historia de la Psicología (Conductismo)', sem:3, cod:'21223-A',
  gancho:'El conductismo se discute en clase como si fuera una postura sobre si la mente existe. En el laboratorio están los aparatos con los que esa postura se volvió método: un laberinto que lleva la cuenta de los errores solo, un contador y un cronómetro. La conducta observable no era una idea; era un instrumento sobre una mesa.',
  recursos:[
-  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El descendiente directo de los laberintos con los que se estudió el aprendizaje: se recorre con un punzón y el aparato cuenta los errores por sí solo, sin que nadie interprete nada.','El aprendizaje contado en errores','¿Se explica el aprendizaje sin hablar de lo que pasa por dentro?'],
-  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','Las dos únicas medidas que el conductismo aceptaba de entrada: cuánto tardó y cuántas veces ocurrió.','Contar y cronometrar la conducta'],
-  ['PSI012','Groove Type Steadiness Tester · probador de pulso','Una conducta motora fina registrada roce por roce: el tipo de dato que se puede contar sin preguntarle nada a quien lo produce.','Conducta motora registrada sin preguntar'],
-  ['PSI018','Rorschach · láminas y protocolo','Puesto al lado de lo anterior, el contraejemplo perfecto: lo que el conductismo se negaba a aceptar como dato.','El dato que el conductismo rechazaba','¿Por qué Watson no habría aceptado esto como dato?']]},
+  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El descendiente directo de los laberintos con los que se estudió el aprendizaje: se recorre con un punzón y el aparato cuenta los errores por sí solo, sin que nadie interprete nada.','El aprendizaje contado en errores','repetir','¿Se explica el aprendizaje sin hablar de lo que pasa por dentro?'],
+  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','Las dos únicas medidas que el conductismo aceptaba de entrada: cuánto tardó y cuántas veces ocurrió.','Contar y cronometrar la conducta','cronometrar'],
+  ['PSI012','Groove Type Steadiness Tester · probador de pulso','Una conducta motora fina registrada roce por roce: el tipo de dato que se puede contar sin preguntarle nada a quien lo produce.','Conducta motora registrada sin preguntar','probar'],
+  ['PSI018','Rorschach · láminas y protocolo','Puesto al lado de lo anterior, el contraejemplo perfecto: lo que el conductismo se negaba a aceptar como dato.','El dato que el conductismo rechazaba','laminas','¿Por qué Watson no habría aceptado esto como dato?']]},
 
 /* ── 4º ──────────────────────────────────────────────────────── */
 {id:'psicometria', n:'Psicometría', sem:4, cod:'21235-A',
  gancho:'Esta es la asignatura del programa que más pierde si no pisa el laboratorio: aquí están los manuales, las tablas de comparación y las hojas de respuesta de los que habla todo el semestre.',
  recursos:[
-  ['PSI029','TIG · inteligencia general, niveles 1 y 2','Dos niveles de lo mismo. El manual dice cuánto se puede confiar en la prueba, qué mide realmente y con qué tabla se compara, y deja ver cómo cambia al subir la dificultad.','De puntaje bruto a percentil','¿Sirve en Colombia una tabla construida con personas de otro país?'],
-  ['PSI053','16-PF · cuestionario factorial de personalidad','El ejemplo clásico de una prueba armada con estadística: 16 rasgos que salieron de analizar las respuestas de miles de personas.','Una prueba armada con estadística'],
-  ['PSI028','K-BIT · test breve de Kaufman','15 a 30 minutos: la prueba con la que un estudiante puede hacer una aplicación completa a un compañero dentro de una clase.','Aplicación completa entre compañeros'],
-  ['PSI031','D2 · test de atención','Rápida y repetible: la prueba natural para ver si un instrumento da lo mismo cuando se aplica dos veces a la misma persona.','Fiabilidad de una medida repetida','¿Da lo mismo una prueba aplicada dos veces a la misma persona?'],
-  ['PSI044','TAMADUL · cuestionario clínico de personalidad','Trae preguntas de control que delatan si alguien respondió a la ligera o quiso quedar bien: la respuesta a quienes dicen que estas pruebas se pueden engañar.','Controles contra la respuesta falseada','¿Se puede engañar a una prueba psicológica?']]},
+  ['PSI029','TIG · inteligencia general, niveles 1 y 2','Dos niveles de lo mismo. El manual dice cuánto se puede confiar en la prueba, qué mide realmente y con qué tabla se compara, y deja ver cómo cambia al subir la dificultad.','De puntaje bruto a percentil','corregir','¿Sirve en Colombia una tabla construida con personas de otro país?'],
+  ['PSI053','16-PF · cuestionario factorial de personalidad','El ejemplo clásico de una prueba armada con estadística: 16 rasgos que salieron de analizar las respuestas de miles de personas.','Una prueba armada con estadística','cuadernillo'],
+  ['PSI028','K-BIT · test breve de Kaufman','15 a 30 minutos: la prueba con la que un estudiante puede hacer una aplicación completa a un compañero dentro de una clase.','Aplicación completa entre compañeros','aplicar'],
+  ['PSI031','D2 · test de atención','Rápida y repetible: la prueba natural para ver si un instrumento da lo mismo cuando se aplica dos veces a la misma persona.','Fiabilidad de una medida repetida','repetir','¿Da lo mismo una prueba aplicada dos veces a la misma persona?'],
+  ['PSI044','TAMADUL · cuestionario clínico de personalidad','Trae preguntas de control que delatan si alguien respondió a la ligera o quiso quedar bien: la respuesta a quienes dicen que estas pruebas se pueden engañar.','Controles contra la respuesta falseada','leer','¿Se puede engañar a una prueba psicológica?']]},
 
 {id:'neuropsicologia', n:'Neuropsicología', sem:4, cod:'21243-A',
  gancho:'Es el área con más baterías del laboratorio: cuatro instrumentos completos, cada uno para una población distinta, y elegir cuál va con qué caso es la competencia central del área.',
  recursos:[
-  ['PSI025','BANFE-2 · funciones ejecutivas y lóbulos frontales','Adultos de 18 a 70 años, unos 50 minutos. Planear, decidir, frenarse a tiempo y cambiar de estrategia cuando algo no funciona.','Evaluación de la función frontal'],
-  ['PSI023','NEUROPSI · evaluación neuropsicológica breve','16 años en adelante, 20 minutos. Una revisión amplia y rápida cuando el tiempo es corto: orienta, no diagnostica.','Cuándo basta una revisión rápida','¿Qué se arriesga al descartar un problema en veinte minutos?'],
-  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','6 a 16 años, 45–60 minutos. El perfil cognitivo completo del niño.','Perfil neuropsicológico infantil'],
-  ['PSI022','BANETA · trastornos del aprendizaje','6 a 16 años, unas 3 horas. Específica para las dificultades de leer, de calcular y de escribir.','Diagnóstico específico del aprendizaje'],
-  ['PSI007','Purdue Pegboard · destreza manual','Diez minutos, y da la velocidad de cada mano por separado. La diferencia entre una y otra es lo que se mira: la mano que se queda atrás apunta al lado del cerebro comprometido.','La asimetría entre las dos manos','¿Qué está diciendo una mano que se queda atrás?']]},
+  ['PSI025','BANFE-2 · funciones ejecutivas y lóbulos frontales','Adultos de 18 a 70 años, unos 50 minutos. Planear, decidir, frenarse a tiempo y cambiar de estrategia cuando algo no funciona.','Evaluación de la función frontal','cuadernillo'],
+  ['PSI023','NEUROPSI · evaluación neuropsicológica breve','16 años en adelante, 20 minutos. Una revisión amplia y rápida cuando el tiempo es corto: orienta, no diagnostica.','Cuándo basta una revisión rápida','comparar','¿Qué se arriesga al descartar un problema en veinte minutos?'],
+  ['PSI024','ENI-2 · evaluación neuropsicológica infantil','6 a 16 años, 45–60 minutos. El perfil cognitivo completo del niño.','Perfil neuropsicológico infantil','cuadernillo'],
+  ['PSI022','BANETA · trastornos del aprendizaje','6 a 16 años, unas 3 horas. Específica para las dificultades de leer, de calcular y de escribir.','Diagnóstico específico del aprendizaje','cuadernillo'],
+  ['PSI007','Purdue Pegboard · destreza manual','Diez minutos, y da la velocidad de cada mano por separado. La diferencia entre una y otra es lo que se mira: la mano que se queda atrás apunta al lado del cerebro comprometido.','La asimetría entre las dos manos','probar','¿Qué está diciendo una mano que se queda atrás?']]},
 
 {id:'teorias-personalidad', n:'Teorías de la Personalidad', sem:4, cod:'21264-A',
  gancho:'El laboratorio permite hacer algo que un texto no puede: poner al lado dos instrumentos que preguntan por la misma persona desde teorías incompatibles.',
  recursos:[
-  ['PSI053','16-PF · cuestionario factorial','La apuesta de la estadística: rasgos obtenidos de analizar respuestas, preguntas cerradas y un resultado en números.','La personalidad en dieciséis rasgos'],
-  ['PSI015','Wartegg · test y guía de interpretación','La apuesta proyectiva: ocho cuadros con un trazo mínimo y la instrucción de completarlos. Desde los 15 años.','La personalidad leída en un trazo','¿Se puede conocer a alguien por cómo completa ocho dibujos?'],
-  ['PSI044','TAMADUL · personalidad y desadaptación clínica','Lo emocional, lo social, lo familiar y la imagen de uno mismo, con preguntas de control para detectar respuestas poco sinceras. Desde los 12 años.','Cuando el rasgo se vuelve problema'],
-  ['PSI050','AF-5 · autoconcepto forma 5','La imagen de uno mismo partida en cinco caras: la idea de que algo tan amplio se puede descomponer en pedazos medibles.','El autoconcepto partido en cinco'],
-  ['PSI054','VINCULATEST · vínculos interpersonales en adultos','La forma de vincularse con los demás —el estilo de apego— en la pareja, la familia, los amigos y el trabajo.','Estilos de apego en el adulto'],
-  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','La personalidad descrita con adjetivos corrientes: el mismo objeto que el 16-PF, con una unidad de medida que el estudiante ya usa a diario.','La personalidad dicha con adjetivos','¿Se entiende mejor un rasgo estadístico o un adjetivo corriente?']]},
+  ['PSI053','16-PF · cuestionario factorial','La apuesta de la estadística: rasgos obtenidos de analizar respuestas, preguntas cerradas y un resultado en números.','La personalidad en dieciséis rasgos','cuadernillo'],
+  ['PSI015','Wartegg · test y guía de interpretación','La apuesta proyectiva: ocho cuadros con un trazo mínimo y la instrucción de completarlos. Desde los 15 años.','La personalidad leída en un trazo','dibujar','¿Se puede conocer a alguien por cómo completa ocho dibujos?'],
+  ['PSI044','TAMADUL · personalidad y desadaptación clínica','Lo emocional, lo social, lo familiar y la imagen de uno mismo, con preguntas de control para detectar respuestas poco sinceras. Desde los 12 años.','Cuando el rasgo se vuelve problema','leer'],
+  ['PSI050','AF-5 · autoconcepto forma 5','La imagen de uno mismo partida en cinco caras: la idea de que algo tan amplio se puede descomponer en pedazos medibles.','El autoconcepto partido en cinco','aplicar'],
+  ['PSI054','VINCULATEST · vínculos interpersonales en adultos','La forma de vincularse con los demás —el estilo de apego— en la pareja, la familia, los amigos y el trabajo.','Estilos de apego en el adulto','leer'],
+  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','La personalidad descrita con adjetivos corrientes: el mismo objeto que el 16-PF, con una unidad de medida que el estudiante ya usa a diario.','La personalidad dicha con adjetivos','leer','¿Se entiende mejor un rasgo estadístico o un adjetivo corriente?']]},
 
 {id:'pensamiento-lenguaje', n:'Pensamiento y Lenguaje', sem:4, cod:'21234-A',
  gancho:'Decodificar y comprender son dos procesos distintos, y hay pruebas en el laboratorio que los separan para que la diferencia se vea.',
  recursos:[
-  ['PSI057','PROLEER · predictores de lectura','Descifrar las letras, entender lo que se lee, leer con soltura y escribir sin errores, evaluados por separado, de 6 a 16 años.','Componentes separados de la lectura','¿Leer bien en voz alta es haber comprendido?'],
-  ['PSI022','BANETA · trastornos del aprendizaje','Leer, escribir y calcular como áreas independientes, que es la razón de que la dificultad para leer y la dificultad para el cálculo sean diagnósticos distintos.','Leer, escribir y calcular por separado'],
-  ['PSI028','K-BIT · razonamiento verbal y matrices','Pone frente a frente una parte con palabras y otra sin ninguna palabra, en la misma persona.','Rendimiento verbal frente al no verbal','¿Qué significa rendir distinto con palabras y sin ellas?']]},
+  ['PSI057','PROLEER · predictores de lectura','Descifrar las letras, entender lo que se lee, leer con soltura y escribir sin errores, evaluados por separado, de 6 a 16 años.','Componentes separados de la lectura','cuadernillo','¿Leer bien en voz alta es haber comprendido?'],
+  ['PSI022','BANETA · trastornos del aprendizaje','Leer, escribir y calcular como áreas independientes, que es la razón de que la dificultad para leer y la dificultad para el cálculo sean diagnósticos distintos.','Leer, escribir y calcular por separado','cuadernillo'],
+  ['PSI028','K-BIT · razonamiento verbal y matrices','Pone frente a frente una parte con palabras y otra sin ninguna palabra, en la misma persona.','Rendimiento verbal frente al no verbal','comparar','¿Qué significa rendir distinto con palabras y sin ellas?']]},
 
 {id:'historia-psicoanalisis', n:'Historia de la Psicología (Psicoanálisis)', sem:4, cod:'21221-A',
  gancho:'Las diez láminas de Rorschach están en este edificio, bajo custodia, y esa custodia es en sí misma parte de la historia que la asignatura cuenta.',
  recursos:[
-  ['PSI018','Rorschach · láminas y protocolo de registro','16 años en adelante, individual. El instrumento que llevó la interpretación de lo inconsciente a un formato con reglas iguales para todos.','La interpretación vuelta protocolo','¿Qué se gana y qué se pierde al volver reproducible una interpretación?'],
-  ['PSI020','TAT–CAT · técnicas proyectivas y láminas','Desde los 6 años. Impulsos, emociones y conflictos explorados a través de historias.','Las historias como material clínico','¿La historia habla de la lámina o de quien la cuenta?'],
-  ['PSI019','Pata Negra · con hoja de respuesta','Cómo está armado el mundo interno del niño y con qué recursos se protege sin darse cuenta.','La técnica proyectiva en la infancia'],
-  ['PSI016','H-T-P · técnica de dibujo proyectivo','Casa, árbol y persona: la familia de técnicas gráficas que salió de la misma tradición.','La familia de las técnicas gráficas'],
-  ['PSI021','Test de la Casa','La vivencia del hogar leída en la estructura del dibujo.','El hogar leído en el dibujo']]},
+  ['PSI018','Rorschach · láminas y protocolo de registro','16 años en adelante, individual. El instrumento que llevó la interpretación de lo inconsciente a un formato con reglas iguales para todos.','La interpretación vuelta protocolo','laminas','¿Qué se gana y qué se pierde al volver reproducible una interpretación?'],
+  ['PSI020','TAT–CAT · técnicas proyectivas y láminas','Desde los 6 años. Impulsos, emociones y conflictos explorados a través de historias.','Las historias como material clínico','laminas','¿La historia habla de la lámina o de quien la cuenta?'],
+  ['PSI019','Pata Negra · con hoja de respuesta','Cómo está armado el mundo interno del niño y con qué recursos se protege sin darse cuenta.','La técnica proyectiva en la infancia','laminas'],
+  ['PSI016','H-T-P · técnica de dibujo proyectivo','Casa, árbol y persona: la familia de técnicas gráficas que salió de la misma tradición.','La familia de las técnicas gráficas','dibujar'],
+  ['PSI021','Test de la Casa','La vivencia del hogar leída en la estructura del dibujo.','El hogar leído en el dibujo','dibujar']]},
 
 /* ── 5º ──────────────────────────────────────────────────────── */
 {id:'psicopatologia', n:'Psicopatología', sem:5, cod:'21245-A',
  gancho:'Diecisiete instrumentos clínicos disponibles. La pregunta interesante no es cuáles hay, sino qué se pierde cuando los requisitos para diagnosticar una depresión se convierten en veintiuna preguntas.',
  recursos:[
-  ['PSI042','BDI-II · inventario de depresión de Beck','Qué tan graves son los síntomas de depresión en adolescentes y adultos, con una cifra a partir de la cual se considera preocupante.','Del criterio diagnóstico a la pregunta','¿Qué se pierde cuando un diagnóstico se vuelve veintiuna preguntas?'],
-  ['PSI035','BAI · inventario de ansiedad de Beck','Síntomas emocionales y fisiológicos de la ansiedad, desde los 13 años.','Los síntomas que definen la ansiedad'],
-  ['PSI045','LSB-50 · listado de síntomas breve','Una revisión general en 10–15 minutos, con dos puntajes de resumen: cuánto riesgo hay y qué tan intenso es el malestar. Pensada también para repetirse y seguir un caso.','Revisión breve de seis áreas','¿Puede una prueba orientar sin llegar a diagnosticar?'],
-  ['PSI043','CIT · cuestionario de impacto del trauma','Revivir lo ocurrido, evitar todo lo que lo recuerde, pensar distinto desde entonces y vivir en alerta, más depresión, ira, culpa y consumo.','La huella del trauma'],
-  ['PSI033','SENA · evaluación de niños y adolescentes','Funcionamiento cognitivo y emocional de 6 a 16 años.','Lo emocional y lo cognitivo juntos'],
-  ['PSI037','CHIPS · entrevista para síndromes psiquiátricos','Preguntar cara a cara, frente a entregar un cuestionario para que lo llenen.','Entrevista frente a cuestionario'],
-  ['PSI038','CDI · inventario de depresión infantil','Tristeza sostenida y mala imagen de sí mismo, en niños de 7 a 15 años.','La depresión en la infancia'],
-  ['PSI036','CAS · cuestionario de ansiedad infantil','Ansiedad de separación, social y escolar en niños de 6 a 8 años.','De qué tiene miedo un niño'],
-  ['PSI040','CMASR-2 · ansiedad manifiesta en niños','Preocupación excesiva, inquietud y miedo a la separación, de 6 a 19 años.','La misma ansiedad, otra edad','¿Por qué no basta una sola escala de ansiedad para todas las edades?'],
-  ['PSI032','GADS · escala de Gilliam para TDA y Asperger','Ayuda a distinguir un cuadro del otro, de 3 a 22 años.','Distinguir un cuadro de otro'],
-  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','Los trastornos de la personalidad, que el resto de instrumentos clínicos del laboratorio no cubren: los tres grupos, evaluados por adjetivos.','Cuando el problema es el carácter']]},
+  ['PSI042','BDI-II · inventario de depresión de Beck','Qué tan graves son los síntomas de depresión en adolescentes y adultos, con una cifra a partir de la cual se considera preocupante.','Del criterio diagnóstico a la pregunta','leer','¿Qué se pierde cuando un diagnóstico se vuelve veintiuna preguntas?'],
+  ['PSI035','BAI · inventario de ansiedad de Beck','Síntomas emocionales y fisiológicos de la ansiedad, desde los 13 años.','Los síntomas que definen la ansiedad','leer'],
+  ['PSI045','LSB-50 · listado de síntomas breve','Una revisión general en 10–15 minutos, con dos puntajes de resumen: cuánto riesgo hay y qué tan intenso es el malestar. Pensada también para repetirse y seguir un caso.','Revisión breve de seis áreas','leer','¿Puede una prueba orientar sin llegar a diagnosticar?'],
+  ['PSI043','CIT · cuestionario de impacto del trauma','Revivir lo ocurrido, evitar todo lo que lo recuerde, pensar distinto desde entonces y vivir en alerta, más depresión, ira, culpa y consumo.','La huella del trauma','leer'],
+  ['PSI033','SENA · evaluación de niños y adolescentes','Funcionamiento cognitivo y emocional de 6 a 16 años.','Lo emocional y lo cognitivo juntos','cuadernillo'],
+  ['PSI037','CHIPS · entrevista para síndromes psiquiátricos','Preguntar cara a cara, frente a entregar un cuestionario para que lo llenen.','Entrevista frente a cuestionario','comparar'],
+  ['PSI038','CDI · inventario de depresión infantil','Tristeza sostenida y mala imagen de sí mismo, en niños de 7 a 15 años.','La depresión en la infancia','leer'],
+  ['PSI036','CAS · cuestionario de ansiedad infantil','Ansiedad de separación, social y escolar en niños de 6 a 8 años.','De qué tiene miedo un niño','leer'],
+  ['PSI040','CMASR-2 · ansiedad manifiesta en niños','Preocupación excesiva, inquietud y miedo a la separación, de 6 a 19 años.','La misma ansiedad, otra edad','comparar','¿Por qué no basta una sola escala de ansiedad para todas las edades?'],
+  ['PSI032','GADS · escala de Gilliam para TDA y Asperger','Ayuda a distinguir un cuadro del otro, de 3 a 22 años.','Distinguir un cuadro de otro','leer'],
+  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','Los trastornos de la personalidad, que el resto de instrumentos clínicos del laboratorio no cubren: los tres grupos, evaluados por adjetivos.','Cuando el problema es el carácter','leer']]},
 
 {id:'psicologia-educativa', n:'Psicología Educativa', sem:5, cod:'21253-A',
  gancho:'El motivo de consulta más frecuente en un colegio —«no atiende, no rinde»— tiene aquí varios instrumentos posibles, y el orden en que se usen cambia la conclusión.',
  recursos:[
-  ['PSI030','CARAS-R · percepción de diferencias','Revisión rápida de la atención, de 3 a 5 minutos, aplicable a un salón completo.','Revisión atencional de todo el salón','¿Tres minutos bastan para concluir algo sobre un niño?'],
-  ['PSI022','BANETA · trastornos del aprendizaje','Evalúa si el problema está en lectura, escritura o cálculo, y no en la atención.','¿Es atención o es aprendizaje?'],
-  ['PSI057','PROLEER · predictores de lectura','Los componentes de la lectura, separados.','Qué componente de la lectura falla'],
-  ['PSI027','WISC-IV · Escala Wechsler para niños','Capacidad intelectual con puntajes separados por área, cuando hay que descartar o confirmar.','Perfil por áreas, no por total','¿Qué esconde un puntaje total?'],
-  ['PSI048','ESPA · estilos de socialización parental','El contexto familiar del rendimiento, medido en vez de supuesto.','El contexto familiar del rendimiento'],
-  ['PSI049','EEHSA · habilidades sociales para adolescentes','Base para programas de convivencia que después se puedan evaluar.','Convivencia escolar, medida antes de actuar']]},
+  ['PSI030','CARAS-R · percepción de diferencias','Revisión rápida de la atención, de 3 a 5 minutos, aplicable a un salón completo.','Revisión atencional de todo el salón','aplicar','¿Tres minutos bastan para concluir algo sobre un niño?'],
+  ['PSI022','BANETA · trastornos del aprendizaje','Evalúa si el problema está en lectura, escritura o cálculo, y no en la atención.','¿Es atención o es aprendizaje?','comparar'],
+  ['PSI057','PROLEER · predictores de lectura','Los componentes de la lectura, separados.','Qué componente de la lectura falla','cuadernillo'],
+  ['PSI027','WISC-IV · Escala Wechsler para niños','Capacidad intelectual con puntajes separados por área, cuando hay que descartar o confirmar.','Perfil por áreas, no por total','corregir','¿Qué esconde un puntaje total?'],
+  ['PSI048','ESPA · estilos de socialización parental','El contexto familiar del rendimiento, medido en vez de supuesto.','El contexto familiar del rendimiento','aplicar'],
+  ['PSI049','EEHSA · habilidades sociales para adolescentes','Base para programas de convivencia que después se puedan evaluar.','Convivencia escolar, medida antes de actuar','aplicar']]},
 
 {id:'psicologia-social-fund', n:'Psicología Social (Fundamentos)', sem:5, cod:'21244-A',
  gancho:'Buena parte de lo social se estudia con cuestionarios que la propia persona responde sobre sí misma, y el laboratorio tiene varios que miden justo los temas del programa.',
  recursos:[
-  ['PSI056','EMA · escala multidimensional de asertividad','Tres formas de responder ante el conflicto interpersonal, medidas por separado.','Tres formas de responder al conflicto'],
-  ['PSI049','EEHSA · habilidades sociales para adolescentes','Empatía, asertividad, decisiones sociales y resolución de conflictos.','Empatía y conflicto, vueltos puntaje'],
-  ['PSI050','AF-5 · autoconcepto','Incluye una dimensión social explícita: cómo entra el grupo en la imagen de uno mismo.','El grupo en la propia imagen','¿Se puede medir un fenómeno de grupo preguntándole a una sola persona?'],
-  ['PSI048','ESPA · estilos de socialización parental','La familia, que es el primer grupo al que pertenece cualquiera, medida en vez de supuesta.','Cómo el hogar moldea lo social']]},
+  ['PSI056','EMA · escala multidimensional de asertividad','Tres formas de responder ante el conflicto interpersonal, medidas por separado.','Tres formas de responder al conflicto','aplicar'],
+  ['PSI049','EEHSA · habilidades sociales para adolescentes','Empatía, asertividad, decisiones sociales y resolución de conflictos.','Empatía y conflicto, vueltos puntaje','corregir'],
+  ['PSI050','AF-5 · autoconcepto','Incluye una dimensión social explícita: cómo entra el grupo en la imagen de uno mismo.','El grupo en la propia imagen','aplicar','¿Se puede medir un fenómeno de grupo preguntándole a una sola persona?'],
+  ['PSI048','ESPA · estilos de socialización parental','La familia, que es el primer grupo al que pertenece cualquiera, medida en vez de supuesta.','Cómo el hogar moldea lo social','aplicar']]},
 
 {id:'intro-investigacion', n:'Introducción a la Investigación en Psicología', sem:5, cod:'21513-A',
  gancho:'La dificultad real de un anteproyecto no es la pregunta: es encontrar un instrumento que la mida y al que se tenga acceso. Aquí hay decenas.',
  recursos:[
-  ['PSI047','FRIDA · riesgo interpersonal de consumo en adolescentes','Un ejemplo de algo difuso ya traducido a algo que se puede medir, con sus partes bien definidas.','Un tema difuso vuelto medible','¿Se puede medir el riesgo de alguien que todavía no ha consumido?'],
-  ['PSI031','D2 · test de atención','Cómoda como aquello que se mide en un estudio: rápida, aplicable en grupo y con varias medidas por persona.','Un dato en diez minutos']]},
+  ['PSI047','FRIDA · riesgo interpersonal de consumo en adolescentes','Un ejemplo de algo difuso ya traducido a algo que se puede medir, con sus partes bien definidas.','Un tema difuso vuelto medible','cuadernillo','¿Se puede medir el riesgo de alguien que todavía no ha consumido?'],
+  ['PSI031','D2 · test de atención','Cómoda como aquello que se mide en un estudio: rápida, aplicable en grupo y con varias medidas por persona.','Un dato en diez minutos','aplicar']]},
 
 /* ── 6º ──────────────────────────────────────────────────────── */
 {id:'tecnicas-evaluacion', n:'Técnicas de Evaluación', sem:6, cod:'21236-A',
  gancho:'Esta asignatura y el laboratorio son casi la misma cosa: la colección completa de pruebas y una Cámara de Gesell donde el grupo puede observar una aplicación real sin invadirla.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI028','K-BIT · test breve de Kaufman','15 a 30 minutos: una aplicación completa cabe en una sesión de clase.','Aplicación completa en una sesión','¿Cuánto se aparta uno del manual sin darse cuenta?'],
-  ['PSI046','CTC-R · cuestionario TEA clínico revisado','Cómo se deja por escrito una primera entrevista, siempre de la misma manera.','Registro uniforme de la entrevista'],
-  ['PSI042','BDI-II · inventario de depresión de Beck','Aplicación breve y corrección con plantilla: el ciclo completo en pocos minutos.','Aplicar y corregir en pocos minutos'],
-  ['PSI053','16-PF · cuestionario factorial','Perfil extenso, para trabajar la lectura e interpretación de resultados.','Lectura e interpretación de un perfil'],
-  ['PSI029','TIG · inteligencia general','Se aplica a todo un grupo a la vez: el ejemplo de cómo se organiza una sala cuando hay que evaluar a muchos de una sola vez.','Organizar una aplicación colectiva','¿Cambia el resultado según cómo se organice la sala?'],
-  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','En vez de preguntas, una lista de adjetivos para marcar: 15-20 minutos, y cabe entero en una sesión.','Otro formato de respuesta, comparado']]},
+  ['PSI028','K-BIT · test breve de Kaufman','15 a 30 minutos: una aplicación completa cabe en una sesión de clase.','Aplicación completa en una sesión','aplicar','¿Cuánto se aparta uno del manual sin darse cuenta?'],
+  ['PSI046','CTC-R · cuestionario TEA clínico revisado','Cómo se deja por escrito una primera entrevista, siempre de la misma manera.','Registro uniforme de la entrevista','leer'],
+  ['PSI042','BDI-II · inventario de depresión de Beck','Aplicación breve y corrección con plantilla: el ciclo completo en pocos minutos.','Aplicar y corregir en pocos minutos','corregir'],
+  ['PSI053','16-PF · cuestionario factorial','Perfil extenso, para trabajar la lectura e interpretación de resultados.','Lectura e interpretación de un perfil','corregir'],
+  ['PSI029','TIG · inteligencia general','Se aplica a todo un grupo a la vez: el ejemplo de cómo se organiza una sala cuando hay que evaluar a muchos de una sola vez.','Organizar una aplicación colectiva','aplicar','¿Cambia el resultado según cómo se organice la sala?'],
+  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','En vez de preguntas, una lista de adjetivos para marcar: 15-20 minutos, y cabe entero en una sesión.','Otro formato de respuesta, comparado','comparar']]},
 
 {id:'psicologia-organizacional', n:'Psicología Organizacional', sem:6, cod:'21265-A',
  gancho:'Las pruebas de selección, orientación y perfil que la asignatura menciona no son abstracciones: cuatro de ellas están disponibles y se pueden aplicar al propio curso.',
  recursos:[
-  ['PSI051','APM · análisis del perfil motivacional','Diseñado para selección, gestión del talento, orientación y coaching. Desde los 16 años.','Perfil motivacional para un puesto'],
-  ['PSI053','16-PF · cuestionario factorial de personalidad','Uno de los cuestionarios más usados en selección de personal.','Qué se puede decir del candidato','¿Debería un cuestionario decidir quién entra a trabajar?'],
-  ['PSI059','EXPLORA · orientación vocacional y profesional','Qué le interesa y para qué es bueno alguien, ordenado por tipo de oficio.','Jornada de orientación vocacional','¿Los intereses que alguien declara predicen su satisfacción laboral?'],
-  ['PSI058','KV · escala de preferencias vocacionales','Intereses relacionados con trabajo y estudio, individual o grupal.','Qué oficio le atrae a quién'],
-  ['PSI056','EMA · escala multidimensional de asertividad','Comunicación y manejo del conflicto, base de buena parte de la formación en habilidades directivas.','El conflicto dentro del equipo'],
-  ['PSI007','Purdue Pegboard · destreza manual','La prueba de destreza fina que se usa de verdad en selección de personal: cuántas piezas coloca alguien en treinta segundos con cada mano y con las dos.','Destreza fina en selección de personal','¿Por qué hoy se emplea más en contextos clínicos que organizacionales?'],
-  ['PSI008','Hand Tool Dexterity Test · destreza con herramientas','Un tablero con pernos, tuercas y herramientas que se desarma y se arma contra reloj: la habilidad para un oficio técnico, medida en vez de supuesta.','Habilidad para el oficio técnico']]},
+  ['PSI051','APM · análisis del perfil motivacional','Diseñado para selección, gestión del talento, orientación y coaching. Desde los 16 años.','Perfil motivacional para un puesto','corregir'],
+  ['PSI053','16-PF · cuestionario factorial de personalidad','Uno de los cuestionarios más usados en selección de personal.','Qué se puede decir del candidato','corregir','¿Debería un cuestionario decidir quién entra a trabajar?'],
+  ['PSI059','EXPLORA · orientación vocacional y profesional','Qué le interesa y para qué es bueno alguien, ordenado por tipo de oficio.','Jornada de orientación vocacional','aplicar','¿Los intereses que alguien declara predicen su satisfacción laboral?'],
+  ['PSI058','KV · escala de preferencias vocacionales','Intereses relacionados con trabajo y estudio, individual o grupal.','Qué oficio le atrae a quién','aplicar'],
+  ['PSI056','EMA · escala multidimensional de asertividad','Comunicación y manejo del conflicto, base de buena parte de la formación en habilidades directivas.','El conflicto dentro del equipo','aplicar'],
+  ['PSI007','Purdue Pegboard · destreza manual','La prueba de destreza fina que se usa de verdad en selección de personal: cuántas piezas coloca alguien en treinta segundos con cada mano y con las dos.','Destreza fina en selección de personal','probar','¿Por qué hoy se emplea más en contextos clínicos que organizacionales?'],
+  ['PSI008','Hand Tool Dexterity Test · destreza con herramientas','Un tablero con pernos, tuercas y herramientas que se desarma y se arma contra reloj: la habilidad para un oficio técnico, medida en vez de supuesta.','Habilidad para el oficio técnico','probar']]},
 
 {id:'investigacion-cualitativa', n:'Investigación Cualitativa', sem:6, cod:'21254-A',
  gancho:'La Cámara de Gesell es el ambiente que esta asignatura necesita y casi nunca usa: un grupo focal con observadores que no contaminan la escena.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI046','CTC-R · cuestionario clínico revisado','Una guía de preguntas cerrada y siempre igual, para ponerla al lado de la guía abierta de un grupo focal y ver qué permite cada una.','Guía cerrada frente a guía abierta','¿Qué aparece en una conversación que nadie ha guionizado?']]},
+  ['PSI046','CTC-R · cuestionario clínico revisado','Una guía de preguntas cerrada y siempre igual, para ponerla al lado de la guía abierta de un grupo focal y ver qué permite cada una.','Guía cerrada frente a guía abierta','comparar','¿Qué aparece en una conversación que nadie ha guionizado?']]},
 
 {id:'psicologia-social-int', n:'Psicología Social (Intervención)', sem:6, cod:'21255-A',
  gancho:'Un programa que no midió cómo estaban las cosas antes de empezar no se puede evaluar al terminar, y decidir qué se va a medir de entrada es la parte que casi nunca se enseña.',
  recursos:[
-  ['PSI047','FRIDA · factores de riesgo interpersonales de consumo','Mide riesgo, no consumo: el grupo de amigos, la supervisión en casa, el vínculo con el colegio, qué tan fácil es conseguir y qué se piensa del asunto. De 12 a 18 años.','Qué medir antes de intervenir','¿Se puede medir el riesgo sin medir el consumo?'],
-  ['PSI049','EEHSA · habilidades sociales para adolescentes','Identifica qué habilidades concretas están bajas en un grupo.','A qué habilidad dirigir la intervención','¿Se puede enseñar una habilidad social sin saber cuál es la que falta?'],
-  ['PSI056','EMA · asertividad','Complementa lo anterior con el manejo del conflicto interpersonal.','El conflicto dentro del grupo'],
-  ['PSI052','ESFA · satisfacción familiar','El entorno inmediato como factor protector o de riesgo.','El entorno familiar como factor']]},
+  ['PSI047','FRIDA · factores de riesgo interpersonales de consumo','Mide riesgo, no consumo: el grupo de amigos, la supervisión en casa, el vínculo con el colegio, qué tan fácil es conseguir y qué se piensa del asunto. De 12 a 18 años.','Qué medir antes de intervenir','cuadernillo','¿Se puede medir el riesgo sin medir el consumo?'],
+  ['PSI049','EEHSA · habilidades sociales para adolescentes','Identifica qué habilidades concretas están bajas en un grupo.','A qué habilidad dirigir la intervención','corregir','¿Se puede enseñar una habilidad social sin saber cuál es la que falta?'],
+  ['PSI056','EMA · asertividad','Complementa lo anterior con el manejo del conflicto interpersonal.','El conflicto dentro del grupo','aplicar'],
+  ['PSI052','ESFA · satisfacción familiar','El entorno inmediato como factor protector o de riesgo.','El entorno familiar como factor','aplicar']]},
 
 {id:'historia-cognitiva', n:'Historia de la Psicología (Cognitiva)', sem:6, cod:'21225-A',
  gancho:'La psicología cognitiva le ganó la discusión al conductismo con un cronómetro: si decidir toma tiempo, y ese tiempo se puede medir, entonces entre el estímulo y la respuesta está pasando algo. El laboratorio tiene con qué medirlo.',
  recursos:[
-  ['PSI013','Chronos · presentación de estímulos y registro de respuesta','Presenta luces y sonidos y registra en milésimas de segundo lo que la persona responde. Se opera desde el computador del laboratorio.','El tiempo de reacción, medido','Si decidir toma tiempo, ¿qué está ocurriendo en ese intervalo?'],
-  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','La versión de mano de lo mismo: el instrumento con el que la pregunta se puede hacer sin computador.','Cronometrar sin computador'],
-  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El aparato de la etapa anterior, para tener sobre la mesa aquello contra lo que la psicología cognitiva discutía.','Lo que contaba como dato entonces','¿Por qué el cronómetro obligó a hablar de la mente y el laberinto no?'],
-  ['PSI027','WISC-IV · Escala Wechsler para niños','Trae un puntaje de velocidad de procesamiento: la idea de que pensar toma tiempo, ya convertida en prueba comercial.','La velocidad, ya vuelta cuadernillo'],
-  ['PSI031','D2 · test de atención','Precisión y velocidad en la misma tarea: la atención medida como se mide desde entonces.','Precisión y velocidad a la vez']]},
+  ['PSI013','Chronos · presentación de estímulos y registro de respuesta','Presenta luces y sonidos y registra en milésimas de segundo lo que la persona responde. Se opera desde el computador del laboratorio.','El tiempo de reacción, medido','cronometrar','Si decidir toma tiempo, ¿qué está ocurriendo en ese intervalo?'],
+  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','La versión de mano de lo mismo: el instrumento con el que la pregunta se puede hacer sin computador.','Cronometrar sin computador','cronometrar'],
+  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El aparato de la etapa anterior, para tener sobre la mesa aquello contra lo que la psicología cognitiva discutía.','Lo que contaba como dato entonces','repetir','¿Por qué el cronómetro obligó a hablar de la mente y el laberinto no?'],
+  ['PSI027','WISC-IV · Escala Wechsler para niños','Trae un puntaje de velocidad de procesamiento: la idea de que pensar toma tiempo, ya convertida en prueba comercial.','La velocidad, ya vuelta cuadernillo','cuadernillo'],
+  ['PSI031','D2 · test de atención','Precisión y velocidad en la misma tarea: la atención medida como se mide desde entonces.','Precisión y velocidad a la vez','aplicar']]},
 
 /* ── 7º ──────────────────────────────────────────────────────── */
 {id:'psicologia-clinica', n:'Psicología Clínica y de la Salud', sem:7, cod:'21246-A',
  gancho:'El laboratorio tiene la secuencia completa de una primera consulta: el instrumento que deja por escrito el motivo, el que hace la revisión rápida y el que mide lo específico.',
  recursos:[
-  ['PSI046','CTC-R · cuestionario TEA clínico revisado','Por qué viene, qué le ha pasado antes y qué siente ahora, recogido siempre de la misma forma en todos los casos.','Documentar el motivo de consulta','¿Cuánto cambia una consulta según el orden en que se pregunta?'],
-  ['PSI045','LSB-50 · listado de síntomas breve','Seis áreas de malestar en 10–15 minutos, con puntajes de resumen. Pensado para repetirse y ver cómo evoluciona.','Revisión general y seguimiento'],
-  ['PSI042','BDI-II · depresión','Le pone número a la gravedad, en adolescentes y adultos.','Medir la gravedad de la depresión'],
-  ['PSI043','CIT · impacto del trauma','Lo que un hecho traumático dejó, y cuánto está afectando la vida de todos los días.','El trauma en la vida diaria'],
-  ['PSI054','VINCULATEST · vínculos en adultos','La forma de vincularse y los patrones que se repiten: depender, alejarse o pelear.','El estilo de apego del consultante'],
-  ['PSI055','IDE · inventario de dependencia emocional','Miedo a la ruptura, subordinación y prioridad de la pareja sobre uno mismo.','La dependencia dentro de la pareja'],
-  ['PSI034','ICOD · instrumento de codependencia','Qué tan frecuente es la codependencia y qué suele venir con ella.','Vivir para el problema del otro'],
-  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','Lo que una revisión rápida no alcanza a ver: el rasgo de personalidad, estable en el tiempo, que sostiene el motivo de consulta por debajo del síntoma.','El rasgo debajo del síntoma','¿Es un síntoma, o es la forma de ser de esa persona?']]},
+  ['PSI046','CTC-R · cuestionario TEA clínico revisado','Por qué viene, qué le ha pasado antes y qué siente ahora, recogido siempre de la misma forma en todos los casos.','Documentar el motivo de consulta','leer','¿Cuánto cambia una consulta según el orden en que se pregunta?'],
+  ['PSI045','LSB-50 · listado de síntomas breve','Seis áreas de malestar en 10–15 minutos, con puntajes de resumen. Pensado para repetirse y ver cómo evoluciona.','Revisión general y seguimiento','leer'],
+  ['PSI042','BDI-II · depresión','Le pone número a la gravedad, en adolescentes y adultos.','Medir la gravedad de la depresión','corregir'],
+  ['PSI043','CIT · impacto del trauma','Lo que un hecho traumático dejó, y cuánto está afectando la vida de todos los días.','El trauma en la vida diaria','leer'],
+  ['PSI054','VINCULATEST · vínculos en adultos','La forma de vincularse y los patrones que se repiten: depender, alejarse o pelear.','El estilo de apego del consultante','leer'],
+  ['PSI055','IDE · inventario de dependencia emocional','Miedo a la ruptura, subordinación y prioridad de la pareja sobre uno mismo.','La dependencia dentro de la pareja','leer'],
+  ['PSI034','ICOD · instrumento de codependencia','Qué tan frecuente es la codependencia y qué suele venir con ella.','Vivir para el problema del otro','leer'],
+  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','Lo que una revisión rápida no alcanza a ver: el rasgo de personalidad, estable en el tiempo, que sostiene el motivo de consulta por debajo del síntoma.','El rasgo debajo del síntoma','leer','¿Es un síntoma, o es la forma de ser de esa persona?']]},
 
 {id:'entrevista', n:'Entrevista', sem:7, cod:'21730-A',
  gancho:'Nadie aprende a entrevistar leyendo sobre entrevistas. La Cámara de Gesell existe justamente para que la primera vez sea observada y comentada.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI037','CHIPS · entrevista para síndromes psiquiátricos','La entrevista más pautada que existe, con todo escrito de antemano: qué se gana y qué se pierde cuando nada se deja al momento.','La entrevista más pautada que existe','¿Qué se pierde cuando la entrevista está escrita de antemano?'],
-  ['PSI046','CTC-R · exploración clínica general','Cómo una conversación se convierte en un registro que se puede comparar con el de otro caso.','De la conversación al registro'],
-  ['PSI044','TAMADUL · con escalas de sinceridad','Trae preguntas de control, y con ellas la duda de qué hacer cuando lo que alguien dice no coincide con lo que se ve.','Cuando lo dicho no coincide','¿A quién se le cree, al relato o a la prueba?']]},
+  ['PSI037','CHIPS · entrevista para síndromes psiquiátricos','La entrevista más pautada que existe, con todo escrito de antemano: qué se gana y qué se pierde cuando nada se deja al momento.','La entrevista más pautada que existe','leer','¿Qué se pierde cuando la entrevista está escrita de antemano?'],
+  ['PSI046','CTC-R · exploración clínica general','Cómo una conversación se convierte en un registro que se puede comparar con el de otro caso.','De la conversación al registro','leer'],
+  ['PSI044','TAMADUL · con escalas de sinceridad','Trae preguntas de control, y con ellas la duda de qué hacer cuando lo que alguien dice no coincide con lo que se ve.','Cuando lo dicho no coincide','corregir','¿A quién se le cree, al relato o a la prueba?']]},
 
 {id:'psicologia-juridica', n:'Psicología Jurídica', sem:7, cod:'21731-A',
  gancho:'El laboratorio tiene la guía práctica del psicólogo que actúa como perito —el experto que le explica al juez lo que él no puede saber— en el sistema penal colombiano, y un ambiente donde se puede ensayar el interrogatorio de la contraparte.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI060','Psicología forense en el proceso penal acusatorio · guía','Desde que un juez encarga el peritaje hasta que el psicólogo lo defiende en el juicio, incluido el interrogatorio de la contraparte. Es material de lectura, no una prueba.','Peritaje y contrainterrogatorio','¿Qué parte de un informe resiste un contrainterrogatorio?'],
-  ['PSI044','TAMADUL · con control de sinceridad','Ante un juez, las preguntas de control no son un detalle: son justamente lo que la contraparte va a discutir.','La validez, ante el juez'],
-  ['PSI055','IDE · dependencia emocional','De uso frecuente en la valoración de relaciones de pareja conflictivas y de violencia.','Valoración en violencia de pareja'],
-  ['PSI054','VINCULATEST · vínculos en adultos','Estilo de apego y patrones de conflicto interpersonal.','El vínculo, en un caso familiar'],
-  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','La personalidad valorada ante un juez, donde no es lo mismo afirmar que alguien es así de siempre que decir que está así ahora.','Afirmar un rasgo tiene consecuencias','¿Es lo mismo afirmar que alguien es así que decir que está así?']]},
+  ['PSI060','Psicología forense en el proceso penal acusatorio · guía','Desde que un juez encarga el peritaje hasta que el psicólogo lo defiende en el juicio, incluido el interrogatorio de la contraparte. Es material de lectura, no una prueba.','Peritaje y contrainterrogatorio','guia','¿Qué parte de un informe resiste un contrainterrogatorio?'],
+  ['PSI044','TAMADUL · con control de sinceridad','Ante un juez, las preguntas de control no son un detalle: son justamente lo que la contraparte va a discutir.','La validez, ante el juez','corregir'],
+  ['PSI055','IDE · dependencia emocional','De uso frecuente en la valoración de relaciones de pareja conflictivas y de violencia.','Valoración en violencia de pareja','leer'],
+  ['PSI054','VINCULATEST · vínculos en adultos','Estilo de apego y patrones de conflicto interpersonal.','El vínculo, en un caso familiar','leer'],
+  ['PSI061','IA-TP · adjetivos para trastornos de la personalidad','La personalidad valorada ante un juez, donde no es lo mismo afirmar que alguien es así de siempre que decir que está así ahora.','Afirmar un rasgo tiene consecuencias','leer','¿Es lo mismo afirmar que alguien es así que decir que está así?']]},
 
 {id:'investigacion-experimental', n:'Investigación Experimental en Psicología', sem:7, cod:'21256-A',
  gancho:'Es la asignatura que más aparatos tiene esperándola: pesas, laberintos y probadores de pulso con los que se puede manipular una condición de verdad y leer el efecto en un contador, sin pedirle a nadie que se imagine el experimento.',
  recursos:[
-  ['PSI031','D2 · test de atención','Varias medidas por persona sobre una misma tarea: el ejemplo de algo bien definido a la hora de medirlo.','Una medida bien hecha, de ejemplo'],
-  ['PSI030','CARAS-R · percepción de diferencias','Tan breve que sirve para mostrar cómo se diseña una medición que se pueda repetir dentro de la misma sesión.','Medición repetible en una sesión'],
-  ['PSI028','K-BIT · test breve','El ejemplo de una medida de control: la que se usa para comprobar que los dos grupos arrancan parejos, antes de cambiar nada.','Emparejar los grupos antes de empezar'],
-  ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, para estudios que quieren mirar más de un resultado a la vez.','Estudios con más de un resultado'],
-  ['PSI012','Groove Type Steadiness Tester · probador de pulso','Un punzón que se pasa por ranuras cada vez más estrechas y un contador que registra cada roce. El pulso, y lo que la presión le hace, en un número.','El pulso bajo presión','¿Cambia el pulso solo porque hay alguien mirando?'],
-  ['PSI010','Discrimination Weights · juego de pesas','La condición que se manipula, ya construida: pesas casi iguales con las que se puede subir o bajar la diferencia a voluntad.','Manipular la diferencia a voluntad','¿Cuánta diferencia hace falta para que alguien la note?'],
-  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El aparato lleva la cuenta solo: entrega el dato ya recogido, sin que nadie tenga que estar mirando y anotando.','El dato recogido por el aparato'],
-  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','El instrumento de medida más básico de un experimento, y el que casi siempre se improvisa mal con un celular.','Medir el tiempo con precisión'],
-  ['PSI013','Chronos · presentación de estímulos y registro de respuesta','Equipo que presenta luces y sonidos y registra en milésimas de segundo lo que la persona responde. Se opera desde el computador del laboratorio.','Estímulo y respuesta en milésimas']]},
+  ['PSI031','D2 · test de atención','Varias medidas por persona sobre una misma tarea: el ejemplo de algo bien definido a la hora de medirlo.','Una medida bien hecha, de ejemplo','aplicar'],
+  ['PSI030','CARAS-R · percepción de diferencias','Tan breve que sirve para mostrar cómo se diseña una medición que se pueda repetir dentro de la misma sesión.','Medición repetible en una sesión','repetir'],
+  ['PSI028','K-BIT · test breve','El ejemplo de una medida de control: la que se usa para comprobar que los dos grupos arrancan parejos, antes de cambiar nada.','Emparejar los grupos antes de empezar','aplicar'],
+  ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, para estudios que quieren mirar más de un resultado a la vez.','Estudios con más de un resultado','corregir'],
+  ['PSI012','Groove Type Steadiness Tester · probador de pulso','Un punzón que se pasa por ranuras cada vez más estrechas y un contador que registra cada roce. El pulso, y lo que la presión le hace, en un número.','El pulso bajo presión','probar','¿Cambia el pulso solo porque hay alguien mirando?'],
+  ['PSI010','Discrimination Weights · juego de pesas','La condición que se manipula, ya construida: pesas casi iguales con las que se puede subir o bajar la diferencia a voluntad.','Manipular la diferencia a voluntad','tocar','¿Cuánta diferencia hace falta para que alguien la note?'],
+  ['PSI011','Auto Tally Maze · laberinto con contador de errores','El aparato lleva la cuenta solo: entrega el dato ya recogido, sin que nadie tenga que estar mirando y anotando.','El dato recogido por el aparato','repetir'],
+  ['PSI009','Economy Clock · cronómetro y contador de laboratorio','El instrumento de medida más básico de un experimento, y el que casi siempre se improvisa mal con un celular.','Medir el tiempo con precisión','cronometrar'],
+  ['PSI013','Chronos · presentación de estímulos y registro de respuesta','Equipo que presenta luces y sonidos y registra en milésimas de segundo lo que la persona responde. Se opera desde el computador del laboratorio.','Estímulo y respuesta en milésimas','cronometrar']]},
 
 /* ── 8º ──────────────────────────────────────────────────────── */
 {id:'intervencion-cc', n:'Intervención Cognitivo Conductual (Estudio de Caso)', sem:8, cod:'21811-A',
  gancho:'El enfoque cognitivo conductual se define por medir antes, durante y después. El laboratorio tiene los instrumentos con los que se hace esa medición repetida.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI042','BDI-II · depresión','El caso clásico de medir lo mismo cada cierto tiempo para ver cómo va un paciente.','Seguir la depresión sesión a sesión','¿Cómo se sabe si una intervención está funcionando?'],
-  ['PSI035','BAI · ansiedad','Lo mismo, cuando lo que hay que seguir es la ansiedad.','Seguimiento de la ansiedad'],
-  ['PSI045','LSB-50 · listado de síntomas breve','Una revisión general al comienzo y un seguimiento cada cierto tiempo, con puntajes de resumen.','Medición de entrada y de cierre'],
-  ['PSI043','CIT · impacto del trauma','Cuando el caso incluye antecedentes traumáticos.','Cuando hay antecedente traumático']]},
+  ['PSI042','BDI-II · depresión','El caso clásico de medir lo mismo cada cierto tiempo para ver cómo va un paciente.','Seguir la depresión sesión a sesión','repetir','¿Cómo se sabe si una intervención está funcionando?'],
+  ['PSI035','BAI · ansiedad','Lo mismo, cuando lo que hay que seguir es la ansiedad.','Seguimiento de la ansiedad','repetir'],
+  ['PSI045','LSB-50 · listado de síntomas breve','Una revisión general al comienzo y un seguimiento cada cierto tiempo, con puntajes de resumen.','Medición de entrada y de cierre','repetir'],
+  ['PSI043','CIT · impacto del trauma','Cuando el caso incluye antecedentes traumáticos.','Cuando hay antecedente traumático','leer']]},
 
 {id:'intervencion-dinamica', n:'Intervención Dinámica (Estudio de Caso)', sem:8, cod:'21810-A',
  gancho:'Las seis pruebas proyectivas del laboratorio —láminas y dibujos sin respuesta correcta— pertenecen a esta tradición, y trabajar con ellas obliga a enfrentar de frente el problema de interpretar.',
  recursos:[
-  ['PSI020','TAT–CAT · técnicas proyectivas y láminas','Impulsos, emociones, conflictos. Desde los 6 años.','Historias sobre una misma lámina','¿La interpretación está en la lámina, o en quien la lee?'],
-  ['PSI018','Rorschach · láminas y protocolo','Percepción, pensamiento y funcionamiento psicológico, 16 años en adelante.','El problema de la interpretación'],
-  ['PSI016','H-T-P · dibujo proyectivo','Personalidad, emociones y conflictos a través de casa, árbol y persona. De 5 a 75 años.','El dibujo como material de trabajo'],
-  ['PSI019','Pata Negra','Las formas en que un niño se protege sin darse cuenta, y cómo tiene armado su mundo interno. De 4 a 15 años.','Las defensas en la infancia'],
-  ['PSI015','Wartegg','Ocho cuadros para completar con un dibujo: cómo se ve la persona, cómo se vincula y cómo enfrenta los problemas.','Ocho cuadros por completar','¿Lo que se interpreta está en el dibujo, o en quien lo mira?']]},
+  ['PSI020','TAT–CAT · técnicas proyectivas y láminas','Impulsos, emociones, conflictos. Desde los 6 años.','Historias sobre una misma lámina','laminas','¿La interpretación está en la lámina, o en quien la lee?'],
+  ['PSI018','Rorschach · láminas y protocolo','Percepción, pensamiento y funcionamiento psicológico, 16 años en adelante.','El problema de la interpretación','laminas'],
+  ['PSI016','H-T-P · dibujo proyectivo','Personalidad, emociones y conflictos a través de casa, árbol y persona. De 5 a 75 años.','El dibujo como material de trabajo','dibujar'],
+  ['PSI019','Pata Negra','Las formas en que un niño se protege sin darse cuenta, y cómo tiene armado su mundo interno. De 4 a 15 años.','Las defensas en la infancia','laminas'],
+  ['PSI015','Wartegg','Ocho cuadros para completar con un dibujo: cómo se ve la persona, cómo se vincula y cómo enfrenta los problemas.','Ocho cuadros por completar','dibujar','¿Lo que se interpreta está en el dibujo, o en quien lo mira?']]},
 
 {id:'familia-grupos', n:'Psicología de la Familia y Grupos', sem:8, cod:'21812-A',
  gancho:'La familia se puede describir por lo que cuenta un miembro, o se puede observar interactuando detrás de un espejo mientras el curso registra.',
  amb:'Cámara de Gesell (303)',
  recursos:[
-  ['PSI052','ESFA · satisfacción familiar por adjetivos','Cómo califica cada integrante su propia vida en familia, marcando adjetivos. Desde los 12 años.','Lo que declara cada miembro','¿Y si lo que la familia declara no coincide con lo que se observa?'],
-  ['PSI048','ESPA · estilos de socialización parental','Autoridad, apoyo emocional, comunicación y participación, según los perciben los hijos.','La autoridad vista por los hijos'],
-  ['PSI054','VINCULATEST · vínculos interpersonales en adultos','La pareja y la familia como dos mundos distintos, cada uno con su forma de vincularse.','El apego dentro de la familia'],
-  ['PSI055','IDE · dependencia emocional','Ponerse por debajo del otro y el miedo a que la relación termine.','La subordinación en la pareja']]},
+  ['PSI052','ESFA · satisfacción familiar por adjetivos','Cómo califica cada integrante su propia vida en familia, marcando adjetivos. Desde los 12 años.','Lo que declara cada miembro','aplicar','¿Y si lo que la familia declara no coincide con lo que se observa?'],
+  ['PSI048','ESPA · estilos de socialización parental','Autoridad, apoyo emocional, comunicación y participación, según los perciben los hijos.','La autoridad vista por los hijos','aplicar'],
+  ['PSI054','VINCULATEST · vínculos interpersonales en adultos','La pareja y la familia como dos mundos distintos, cada uno con su forma de vincularse.','El apego dentro de la familia','leer'],
+  ['PSI055','IDE · dependencia emocional','Ponerse por debajo del otro y el miedo a que la relación termine.','La subordinación en la pareja','leer']]},
 
 /* ── 9º y 10º ────────────────────────────────────────────────── */
 {id:'trabajo-grado', n:'Trabajo de Grado y Prácticas', sem:'9-10', cod:'21227-A · 21228-A · 21237-A · 21238-A',
  gancho:'El laboratorio presta los instrumentos con su manual y sus tablas de comparación, y la Cámara para las entrevistas. Es la diferencia entre un proyecto viable y uno que se cae en el capítulo de método.',
  recursos:[
-  ['PSI047','FRIDA · riesgo de consumo en adolescentes','Tema frecuente en proyectos hechos con estudiantes de colegio.','Riesgo de consumo en colegios','¿Se elige primero la pregunta de investigación, o el instrumento que existe?'],
-  ['PSI045','LSB-50 · revisión rápida del malestar','Medida general, útil para describir cómo llega el grupo o para tenerlo en cuenta al comparar.','Cómo llega el grupo al estudio'],
-  ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, aplicable desde los 8 años, individual o grupal.','Autoconcepto en muestras escolares']]}
+  ['PSI047','FRIDA · riesgo de consumo en adolescentes','Tema frecuente en proyectos hechos con estudiantes de colegio.','Riesgo de consumo en colegios','cuadernillo','¿Se elige primero la pregunta de investigación, o el instrumento que existe?'],
+  ['PSI045','LSB-50 · revisión rápida del malestar','Medida general, útil para describir cómo llega el grupo o para tenerlo en cuenta al comparar.','Cómo llega el grupo al estudio','aplicar'],
+  ['PSI050','AF-5 · autoconcepto','Cinco dimensiones, aplicable desde los 8 años, individual o grupal.','Autoconcepto en muestras escolares','aplicar']]}
 
 ];
 
@@ -723,8 +763,14 @@ function visibles(){
   return ASIGNATURAS.filter(function(a){
     if (filtroSem && String(a.sem) !== filtroSem) return false;
     if (!t) return true;
+    /* El gesto se guarda por clave ('desmontar'), pero lo que se busca es lo que
+       está escrito en el rótulo: quien teclee «desmontar» encuentra las asignaturas
+       que tienen algo que abrir con las manos. */
     var blob = (a.n + ' ' + a.gancho + ' ' +
-                a.recursos.map(function(r){ return r.join(' '); }).join(' ')).toLowerCase();
+                a.recursos.map(function(r){
+                  return r.slice(0, 4).join(' ') + ' ' + (GESTOS[r[4]] || '') +
+                         ' ' + (r[5] || '');
+                }).join(' ')).toLowerCase();
     return blob.indexOf(t) >= 0;
   });
 }
@@ -755,8 +801,9 @@ function verFicha(a){
       '<span class="foto"><img src="' + IMG + r[0] + '.jpg" alt="' + r[1] + '" loading="lazy"></span>' +
       '<div class="txt"><code>' + r[0] + '</code><span class="nm">' + r[1] + '</span>' +
       '<p class="qm">' + r[2] + '</p>' +
-      (r[3] ? '<p class="act"><b>Actividad</b><span>' + r[3] + '</span>' +
-        (r[4] ? '<span class="preg">' + r[4] + '</span>' : '') + '</p>' : '') +
+      (r[3] ? '<p class="act"><b>' + (GESTOS[r[4]] || 'Actividad') + '</b>' +
+        '<span>' + r[3] + '</span>' +
+        (r[5] ? '<span class="preg">' + r[5] + '</span>' : '') + '</p>' : '') +
       '</div></div>';
   }).join('');
   $('#fichaCuerpo').innerHTML =
@@ -785,9 +832,17 @@ function verFicha(a){
       '<p><em>Muestra las fotos y di qué permite ver cada cosa.</em> Eso es todo lo que tienes ' +
         'que hacer bien. No expliques cómo se aplica ni cómo se interpreta. Con los modelos y ' +
         'los aparatos vale lo mismo: di para qué sirven, no cómo se manejan.</p>' +
-      '<p><em>Cada cuadro trae abajo una actividad, en una línea.</em> Léela tal cual: dice ' +
-        'para qué le sirve esa prueba a esta materia en concreto, que es distinto de lo que le ' +
-        'sirve a otra. No la desarrolles ni la adornes; si al docente le interesa, preguntará.</p>' +
+      '<p><em>Cada cuadro cierra con dos renglones.</em> Arriba, en azul y en letra pequeña, ' +
+        'lo que se hace con esa prueba; debajo, la actividad. Léelos en ese orden y tal cual ' +
+        'están. La actividad dice para qué le sirve esa prueba a esta materia en concreto, que ' +
+        'es distinto de lo que le sirve a otra. No la desarrolles ni la adornes; si al docente ' +
+        'le interesa, preguntará.</p>' +
+      '<p><em>El renglón de arriba se repite de un cuadro a otro, y así debe ser.</em> Son unos ' +
+        'pocos modos —aplicarlo entre ellos, abrir el cuadernillo, desmontar y nombrar— y en ' +
+        'una tarde te los aprendes. Uno de ellos te protege: donde dice <em>leer los ítems</em> ' +
+        'se trata de una prueba clínica, y esas se muestran y se comentan, pero no se le ' +
+        'aplican a nadie en un salón de clase. Si alguien se ofrece de voluntario, esa es la ' +
+        'respuesta.</p>' +
       '<p><em>Algunos cuadros traen además una pregunta en cursiva.</em> Léela también, pero ' +
         'no intentes responderla: está puesta para que el docente vea que ahí hay algo que ' +
         'discutir con su curso. Si te la devuelven a ti, di que es justamente lo que la prueba ' +
