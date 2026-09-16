@@ -216,10 +216,22 @@
   .preg .tras{font-size:13.5px;color:var(--muted);margin:8px 0 0}
   .preg[data-cerrada] label{cursor:default}
 
+  /* Salida de emergencia. Va debajo del pie y en gris, separada de
+     «Siguiente»: tiene que encontrarse, pero no competir con el camino
+     principal ni pulsarse por error al avanzar. */
+  .ind-omitir{margin-top:30px;padding:14px 16px;border:1px dashed var(--line);border-radius:10px;
+    display:flex;gap:12px 16px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+  .ind-omitir[hidden]{display:none}
+  .ind-omitir .txt{flex:1;min-width:230px}
+  .ind-omitir b{color:var(--ink)}
+  .ind-omitir small{display:block;margin-top:4px;font-size:13px}
+  .ind .ind-omitir button{font-size:14px;padding:8px 16px;white-space:nowrap}
+
   .ind-marcador{background:#fff6e5;border:1px solid #f0d9a8;border-left:3px solid #c8890f;
     border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 20px;font-size:14px;color:#6b4c07}
   @media (prefers-color-scheme: dark){
     .ind-marcador{background:#2d2410;border-color:#5d4a17;color:#f0d9a8}
+    .ind-marcador a{color:#f5e3b8}
   }
 
   /* Ventanita para pedir un laboratorio del campus */
@@ -269,6 +281,16 @@
       <span class="sep"></span>
       <button type="button" id="indAdelante">Siguiente</button>
     </div>
+    <div class="ind-omitir" id="indOmitir">
+      <div class="txt">
+        <b>¿Tienes afán o hoy no puedes hacerla?</b>
+        Si estás en un equipo que no es el tuyo o no logras entrar a tu correo institucional,
+        puedes pasar al catálogo por esta vez.
+        <small>La inducción te volverá a aparecer en tu próxima visita. Son unos dos minutos,
+        y es lo que nos permite a todos trabajar con las mismas reglas.</small>
+      </div>
+      <button type="button" class="gris" id="indOmitirBtn">Omitir por esta vez</button>
+    </div>
   </div>
 </div>
 
@@ -279,6 +301,12 @@
   Se abrió en otra pestaña; sin ese envío la socialización no queda registrada.
   <a href="#" id="reabrirInduccion">Abrirlo de nuevo</a> ·
   <a href="#" id="yaEnviado">Ya lo envié</a>.
+</div>
+
+<div class="ind-marcador" id="avisoOmitida" hidden>
+  <b>Hoy entraste sin hacer la inducción.</b>
+  No olvides hacerla en tu próxima visita, o si tienes dos minutos,
+  <a href="#" id="hacerInduccion">hazla ahora</a>.
 </div>
 
 <div class="band"><div class="inner">
@@ -803,7 +831,9 @@ const $ind = document.getElementById("ind"),
       $indAdelante = document.getElementById("indAdelante"),
       $indTitulo = document.getElementById("indTitulo"),
       $indSub = document.getElementById("indSub"),
-      $avisoEnvio = document.getElementById("avisoEnvio");
+      $avisoEnvio = document.getElementById("avisoEnvio"),
+      $indOmitir = document.getElementById("indOmitir"),
+      $avisoOmitida = document.getElementById("avisoOmitida");
 
 const TOTAL_PASOS = IND_TARJETAS.length + 1;   // las tarjetas más el cuestionario
 let indPaso = 0;
@@ -916,6 +946,8 @@ function indCalificar(){
     }
   });
   indCalificado = true;
+  /* Ya respondió: omitir aquí sería perder un cuestionario hecho. */
+  $indOmitir.hidden = true;
   return { aciertos, porPregunta };
 }
 
@@ -985,6 +1017,8 @@ $indAdelante.addEventListener("click", () => {
                enviada: conFormulario ? false : null });
   $ind.hidden = true;
   document.body.style.overflow = "";
+  indOmitidaBorrar();
+  $avisoOmitida.hidden = true;
 
   /* El aviso se muestra y se apaga con el botón «Ya lo envié» del propio
      aviso. NO se pregunta con confirm(): `window.open` le da el foco a la
@@ -1012,10 +1046,46 @@ document.getElementById("reabrirInduccion").addEventListener("click", e => {
   $ind.hidden = false; document.body.style.overflow = "hidden"; indPintar();
 });
 
+/* ── Omitir por esta vez ─────────────────────────────────────────
+   Para quien entra desde un equipo prestado o no logra iniciar sesión
+   en su cuenta institucional: sin esto, el bloqueo le cierra el
+   catálogo justo cuando lo necesita.
+
+   Se guarda en sessionStorage y NO en localStorage, a propósito: vale
+   para esta visita —recargar la misma pestaña no vuelve a bloquear—,
+   pero al cerrar la pestaña se olvida y la próxima vez la inducción
+   sale otra vez. Si se guardara en localStorage, omitir una vez sería
+   omitir para siempre.                                              */
+const IND_OMITIDA = IND_CLAVE + "-omitida";
+function indOmitida(){
+  try { return sessionStorage.getItem(IND_OMITIDA) === PERIODO; } catch(e){ return false; }
+}
+function indOmitidaBorrar(){
+  try { sessionStorage.removeItem(IND_OMITIDA); } catch(e){}
+}
+
+document.getElementById("indOmitirBtn").addEventListener("click", () => {
+  try { sessionStorage.setItem(IND_OMITIDA, PERIODO); } catch(e){}
+  $ind.hidden = true;
+  document.body.style.overflow = "";
+  $avisoOmitida.hidden = false;
+  window.scrollTo(0, 0);
+});
+
+document.getElementById("hacerInduccion").addEventListener("click", e => {
+  e.preventDefault();
+  indPaso = 0; indBarajado = null; indCalificado = false;
+  $indOmitir.hidden = false;
+  $ind.hidden = false; document.body.style.overflow = "hidden"; indPintar();
+});
+
 if(indVigente()){
   $ind.hidden = true;
   const g = indLeer();
   $avisoEnvio.hidden = g.enviada !== false;
+}else if(indOmitida()){
+  $ind.hidden = true;
+  $avisoOmitida.hidden = false;
 }else{
   document.body.style.overflow = "hidden";
   indPintar();
