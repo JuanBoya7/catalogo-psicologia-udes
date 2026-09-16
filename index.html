@@ -13,7 +13,11 @@
      institucional para lo que manda, y aqua y lila en versión pastel para
      los bloques de apoyo. Los dos recursos se enseñan juntos en la misma
      reunión y tienen que leerse como una sola cosa. */
+  /* Siempre en claro, aunque el equipo esté en modo oscuro: tiene que
+     verse igual que el recurso de usos y la presentación de la reunión,
+     en tonos pastel, en cualquier dispositivo. */
   :root{
+    color-scheme:light;
     --azul:#004899; --azul-hondo:#00306a; --azul-suave:#e8f0fa; --azul-borde:#c9dcf2;
     --aqua:#d9f5ec; --aqua-borde:#a8e3d0; --lila:#efe9f8; --lila-tinta:#59308f;
     --morado:#59308f;
@@ -21,17 +25,6 @@
     --line:#dde6f1; --soft:#e8f0fa; --chip:#eef3f9;
     --band-a:#eaf2fb; --band-b:#f7fafd;
     --shadow:0 1px 2px rgba(0,50,110,.05), 0 8px 22px rgba(0,50,110,.07);
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --azul:#5c9ce6; --azul-hondo:#cfe0f5; --azul-suave:#16283f; --azul-borde:#2c4361;
-      --aqua:#122e2a; --aqua-borde:#22493f; --lila:#1f1a2e; --lila-tinta:#b79ae0;
-      --morado:#7d55c7;
-      --bg:#0c141f; --surface:#141f2e; --ink:#e6edf6;
-      --muted:#96a7bd; --line:#243549; --soft:#16283f; --chip:#1c2a3b;
-      --band-a:#16283f; --band-b:#0c141f;
-      --shadow:0 1px 2px rgba(0,0,0,.45), 0 6px 20px rgba(0,0,0,.35);
-    }
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -94,7 +87,6 @@
   .thumb.ph img{width:96px;height:auto;max-width:42%;padding:0;opacity:.3}
   .thumb.ph span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;
     font-weight:600;color:var(--muted);opacity:.75}
-  @media (prefers-color-scheme: dark){ .thumb.ph img{opacity:.5} }
   .body{padding:14px 15px 15px;display:flex;flex-direction:column;gap:8px;flex:1}
   .row1{display:flex;align-items:center;justify-content:space-between;gap:8px}
   .code{font:600 11.5px/1 ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.04em;
@@ -127,7 +119,6 @@
     color:#fff;background:var(--morado);border:1px solid var(--morado);
     border-radius:7px;padding:8px 15px;transition:.12s}
   .cta button:hover{filter:brightness(1.1)}
-  @media (prefers-color-scheme: dark){ .cta{border-color:#3a2d55} }
 
   /* ── Laboratorios del campus ───────────────────────────────────
      Servicio distinto y de otro dueño, así que se separa con una
@@ -149,10 +140,6 @@
   .campus .aviso{background:#fff6e5;border:1px solid #f0d9a8;border-left:3px solid #c8890f;
     border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 20px;font-size:14px;color:#6b4c07}
   .campus .aviso b{color:#8a6410}
-  @media (prefers-color-scheme: dark){
-    .campus .aviso{background:#2d2410;border-color:#5d4a17;color:#f0d9a8}
-    .campus .aviso b{color:#f5e3b8}
-  }
   .lab{background:var(--surface);border:1px solid var(--line);border-radius:12px;
     box-shadow:var(--shadow);padding:16px 17px;display:flex;flex-direction:column}
   /* La foto sangra hasta los bordes: los márgenes negativos cancelan el padding
@@ -229,10 +216,6 @@
 
   .ind-marcador{background:#fff6e5;border:1px solid #f0d9a8;border-left:3px solid #c8890f;
     border-radius:0 8px 8px 0;padding:12px 15px;margin:0 0 20px;font-size:14px;color:#6b4c07}
-  @media (prefers-color-scheme: dark){
-    .ind-marcador{background:#2d2410;border-color:#5d4a17;color:#f0d9a8}
-    .ind-marcador a{color:#f5e3b8}
-  }
 
   /* Ventanita para pedir un laboratorio del campus */
   dialog.dlg{border:0;border-radius:14px;padding:0;width:min(520px,94vw);
