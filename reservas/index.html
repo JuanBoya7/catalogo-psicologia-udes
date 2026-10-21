@@ -385,13 +385,14 @@ const AMBIENTES = [
   { clave:"305", nombre:"Laboratorio Experimental (305)" }
 ];
 
-/* [franja inicial, franja final, asignatura, esEvento] — franjas base 1, inclusivas */
+/* [franja inicial, franja final, asignatura, esEvento, programa] — franjas base 1, inclusivas.
+   `programa` solo para cursos de otro programa: sale como segunda línea en la celda. */
 const HORARIO = {
   "303":{
     "Lunes":[[3,4,"Historia genética y cultura"],[6,7,"Psicoanálisis"],[9,10,"Neuropsicología"],[13,15,"Entrevista"]],
     "Martes":[[3,4,"Campo aplicado I"],[5,5,"II semestre Saber",true]],
     "Miércoles":[[5,7,"Técnica de evaluación"],[11,13,"Procesos básicos"]],
-    "Jueves":[[1,2,"Teoría de la personalidad"],[9,10,"Ciclo II",true],[14,15,"Fundamento de la psicología"]],
+    "Jueves":[[1,2,"Teoría de la personalidad"],[5,7,"Introducción a la ciencia de la salud",false,"Bacteriología"],[9,10,"Ciclo II",true],[14,15,"Fundamento de la psicología"]],
     "Viernes":[[3,5,"Dinámica"],[11,12,"Psicopatología"],[14,15,"Electiva de campo aplicado II"]],
     "Sábado":[[1,3,"Prácticas II-A"]]
   },
@@ -492,10 +493,11 @@ function celdasDe(clave, dia, fecha){
     ini, fin, fecha, estado:"libre", titulo:"", detalle:"", res:null, chocaCon:""
   }));
 
-  (HORARIO[clave][dia]||[]).forEach(([desde,hasta,asig,ev])=>{
+  (HORARIO[clave][dia]||[]).forEach(([desde,hasta,asig,ev,prog])=>{
     for(let f=desde; f<=hasta; f++){
       celdas[f-1].estado = ev ? "evento" : "clase";
       celdas[f-1].titulo = asig;
+      celdas[f-1].detalle = prog||"";
     }
   });
 
@@ -569,7 +571,8 @@ function pintarRejillas(){
           h += '<td class="'+cls+'"'+señas+' data-id="'+c.res.id+'">'+marca+esc(c.titulo)+
                (pie?'<small>'+pie+'</small>':'')+'</td>';
         } else {
-          h += '<td class="'+c.estado+'"'+señas+'>'+esc(c.titulo)+'</td>';
+          h += '<td class="'+c.estado+'"'+señas+'>'+esc(c.titulo)+
+               (c.detalle?'<small>'+esc(c.detalle)+'</small>':'')+'</td>';
         }
       });
       h += '</tr>';
